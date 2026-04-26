@@ -20,6 +20,11 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `docs/derived/repository_map.md`
   - `docs/derived/milestone0_plan.md`
 - Updated `WORK_QUEUE.md` and `QUESTION_QUEUE.md` with blocked branches and safe offline work.
+- Incorporated the user's new answers from `QUESTION_QUEUE.md`.
+- Inspected the installed `cloneid` R package interface and documented the read-only inventory path.
+- Implemented the read-only CLONEID inventory wrapper in R plus a Python CLI entry point.
+- Added tests for mock inventory, graceful live-failure fallback, and report/JSON output structure.
+- Verified the wrapper in mock mode, fallback mode, and live mode.
 
 ---
 
@@ -28,14 +33,26 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
 - The repository scaffold has been classified into existing files, placeholders, operationally empty folders, and minimal missing implementation files.
+- The approved database access path is now known: use the installed `cloneid` R package with preconfigured credentials.
+- The first real-data selection policy is now fixed: keep it score-driven until reviewed.
+- The package interface note now documents the actual connection helper, visible tables, snapshot row counts, core fields, and the recommended read-only `DBI` inventory pattern.
+- A manual inventory entry point now exists in both forms:
+  - `Rscript scripts/cloneid_inventory.R ...`
+  - `python -m cloneid_agent inventory ...`
+- The wrapper writes:
+  - `runs/<run_id>/database_inventory.json`
+  - `runs/<run_id>/database_inventory.md`
+- `--mode mock` works offline.
+- `--mode auto` gracefully falls back to mock output when sandboxed live access fails.
+- `--mode live` has been verified with network-capable execution against the live CLONEID database.
 
 ---
 
 ## What is blocked
 
-- Real CLONEID database inventory is blocked by missing approved connection details or a sanctioned snapshot.
-- PhysiCell smoke testing is blocked by the absence of a binary or build/install instructions in the repository.
-- Any real-data scientific branch remains blocked until database inventory exists.
+- PhysiCell smoke testing is blocked pending an installation/runtime decision.
+- The next real-data branch still needs dataset scoring and candidate-dataset inventory logic beyond the table-level wrapper.
+- Any scientific dataset-selection branch remains blocked until higher-level inventory/scoring exists.
 
 ---
 
@@ -47,7 +64,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Answer the database-access and PhysiCell-runtime questions in `QUESTION_QUEUE.md`, then review the Milestone 0 plan and approve the first offline implementation slice: deterministic dry-run scaffolding plus a toy round-trip fixture.
+Review the new inventory wrapper outputs, then continue the deterministic database-first slice: formal schemas plus a derived CLONEID schema map and higher-level candidate-dataset inventory/scoring.
 
 ---
 
@@ -55,6 +72,11 @@ Answer the database-access and PhysiCell-runtime questions in `QUESTION_QUEUE.md
 
 - `docs/derived/repository_map.md`
 - `docs/derived/milestone0_plan.md`
+- `docs/derived/cloneid_package_interface.md`
+- `scripts/cloneid_inventory.R`
+- `src/cloneid_agent/cli.py`
+- `src/cloneid_agent/inventory.py`
+- `tests/test_inventory_cli.py`
 - `QUESTION_QUEUE.md`
 - `WORK_QUEUE.md`
 - `STATUS.md`

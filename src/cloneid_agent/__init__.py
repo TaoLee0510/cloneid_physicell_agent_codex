@@ -1,1 +1,5 @@
-"""CLONEID–PhysiCell agent workflow package placeholder."""
+"""CLONEID-PhysiCell agent workflow package."""
+
+__all__ = ["__version__"]
+
+__version__ = "0.1.0"

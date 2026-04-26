@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cloneid-physicell-agent-codex"
+version = "0.1.0"
+description = "Constrained CLONEID-to-PhysiCell workflow scaffold"
+requires-python = ">=3.10"
+
+[project.scripts]
+cloneid-agent = "cloneid_agent.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -20,10 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Create a toy CLONEID-like fixture and toy round-trip test.
-2. Create report and figure stub generators for dry-run mode.
-3. Add unit tests for schema validation, scoring, and dry-run output emission.
-4. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
+1. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
+2. Extend the toy workflow with more explicit report/figure stub generation if needed.
+3. Add unit tests for dataset scoring and candidate-dataset inventory behavior.
 
 ---
 
@@ -60,6 +59,8 @@ _None yet._
 17. Added schema validation tests in `tests/test_schemas.py`.
 18. Added generic run-folder creation and artifact-writer utilities in `src/cloneid_agent/run_io.py`.
 19. Added run-I/O tests in `tests/test_run_io.py`.
+20. Added a synthetic CLONEID-like toy fixture and toy round-trip workflow in `src/cloneid_agent/toy_workflow.py`.
+21. Added a `toy-roundtrip` CLI entry point and test coverage for emitted artifacts.
 
 ---
 

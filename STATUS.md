@@ -28,6 +28,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Drafted the derived CLONEID schema map from documentation plus live table/field inspection.
 - Added strict schema objects for inventory artifacts and validated them against generated mock output.
 - Added generic run-folder and artifact-writer helpers with passing tests.
+- Added a synthetic CLONEID-like toy fixture and toy round-trip workflow with passing tests.
 
 ---
 
@@ -51,13 +52,14 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - A first derived schema map now exists in `docs/derived/cloneid_schema_map.md`, including the first-pass join graph and table roles for the agent.
 - `src/cloneid_agent/schemas.py` now validates database inventory artifacts and rejects malformed structure.
 - `src/cloneid_agent/run_io.py` now creates run directories, initializes dry-run subdirectories, and writes JSON/Markdown artifacts without overwriting run directories by default.
+- `python -m cloneid_agent toy-roundtrip --output <dir>` now emits a minimal dry-run artifact bundle without real database access or a PhysiCell binary.
 
 ---
 
 ## What is blocked
 
 - PhysiCell smoke testing is blocked pending an installation/runtime decision.
-- The next real-data branch still needs candidate-dataset inventory and dataset scoring logic beyond the table-level wrapper.
+- The next real-data branch still needs higher-level candidate-dataset inventory and dataset scoring logic beyond the table-level wrapper.
 - Any scientific dataset-selection branch remains blocked until higher-level inventory/scoring exists.
 
 ---
@@ -70,7 +72,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Review the inventory wrapper, schema map, schemas, and run-I/O utilities, then continue with the toy CLONEID-like fixture and higher-level candidate-dataset inventory/scoring.
+Review the inventory wrapper, schema map, schemas, run-I/O utilities, and toy round-trip outputs, then continue with higher-level candidate-dataset inventory and dataset scoring.
 
 ---
 
@@ -85,9 +87,11 @@ Review the inventory wrapper, schema map, schemas, and run-I/O utilities, then c
 - `src/cloneid_agent/inventory.py`
 - `src/cloneid_agent/schemas.py`
 - `src/cloneid_agent/run_io.py`
+- `src/cloneid_agent/toy_workflow.py`
 - `tests/test_inventory_cli.py`
 - `tests/test_schemas.py`
 - `tests/test_run_io.py`
+- `tests/test_toy_workflow.py`
 - `QUESTION_QUEUE.md`
 - `WORK_QUEUE.md`
 - `STATUS.md`

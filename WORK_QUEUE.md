@@ -20,9 +20,8 @@ For each work block:
 
 ## Ready now
 
-1. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
-2. Extend the toy workflow with more explicit report/figure stub generation if needed.
-3. Add unit tests for dataset scoring and candidate-dataset inventory behavior.
+1. Implement higher-level candidate-dataset inventory on top of the table-level wrapper.
+2. Add unit tests for candidate-dataset inventory behavior.
 
 ---
 
@@ -61,6 +60,8 @@ _None yet._
 19. Added run-I/O tests in `tests/test_run_io.py`.
 20. Added a synthetic CLONEID-like toy fixture and toy round-trip workflow in `src/cloneid_agent/toy_workflow.py`.
 21. Added a `toy-roundtrip` CLI entry point and test coverage for emitted artifacts.
+22. Implemented the documented 0-to-5 dataset-scoring rule in `src/cloneid_agent/dataset_scoring.py`.
+23. Added dataset-scoring tests in `tests/test_dataset_scoring.py`.
 
 ---
 

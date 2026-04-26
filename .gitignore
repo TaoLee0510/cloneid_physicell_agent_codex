@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Runs and large outputs
+runs/*
+!runs/.gitkeep
+reports/*
+!reports/.gitkeep
+
+# Data exports can be large or sensitive
+data/cloneid_exports/**/*
+!data/cloneid_exports/**/.gitkeep
+data/processed/**/*
+!data/processed/.gitkeep
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

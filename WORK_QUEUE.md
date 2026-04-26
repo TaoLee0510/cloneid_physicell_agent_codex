@@ -20,8 +20,7 @@ For each work block:
 
 ## Ready now
 
-1. Implement higher-level candidate-dataset inventory on top of the table-level wrapper.
-2. Add unit tests for candidate-dataset inventory behavior.
+_None currently unblocked._
 
 ---
 
@@ -34,6 +33,7 @@ _None yet._
 ## Waiting for user
 
 1. Decision on how PhysiCell should be installed and run in this environment.
+2. Decision on first-pass observable extraction policy for Perspective versus Identity use in calibration/validation.
 
 ---
 
@@ -62,6 +62,10 @@ _None yet._
 21. Added a `toy-roundtrip` CLI entry point and test coverage for emitted artifacts.
 22. Implemented the documented 0-to-5 dataset-scoring rule in `src/cloneid_agent/dataset_scoring.py`.
 23. Added dataset-scoring tests in `tests/test_dataset_scoring.py`.
+24. Implemented higher-level live/mock/auto candidate-dataset inventory in `scripts/cloneid_candidate_inventory.R` and Python CLI wrappers.
+25. Added ontology-aware candidate ranking and deterministic top-candidate selection.
+26. Added tests for candidate inventory, ranking, and selection behavior.
+27. Verified candidate inventory, ranking, and selection in live and offline paths.
 
 ---
 

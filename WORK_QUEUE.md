@@ -20,11 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Build generic run-folder creation and dry-run artifact writers beyond the inventory wrapper.
-2. Create a toy CLONEID-like fixture and toy round-trip test.
-3. Create report and figure stub generators for dry-run mode.
-4. Add unit tests for schema validation, scoring, and dry-run output emission.
-5. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
+1. Create a toy CLONEID-like fixture and toy round-trip test.
+2. Create report and figure stub generators for dry-run mode.
+3. Add unit tests for schema validation, scoring, and dry-run output emission.
+4. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
 
 ---
 
@@ -59,6 +58,8 @@ _None yet._
 15. Drafted `docs/derived/cloneid_schema_map.md` from documented notes plus the observed live table/field surface.
 16. Added strict schema objects for database inventory artifacts in `src/cloneid_agent/schemas.py`.
 17. Added schema validation tests in `tests/test_schemas.py`.
+18. Added generic run-folder creation and artifact-writer utilities in `src/cloneid_agent/run_io.py`.
+19. Added run-I/O tests in `tests/test_run_io.py`.
 
 ---
 

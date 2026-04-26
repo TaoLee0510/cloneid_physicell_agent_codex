@@ -26,6 +26,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Added tests for mock inventory, graceful live-failure fallback, and report/JSON output structure.
 - Verified the wrapper in mock mode, fallback mode, and live mode.
 - Drafted the derived CLONEID schema map from documentation plus live table/field inspection.
+- Added strict schema objects for inventory artifacts and validated them against generated mock output.
 
 ---
 
@@ -47,6 +48,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - `--mode auto` gracefully falls back to mock output when sandboxed live access fails.
 - `--mode live` has been verified with network-capable execution against the live CLONEID database.
 - A first derived schema map now exists in `docs/derived/cloneid_schema_map.md`, including the first-pass join graph and table roles for the agent.
+- `src/cloneid_agent/schemas.py` now validates database inventory artifacts and rejects malformed structure.
 
 ---
 
@@ -66,7 +68,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Review the inventory wrapper and derived schema map, then continue the deterministic database-first slice with formal schemas and higher-level candidate-dataset inventory/scoring.
+Review the inventory wrapper, schema map, and artifact schemas, then continue the deterministic database-first slice with generic run-folder writers and higher-level candidate-dataset inventory/scoring.
 
 ---
 
@@ -79,7 +81,9 @@ Review the inventory wrapper and derived schema map, then continue the determini
 - `scripts/cloneid_inventory.R`
 - `src/cloneid_agent/cli.py`
 - `src/cloneid_agent/inventory.py`
+- `src/cloneid_agent/schemas.py`
 - `tests/test_inventory_cli.py`
+- `tests/test_schemas.py`
 - `QUESTION_QUEUE.md`
 - `WORK_QUEUE.md`
 - `STATUS.md`

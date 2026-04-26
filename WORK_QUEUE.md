@@ -25,7 +25,7 @@ For each work block:
 3. Create a toy CLONEID-like fixture and toy round-trip test.
 4. Create report and figure stub generators for dry-run mode.
 5. Add unit tests for schema validation, scoring, and dry-run output emission.
-6. Draft `docs/derived/cloneid_schema_map.md` using documented notes plus the now-observed live table/field surface.
+6. Implement higher-level candidate-dataset inventory and scoring on top of the table-level wrapper.
 
 ---
 
@@ -57,6 +57,7 @@ _None yet._
 12. Added mock/auto/live inventory modes with graceful fallback on live-access failure.
 13. Added tests for inventory JSON structure, graceful failure, and mock inventory behavior.
 14. Verified the wrapper in mock mode, fallback mode, and live mode.
+15. Drafted `docs/derived/cloneid_schema_map.md` from documented notes plus the observed live table/field surface.
 
 ---
 

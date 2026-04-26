@@ -25,6 +25,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Implemented the read-only CLONEID inventory wrapper in R plus a Python CLI entry point.
 - Added tests for mock inventory, graceful live-failure fallback, and report/JSON output structure.
 - Verified the wrapper in mock mode, fallback mode, and live mode.
+- Drafted the derived CLONEID schema map from documentation plus live table/field inspection.
 
 ---
 
@@ -45,13 +46,14 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - `--mode mock` works offline.
 - `--mode auto` gracefully falls back to mock output when sandboxed live access fails.
 - `--mode live` has been verified with network-capable execution against the live CLONEID database.
+- A first derived schema map now exists in `docs/derived/cloneid_schema_map.md`, including the first-pass join graph and table roles for the agent.
 
 ---
 
 ## What is blocked
 
 - PhysiCell smoke testing is blocked pending an installation/runtime decision.
-- The next real-data branch still needs dataset scoring and candidate-dataset inventory logic beyond the table-level wrapper.
+- The next real-data branch still needs candidate-dataset inventory and dataset scoring logic beyond the table-level wrapper.
 - Any scientific dataset-selection branch remains blocked until higher-level inventory/scoring exists.
 
 ---
@@ -64,7 +66,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Review the new inventory wrapper outputs, then continue the deterministic database-first slice: formal schemas plus a derived CLONEID schema map and higher-level candidate-dataset inventory/scoring.
+Review the inventory wrapper and derived schema map, then continue the deterministic database-first slice with formal schemas and higher-level candidate-dataset inventory/scoring.
 
 ---
 
@@ -73,6 +75,7 @@ Review the new inventory wrapper outputs, then continue the deterministic databa
 - `docs/derived/repository_map.md`
 - `docs/derived/milestone0_plan.md`
 - `docs/derived/cloneid_package_interface.md`
+- `docs/derived/cloneid_schema_map.md`
 - `scripts/cloneid_inventory.R`
 - `src/cloneid_agent/cli.py`
 - `src/cloneid_agent/inventory.py`

@@ -33,7 +33,6 @@ _None yet._
 ## Waiting for user
 
 1. Decision on how PhysiCell should be installed and run in this environment.
-2. Decision on first-pass observable extraction policy for Perspective versus Identity use in calibration/validation.
 
 ---
 

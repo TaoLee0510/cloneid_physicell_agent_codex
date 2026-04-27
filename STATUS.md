@@ -140,10 +140,10 @@ Implement selected-dataset record bundling and observable extraction for the top
 ## Git state
 
 - Current branch: `main`
-- Last commit hash: `b7270a0`
+- Last commit hash: `51ce0fa`
 - Tests run this session:
   - `PYTHONPATH=src python3 -m unittest tests/test_dataset_ranking.py tests/test_dataset_selection.py`
-- Work committed yet for the latest unit: no
+- Work committed yet for the latest unit: yes
 - Uncommitted / user-side files currently present:
   - modified: `CODEX_INSTRUCTIONS.md`
   - modified: `ONBOARDING_AND_SCOPE.md`

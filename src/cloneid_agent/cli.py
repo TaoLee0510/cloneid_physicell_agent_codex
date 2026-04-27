@@ -10,6 +10,7 @@ from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .inventory import run_inventory
 from .toy_workflow import run_toy_round_trip
+from .trajectory_bundles import discover_trajectory_bundle_from_file, write_trajectory_bundle
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -117,6 +118,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for selected_candidate.json and selected_candidate.md",
     )
 
+    bundle_parser = subparsers.add_parser(
+        "discover-trajectory-bundle",
+        help="Discover a connected TrajectoryBundle from a mock or cached record fixture.",
+    )
+    bundle_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to a JSON fixture containing passaging, perspective, and optional identity records.",
+    )
+    bundle_parser.add_argument(
+        "--seed-dataset-id",
+        required=True,
+        help="CandidateSegment dataset_id to use as the seed for graph expansion.",
+    )
+    bundle_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for trajectory_bundle.json and trajectory_bundle.md",
+    )
+
     return parser
 
 
@@ -138,6 +159,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "select-candidate":
         selected = select_top_candidate_from_file(args.input)
         write_selected_candidate(args.output_dir, selected)
+        return 0
+    if args.command == "discover-trajectory-bundle":
+        bundle = discover_trajectory_bundle_from_file(args.input, args.seed_dataset_id)
+        write_trajectory_bundle(args.output_dir, bundle)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

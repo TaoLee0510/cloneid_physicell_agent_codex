@@ -35,6 +35,7 @@ class ToyWorkflowTests(unittest.TestCase):
                 "toy_fixture.json",
                 "database_inventory.json",
                 "selected_dataset.json",
+                "trajectory_bundle.json",
                 "observables.json",
                 "agent_plan.json",
                 "model_selection_report.md",

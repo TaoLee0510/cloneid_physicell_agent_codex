@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .run_io import initialize_dry_run_tree, prepare_run_directory, write_json, write_markdown
+from .trajectory_bundles import discover_trajectory_bundle
 
 
 def build_toy_fixture() -> dict[str, Any]:
@@ -177,6 +178,16 @@ def run_toy_round_trip(output: str | None = None, run_id: str | None = None) -> 
         "selection_reason": "Synthetic dataset with longitudinal phenotype, event lineage, context, and endpoint state fractions.",
     }
     write_json(run_dir / "selected_dataset.json", selected_dataset)
+
+    trajectory_bundle = discover_trajectory_bundle(
+        seed_dataset_id="TOY_A549__adherent_2D__1__1__1",
+        passaging_records=fixture["passaging"],
+        perspective_records=fixture["perspective"],
+        identity_records=fixture["identity"],
+        max_upstream_depth=4,
+        max_downstream_depth=4,
+    )
+    write_json(run_dir / "trajectory_bundle.json", trajectory_bundle)
 
     observables = {
         "selected": [

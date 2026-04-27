@@ -21,7 +21,9 @@ For each work block:
 ## Ready now
 
 1. Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate using `Perspective`-first endpoint constraints and `Identity` as secondary interpretive support.
-2. After user confirmation, begin the first real PhysiCell backend branch: verify/download official `v1.14.2` source and attempt the local source build before any Docker-based fallback.
+2. After user confirmation, either:
+   - move from the successful local PhysiCell build to a first minimal PhysiCell smoke run, or
+   - switch back to the selected-dataset extraction branch.
 
 ---
 
@@ -33,7 +35,7 @@ _None yet._
 
 ## Waiting for user
 
-1. Confirm the completed PhysiCell planning scaffold before I proceed to actual download/build work on that branch.
+1. Confirm the completed first actual PhysiCell backend branch before I proceed to a minimal PhysiCell smoke run or back to the CLONEID extraction branch.
 
 ---
 
@@ -72,6 +74,10 @@ _None yet._
 31. Added a concrete PhysiCell runtime plan for the pinned `v1.14.2` backend.
 32. Added a local runtime environment check script plus project-owned Docker and Apptainer build definitions for the same pinned backend.
 33. Verified the runtime-check script locally; Homebrew `g++-15` is present, Docker CLI is present but the daemon is not reachable from the current context, and Apptainer/Singularity are not installed.
+34. Downloaded the official PhysiCell `v1.14.2` release tarball into `/tmp` and unpacked it as `/tmp/PhysiCell-1.14.2-src`.
+35. Verified that the default `make` path fails on macOS `clang++` with the expected OpenMP error.
+36. Successfully built PhysiCell `v1.14.2` locally with `PHYSICELL_CPP=/opt/homebrew/bin/g++-15`, producing the `heterogeneity` executable.
+37. Added a reusable local build wrapper in `scripts/build_physicell_local.sh` and documented the successful build check in `docs/derived/physicell_local_build_check.md`.
 
 ---
 

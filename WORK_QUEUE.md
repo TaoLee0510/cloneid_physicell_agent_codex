@@ -22,7 +22,7 @@ For each work block:
 
 1. Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate using `Perspective`-first endpoint constraints and `Identity` as secondary interpretive support.
 2. After user confirmation, either:
-   - move from the successful local PhysiCell build to a first minimal PhysiCell smoke run, or
+   - run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
    - switch back to the selected-dataset extraction branch.
 
 ---
@@ -35,7 +35,7 @@ _None yet._
 
 ## Waiting for user
 
-1. Confirm the completed first actual PhysiCell backend branch before I proceed to a minimal PhysiCell smoke run or back to the CLONEID extraction branch.
+1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
 
 ---
 
@@ -78,6 +78,9 @@ _None yet._
 35. Verified that the default `make` path fails on macOS `clang++` with the expected OpenMP error.
 36. Successfully built PhysiCell `v1.14.2` locally with `PHYSICELL_CPP=/opt/homebrew/bin/g++-15`, producing the `heterogeneity` executable.
 37. Added a reusable local build wrapper in `scripts/build_physicell_local.sh` and documented the successful build check in `docs/derived/physicell_local_build_check.md`.
+38. Promoted the successful PhysiCell build to the persistent location `/Users/4470246/Downloads/PhysiCell-1.14.2`.
+39. Ran the first minimal PhysiCell smoke test from the persistent install with a temporary short-run config and 1 OpenMP thread.
+40. Confirmed smoke-test output artifacts and documented the result in `docs/derived/physicell_smoke_test_check.md`.
 
 ---
 

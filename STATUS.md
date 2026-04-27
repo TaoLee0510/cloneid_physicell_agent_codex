@@ -51,6 +51,12 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `scripts/build_physicell_local.sh`
 - Documented the successful local build check in:
   - `docs/derived/physicell_local_build_check.md`
+- Promoted the successful PhysiCell build to the persistent location:
+  - `/Users/4470246/Downloads/PhysiCell-1.14.2`
+- Ran the first minimal PhysiCell smoke test from the persistent install with:
+  - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
+- Added a smoke-test result note:
+  - `docs/derived/physicell_smoke_test_check.md`
 
 ---
 
@@ -96,15 +102,19 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - the build succeeds on this machine when `PHYSICELL_CPP=/opt/homebrew/bin/g++-15` is set
   - the resulting executable path is:
     - `/tmp/PhysiCell-1.14.2-src/heterogeneity`
+- The next PhysiCell branch is also validated:
+  - the build was promoted to a persistent local install at `/Users/4470246/Downloads/PhysiCell-1.14.2`
+  - a minimal command-line smoke test completed successfully
+  - expected output artifacts were generated under:
+    - `/Users/4470246/Downloads/PhysiCell-1.14.2/output_smoke_20260427T014616Z`
 
 ---
 
 ## What is blocked
 
-- PhysiCell smoke testing still requires actual runtime assets to be downloaded or built locally.
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
-- A stable persistent PhysiCell install location has not been chosen yet; the current successful build lives in `/tmp`.
+- Repository-coupled PhysiCell smoke testing has not been implemented yet; the successful smoke run used the upstream `heterogeneity` sample project.
 
 ---
 
@@ -116,8 +126,8 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Await user confirmation on the completed first actual PhysiCell backend branch, then either:
-- promote the successful build to a persistent location and run a first minimal PhysiCell smoke test, or
+Await user confirmation on the completed persistent-install plus minimal smoke-test branch, then either:
+- run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
 - switch back to the CLONEID extraction branch.
 
 ---
@@ -141,8 +151,11 @@ Await user confirmation on the completed first actual PhysiCell backend branch, 
 - `runs/live_candidate_ranking_20260426T022200/selected_candidate.json`
 - `docs/derived/physicell_runtime_plan.md`
 - `docs/derived/physicell_local_build_check.md`
+- `docs/derived/physicell_smoke_test_check.md`
 - `scripts/check_physicell_runtime.sh`
 - `scripts/build_physicell_local.sh`
+- `scripts/install_physicell_persistent.sh`
+- `scripts/run_physicell_smoke_test.sh`
 - `docker/physicell-v1.14.2/Dockerfile`
 - `containers/apptainer/physicell-v1.14.2.def`
 - `src/cloneid_agent/dataset_selection.py`
@@ -163,26 +176,26 @@ Await user confirmation on the completed first actual PhysiCell backend branch, 
 ## Stop checklist
 
 1. What did I complete?
-   - Completed the first actual PhysiCell backend-execution branch by downloading official PhysiCell `v1.14.2`, verifying the expected default-compiler failure, building successfully with `PHYSICELL_CPP=/opt/homebrew/bin/g++-15`, and adding a reusable local build wrapper plus a build-check note.
+   - Completed the persistent-install plus minimal PhysiCell smoke-test branch by promoting the successful build to `/Users/4470246/Downloads/PhysiCell-1.14.2`, running a 60-minute/1-thread smoke test, confirming output artifacts, and documenting the result.
 2. What safe next task did I identify?
-   - Either run a first minimal PhysiCell smoke test from the successful local build, or switch back to the CLONEID extraction branch.
+   - Either run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or switch back to the CLONEID extraction branch.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - The smoke-test branch is reversible but not read-only because it would execute the built simulator and create outputs. The CLONEID extraction branch remains read-only, but the user asked me to stay on the PhysiCell branch until this checkpoint was ready.
+   - The repository-coupled smoke-test branch is reversible but not read-only because it would generate new model/run artifacts. The CLONEID extraction branch remains read-only.
 4. If yes, why am I not doing it now?
-   - I am stopping here because the user explicitly asked me to proceed to the next PhysiCell branch and then have them confirm once ready.
+   - I am stopping here because the user explicitly asked me to promote the build and run a first minimal smoke test, then have them confirm once ready.
 5. Am I blocked by:
    - missing credentials? no
-   - missing permissions? not for the completed local build branch; future Docker or live DB work may still require them
+   - missing permissions? not for the completed branch; future Docker or live DB work may still require them
    - risk of modifying the real database? no
    - scientific judgment requiring user input? no
    - Level 2 or Level 3 ambiguity? no
 6. If I am not blocked, continue working instead of stopping.
-   - I am stopping here only because the user requested confirmation before proceeding beyond this PhysiCell branch.
+   - I am stopping here only because the user requested confirmation at this checkpoint.
 
 ## Git state
 
 - Current branch: `main`
-- Last commit hash: `cc93d27`
+- Last commit hash: `6bb5276`
 - Tests run this session:
   - `bash -n scripts/check_physicell_runtime.sh`
   - `scripts/check_physicell_runtime.sh`
@@ -190,6 +203,10 @@ Await user confirmation on the completed first actual PhysiCell backend branch, 
   - `scripts/build_physicell_local.sh /tmp/PhysiCell-1.14.2-src`
   - `make` in `/tmp/PhysiCell-1.14.2-src` (expected OpenMP/compiler failure on default path)
   - `env PHYSICELL_CPP=/opt/homebrew/bin/g++-15 make` in `/tmp/PhysiCell-1.14.2-src`
+  - `bash -n scripts/install_physicell_persistent.sh`
+  - `bash -n scripts/run_physicell_smoke_test.sh`
+  - `scripts/install_physicell_persistent.sh /tmp/PhysiCell-1.14.2-src /Users/4470246/Downloads/PhysiCell-1.14.2`
+  - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
 - Work committed yet for the latest unit: no
 - Uncommitted / user-side files currently present:
   - modified: `CODEX_INSTRUCTIONS.md`

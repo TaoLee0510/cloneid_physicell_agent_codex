@@ -1,0 +1,32 @@
+Bootstrap: docker
+From: ubuntu:22.04
+
+%labels
+    Author CLONEID-PhysiCell
+    PhysiCellVersion 1.14.2
+    PhysiCellSource https://github.com/MathCancer/PhysiCell/releases/tag/1.14.2
+
+%environment
+    export PHYSICELL_VERSION=1.14.2
+    export PHYSICELL_ROOT=/opt/PhysiCell-1.14.2
+
+%post
+    apt-get update
+    apt-get install -y --no-install-recommends \
+        build-essential \
+        ca-certificates \
+        curl \
+        make \
+        python3
+    rm -rf /var/lib/apt/lists/*
+
+    cd /opt
+    curl -L https://github.com/MathCancer/PhysiCell/archive/refs/tags/1.14.2.tar.gz -o physicell.tar.gz
+    tar -xzf physicell.tar.gz
+    rm physicell.tar.gz
+    mv PhysiCell-1.14.2 /opt/PhysiCell-1.14.2
+    cd /opt/PhysiCell-1.14.2
+    make
+
+%runscript
+    exec /bin/bash "$@"

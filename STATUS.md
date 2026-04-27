@@ -34,6 +34,14 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Replaced the coarse candidate ranker with a fine-grained `0-100` score model that better separates repeated phenotype trajectories from sparse molecular-heavy candidates.
 - Added a `fine-rank-candidates` CLI alias while switching `rank-candidates` itself to the new fine-grained model.
 - Re-ranked the saved live candidate inventory and refreshed the selected-candidate artifact in `runs/live_candidate_ranking_20260426T022200/`.
+- Incorporated the user's pinned PhysiCell backend decision across runtime and coordination docs.
+- Added a concrete repo-owned PhysiCell planning scaffold for the pinned `v1.14.2` backend:
+  - `docs/derived/physicell_runtime_plan.md`
+  - `scripts/check_physicell_runtime.sh`
+  - `docker/physicell-v1.14.2/Dockerfile`
+  - `docker/physicell-v1.14.2/README.md`
+  - `containers/apptainer/physicell-v1.14.2.def`
+- Verified the planning scaffold locally with a shell syntax check and runtime environment check.
 
 ---
 
@@ -64,13 +72,24 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - `python -m cloneid_agent fine-rank-candidates --input ... --output-dir ...` now aliases the same fine-grained ranking model.
 - `python -m cloneid_agent select-candidate --input ... --output-dir ...` now selects the top-ranked dataset while preserving top-score ties for review.
 - The saved live ranking is now materially more discriminative: the current `runs/live_candidate_ranking_20260426T022200/ranked_candidates.json` has `923` unique scores across `1519` candidates, instead of many coarse ties.
+- The PhysiCell runtime decision is now fixed: use official PhysiCell core `v1.14.2`, run automated workflows through command-line template-generated jobs, avoid PhysiCell Studio as an execution dependency, and keep Docker and optional Apptainer/Singularity environments pinned to the same backend.
+- A concrete pinned runtime scaffold now exists in-repo for all three supported backend surfaces:
+  - local source build
+  - project-owned Docker image
+  - optional Apptainer/Singularity image
+- Local runtime-check results on this machine are now documented by execution rather than assumption:
+  - Homebrew `g++-15` is available
+  - `make`, `clang++`, `cmake`, and Docker CLI are available
+  - Docker daemon is not reachable from the current context
+  - Apptainer and Singularity are not installed
 
 ---
 
 ## What is blocked
 
-- PhysiCell smoke testing is blocked pending an installation/runtime decision.
-- PhysiCell smoke testing is still blocked pending an installation/runtime decision.
+- PhysiCell smoke testing still requires actual runtime assets to be downloaded or built locally.
+- Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
+- Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 
 ---
 
@@ -82,7 +101,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate, using `Perspective` as the default endpoint molecular constraint and `Identity` as secondary interpretive support.
+Await user confirmation on the completed PhysiCell planning scaffold, then begin the first actual backend-execution branch with the local source build of official PhysiCell `v1.14.2`.
 
 ---
 
@@ -103,6 +122,10 @@ Implement selected-dataset record bundling and observable extraction for the top
 - `src/cloneid_agent/dataset_ranking.py`
 - `runs/live_candidate_ranking_20260426T022200/ranked_candidates.json`
 - `runs/live_candidate_ranking_20260426T022200/selected_candidate.json`
+- `docs/derived/physicell_runtime_plan.md`
+- `scripts/check_physicell_runtime.sh`
+- `docker/physicell-v1.14.2/Dockerfile`
+- `containers/apptainer/physicell-v1.14.2.def`
 - `src/cloneid_agent/dataset_selection.py`
 - `tests/test_inventory_cli.py`
 - `tests/test_schemas.py`
@@ -121,34 +144,36 @@ Implement selected-dataset record bundling and observable extraction for the top
 ## Stop checklist
 
 1. What did I complete?
-   - Replaced the coarse candidate ranker with a fine-grained ranking model, added a `fine-rank-candidates` alias, re-ranked the saved live inventory, and refreshed the selected-candidate artifact.
+   - Completed the PhysiCell planning branch by adding a concrete pinned runtime plan, a local environment-check script, and project-owned Docker and Apptainer build definitions for PhysiCell `v1.14.2`, then verified the checker locally.
 2. What safe next task did I identify?
-   - Selected-dataset record bundling and observable extraction for the top fine-ranked candidate.
+   - Begin the first actual PhysiCell backend-execution branch with the local source build path, or return to the selected-dataset extraction branch.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Yes, under the now-answered `Perspective`-first policy.
+   - The build branch is reversible but no longer read-only because it would download/build external runtime assets. The selected-dataset extraction branch remains read-only but the user explicitly asked me to pause that branch.
 4. If yes, why am I not doing it now?
-   - This checkpoint closes the ranking-replacement work unit; live record bundling and observable extraction remain to be started as the next read-only branch.
+   - I am stopping here because the user explicitly asked me to finish the PhysiCell planning branch and then have them confirm before proceeding further.
 5. Am I blocked by:
    - missing credentials? no
-   - missing permissions? no for the implemented branch; yes for default-sandbox live DB access, but escalation works when needed
-   - risk of modifying the real database? no, all implemented work is read-only
-   - scientific judgment requiring user input? no for the completed branch
-   - Level 2 or Level 3 ambiguity? no for the completed branch; the next branch is not blocked by ambiguity
+   - missing permissions? only for future networked download/build or live DB work; not for the completed planning branch
+   - risk of modifying the real database? no
+   - scientific judgment requiring user input? no
+   - Level 2 or Level 3 ambiguity? no
 6. If I am not blocked, continue working instead of stopping.
-   - Current branch is complete; the next safe branch is now observable extraction.
+   - I am stopping here only because the user requested confirmation before proceeding beyond the planning branch.
 
 ## Git state
 
 - Current branch: `main`
-- Last commit hash: `51ce0fa`
+- Last commit hash: `4bda6b0`
 - Tests run this session:
-  - `PYTHONPATH=src python3 -m unittest tests/test_dataset_ranking.py tests/test_dataset_selection.py`
-- Work committed yet for the latest unit: yes
+  - `bash -n scripts/check_physicell_runtime.sh`
+  - `scripts/check_physicell_runtime.sh`
+- Work committed yet for the latest unit: no
 - Uncommitted / user-side files currently present:
   - modified: `CODEX_INSTRUCTIONS.md`
   - modified: `ONBOARDING_AND_SCOPE.md`
+  - modified: `README.md`
+  - modified: `RUNTIME_AND_HPC.md`
   - modified: `SUPERVISED_AUTONOMY.md`
-  - untracked: `.AGENT_WORKFLOW.md.swp`
   - untracked: `GIT_WORKFLOW.md`
   - untracked: `ONTOLOGY_FOR_DATASET_RANKING.md`
   - untracked: `docs/CLONEID_paper.pdf`

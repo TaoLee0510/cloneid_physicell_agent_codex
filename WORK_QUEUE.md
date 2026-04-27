@@ -21,6 +21,7 @@ For each work block:
 ## Ready now
 
 1. Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate using `Perspective`-first endpoint constraints and `Identity` as secondary interpretive support.
+2. After user confirmation, begin the first real PhysiCell backend branch: verify/download official `v1.14.2` source and attempt the local source build before any Docker-based fallback.
 
 ---
 
@@ -32,7 +33,7 @@ _None yet._
 
 ## Waiting for user
 
-1. Decision on how PhysiCell should be installed and run in this environment.
+1. Confirm the completed PhysiCell planning scaffold before I proceed to actual download/build work on that branch.
 
 ---
 
@@ -68,6 +69,9 @@ _None yet._
 28. Replaced the coarse candidate ranker with a fine-grained `0-100` ranking model that favors repeated phenotype trajectories over raw molecular row volume.
 29. Added the `fine-rank-candidates` CLI alias and updated `rank-candidates` to use the fine-grained model by default.
 30. Re-ranked the saved live candidate inventory and refreshed the selected-candidate artifact under `runs/live_candidate_ranking_20260426T022200/`.
+31. Added a concrete PhysiCell runtime plan for the pinned `v1.14.2` backend.
+32. Added a local runtime environment check script plus project-owned Docker and Apptainer build definitions for the same pinned backend.
+33. Verified the runtime-check script locally; Homebrew `g++-15` is present, Docker CLI is present but the daemon is not reachable from the current context, and Apptainer/Singularity are not installed.
 
 ---
 

@@ -10,6 +10,7 @@ from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .inventory import run_inventory
 from .observable_selection import select_observables_from_bundle_file, write_selected_observables
+from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .toy_workflow import run_toy_round_trip
 from .trajectory_bundle_pipeline import discover_and_rank_trajectory_bundles
 from .trajectory_bundle_ranking import (
@@ -224,6 +225,26 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for selected_observables artifacts",
     )
 
+    mapping_parser = subparsers.add_parser(
+        "map-to-physicell",
+        help="Build a first-pass CLONEID-to-PhysiCell mapping from selected bundle artifacts.",
+    )
+    mapping_parser.add_argument(
+        "--bundle",
+        required=True,
+        help="Path to selected_trajectory_bundle.json",
+    )
+    mapping_parser.add_argument(
+        "--observables",
+        required=True,
+        help="Path to selected_observables.json",
+    )
+    mapping_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for physicell_mapping artifacts",
+    )
+
     return parser
 
 
@@ -270,6 +291,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "select-observables":
         observables = select_observables_from_bundle_file(args.input)
         write_selected_observables(args.output_dir, observables)
+        return 0
+    if args.command == "map-to-physicell":
+        mapping = build_physicell_mapping_from_files(args.bundle, args.observables)
+        write_physicell_mapping(args.output_dir, mapping)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

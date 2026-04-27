@@ -20,10 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Implement first-pass CLONEID-to-PhysiCell mapping from the selected live TrajectoryBundle and selected observables.
+1. Implement first-pass candidate PhysiCell model-folder generation from `physicell_mapping.json` without running full simulations.
 2. After user confirmation, either:
    - run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
-   - continue the CLONEID-to-PhysiCell mapping branch.
+   - continue the model-generation branch.
 
 ---
 
@@ -87,6 +87,7 @@ _None yet._
 44. Added a live TrajectoryBundle discovery pipeline seeded from current ranked CandidateSegments through the approved `cloneid` R interface.
 45. Fixed a live candidate-inventory bug that had been corrupting `NULL` context fields to `0` during merge-time NA filling.
 46. Verified a live top-seed TrajectoryBundle export, ranking, selection, and first-pass observable selection under `runs/live_trajectory_bundles_20260427T000100/`.
+47. Added first-pass CLONEID-to-PhysiCell mapping artifacts from the selected live TrajectoryBundle and selected observables.
 
 ---
 

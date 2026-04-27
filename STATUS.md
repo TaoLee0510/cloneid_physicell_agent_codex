@@ -6,6 +6,10 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Updated root workflow documentation so `CandidateSegment` is explicitly a first-stage local context bucket and the selected modeling unit is a lineage object:
+  - `LineagePath`
+  - `RootedTrajectoryBundle`
+- Superseded older `selected dataset` / `candidate dataset bundle` wording in root instructions.
 - Read the required project guidance set:
   - `README.md`
   - `CODEX_INSTRUCTIONS.md`
@@ -57,7 +61,11 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
 - Added a smoke-test result note:
   - `docs/derived/physicell_smoke_test_check.md`
-- Switched the CLONEID extraction plan from selected-dataset bundling to selected-TrajectoryBundle bundling.
+- Switched the CLONEID extraction plan from selected-dataset bundling to lineage-object bundling.
+- Superseded the previous selected-dataset bundling instruction with lineage-object bundling:
+  - selected lineage object = `LineagePath` or `RootedTrajectoryBundle`
+  - `passaged_from_id1` = primary lineage backbone
+  - `passaged_from_id2` = secondary recorded support, not default traversal
 - Added deterministic TrajectoryBundle discovery scaffolding:
   - `src/cloneid_agent/trajectory_bundles.py`
   - `python -m cloneid_agent discover-trajectory-bundle ...`
@@ -67,11 +75,40 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `src/cloneid_agent/trajectory_bundle_ranking.py`
   - `python -m cloneid_agent rank-trajectory-bundles ...`
 - Added mock ranking tests for connected-history scoring and ranking artifact output.
+- Added a live TrajectoryBundle discovery pipeline around the approved `cloneid` R interface:
+  - `scripts/cloneid_trajectory_bundle_records.R`
+  - `src/cloneid_agent/trajectory_bundle_pipeline.py`
+  - `python -m cloneid_agent discover-live-trajectory-bundles ...`
+- Fixed a live candidate-inventory bug in `scripts/cloneid_candidate_inventory.R` where merge-time NA filling had been corrupting nullable context fields such as `growthType` into `0`.
+- Added deterministic TrajectoryBundle selection and record-bundling:
+  - `src/cloneid_agent/trajectory_bundle_selection.py`
+  - `python -m cloneid_agent select-trajectory-bundle ...`
+- Added first-pass observable selection from selected TrajectoryBundle artifacts:
+  - `src/cloneid_agent/observable_selection.py`
+  - `python -m cloneid_agent select-observables ...`
+- Added first-pass CLONEID-to-PhysiCell mapping artifacts:
+  - `src/cloneid_agent/physicell_mapping.py`
+  - `python -m cloneid_agent map-to-physicell ...`
+- Corrected TrajectoryBundle connectivity semantics:
+  - `context_transitions` now derive from actual parent/child lineage edges rather than adjacent timestamp ordering
+  - `trajectory_bundle.json` now includes explicit `lineage_edges`
+  - `trajectory_bundle.json` now includes explicit `segment_connections`
+- Verified the corrected live selected-bundle branch under:
+  - `runs/live_candidate_inventory_20260427T000100/`
+  - `runs/live_candidate_ranking_20260427T000100/`
+  - `runs/live_trajectory_bundles_20260427T000100/`
 
 ---
 
 ## What works now
 
+- Root documentation now distinguishes:
+  - `Event`
+  - `CandidateSegment`
+  - `LineagePath`
+  - `RootedTrajectoryBundle`
+  - selected lineage object
+- Root documentation now states that context buckets do not define graph connectivity; context is layered onto the lineage graph.
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
 - The repository scaffold has been classified into existing files, placeholders, operationally empty folders, and minimal missing implementation files.
@@ -130,6 +167,21 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - explicit tractability penalties
   - `ranked_trajectory_bundles.json`
   - `ranked_trajectory_bundles.md`
+- The corrected live top-ranked CandidateSegment is now:
+  - `SNU-668__NA__51__19__15`
+- A live selected TrajectoryBundle bundle now exists with:
+  - `8` connected CandidateSegments
+  - `96` passaging records
+  - `90` explicit lineage edges
+  - `7` explicit segment-to-segment connections
+  - `31` attached Perspective records
+  - `9` attached Identity records retained as inferred secondary support
+- First-pass selected observables now exist for that live selected bundle:
+  - calibration / time-series: `Passaging.correctedCount`
+  - endpoint validation / constraint: `Perspective.size`
+- A first-pass live CLONEID-to-PhysiCell mapping artifact now exists:
+  - `runs/live_trajectory_bundles_20260427T000100/physicell_mapping.json`
+  - recommended model families: `neutral_growth`, `fixed_state_fitness`, `density_dependent_growth`
 
 ---
 
@@ -139,6 +191,8 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Repository-coupled PhysiCell smoke testing has not been implemented yet; the successful smoke run used the upstream `heterogeneity` sample project.
 - Live TrajectoryBundle discovery and bundling over the selected CLONEID seed candidate have not been executed yet in this branch.
+- First-pass CLONEID-to-PhysiCell mapping from the selected live bundle has not been implemented yet.
+- Candidate PhysiCell model-folder generation from the current mapping artifact has not been implemented yet.
 
 ---
 
@@ -150,7 +204,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Proceed with the CLONEID extraction branch by using the existing ranked CandidateSegments as seeds for live TrajectoryBundle discovery, then bundle one reviewed TrajectoryBundle for observable extraction.
+Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
 
 ---
 
@@ -183,12 +237,22 @@ Proceed with the CLONEID extraction branch by using the existing ranked Candidat
 - `src/cloneid_agent/dataset_selection.py`
 - `src/cloneid_agent/trajectory_bundles.py`
 - `src/cloneid_agent/trajectory_bundle_ranking.py`
+- `src/cloneid_agent/trajectory_bundle_pipeline.py`
+- `src/cloneid_agent/trajectory_bundle_selection.py`
+- `src/cloneid_agent/observable_selection.py`
+- `src/cloneid_agent/physicell_mapping.py`
+- `scripts/cloneid_trajectory_bundle_records.R`
+- `scripts/cloneid_candidate_inventory.R`
 - `tests/test_inventory_cli.py`
 - `tests/test_schemas.py`
 - `tests/test_run_io.py`
 - `tests/test_toy_workflow.py`
 - `tests/test_trajectory_bundles.py`
 - `tests/test_trajectory_bundle_ranking.py`
+- `tests/test_trajectory_bundle_pipeline.py`
+- `tests/test_trajectory_bundle_selection.py`
+- `tests/test_observable_selection.py`
+- `tests/test_physicell_mapping.py`
 - `tests/test_dataset_scoring.py`
 - `tests/test_dataset_inventory_cli.py`
 - `tests/test_dataset_ranking.py`
@@ -205,12 +269,13 @@ Proceed with the CLONEID extraction branch by using the existing ranked Candidat
    - Completed the persistent-install plus minimal PhysiCell smoke-test branch by promoting the successful build to `/Users/4470246/Downloads/PhysiCell-1.14.2`, running a 60-minute/1-thread smoke test, confirming output artifacts, and documenting the result.
    - Corrected the CLONEID extraction plan so ranked CandidateSegments remain stage 1 only, and added deterministic TrajectoryBundle discovery scaffolding plus mock tests.
    - Added deterministic TrajectoryBundle ranking so connected histories can be compared before any live selected-bundle extraction branch starts.
+   - Fixed the live candidate-inventory NA-to-zero context bug, verified live TrajectoryBundle discovery from corrected seeds, wrote a selected live TrajectoryBundle bundle, wrote first-pass selected observables from that bundle, built a first-pass CLONEID-to-PhysiCell mapping artifact, and corrected bundle connectivity semantics to use explicit lineage edges and segment connections.
 2. What safe next task did I identify?
-   - Use top-ranked CandidateSegments as seeds for live TrajectoryBundle discovery, rank the discovered TrajectoryBundles, then prepare selected-TrajectoryBundle bundling for observable extraction.
+   - Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Yes for live TrajectoryBundle discovery and bundling, provided read-only DB access remains available. Observable-selection policy is already resolved as `Perspective`-first with `Identity` secondary.
+   - Yes. It is a read-only lineage-graph and documentation-alignment task on top of existing CLONEID exports and lineage semantics already documented in the repository.
 4. If yes, why am I not doing it now?
-   - I am stopping at the end of the requested pre-bundling planning/scaffolding branch so you can confirm before I start live selected-TrajectoryBundle extraction.
+   - This checkpoint is being refreshed for a documentation-correction work unit. If I stop after committing, it will be because the next available task starts the separate lineage-object validation branch rather than this documentation branch.
 5. Am I blocked by:
    - missing credentials? no
    - missing permissions? not for the completed branch; future Docker or live DB work may still require them
@@ -224,6 +289,7 @@ Proceed with the CLONEID extraction branch by using the existing ranked Candidat
 
 - Current branch: `main`
 - Last committed work unit hashes:
+  - `eb90315` `feat(trajectory): add live bundle extraction branch`
   - `faf35bc` `feat(trajectory): add bundle ranking stage`
   - `7d25bbb` `feat(trajectory): add bundle discovery scaffold`
   - `b1c5721` `feat(runtime): add persistent install and smoke test wrappers`
@@ -240,6 +306,12 @@ Proceed with the CLONEID extraction branch by using the existing ranked Candidat
   - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
   - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_toy_workflow.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_physicell_mapping.py tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_observable_selection.py tests/test_physicell_mapping.py tests/test_toy_workflow.py`
 - Work committed yet for the latest unit: yes
 - Uncommitted / user-side files currently present:
   - modified: `CODEX_INSTRUCTIONS.md`

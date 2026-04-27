@@ -20,10 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Implement first-pass candidate PhysiCell model-folder generation from `physicell_mapping.json` without running full simulations.
-2. After user confirmation, either:
-   - run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
-   - continue the model-generation branch.
+1. Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
+2. Validate that context-local `CandidateSegment` boundaries are layered onto the lineage graph rather than treated as graph connectivity.
+3. After the lineage-object bundling branch is validated, continue with observable extraction, CLONEID-to-PhysiCell mapping, and candidate PhysiCell model-folder generation.
 
 ---
 
@@ -95,3 +94,11 @@ _None yet._
 ## Abandoned / superseded
 
 _None yet._
+
+---
+
+## Migration note
+
+Superseded terminology: `selected dataset` / `candidate dataset bundle`.
+
+Current terminology: `CandidateSegment` for local context buckets; `LineagePath` or `RootedTrajectoryBundle` for connected modeling units.

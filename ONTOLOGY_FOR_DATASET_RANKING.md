@@ -257,17 +257,28 @@ coherent Event graph
 It should also distinguish between:
 
 - `CandidateSegment`: a local context-consistent grouping used for first-stage screening
-- `TrajectoryBundle`: a connected event-history modeling unit that may span multiple CandidateSegments
+- `LineagePath`: an ancestor-to-endpoint path recovered through `Passaging.passaged_from_id1`
+- `RootedTrajectoryBundle`: descendants of a root event recovered through `Passaging.passaged_from_id1`
 
-The top CandidateSegment is not automatically the final modeling unit. It is a seed for TrajectoryBundle discovery through `Passaging.passaged_from_id1` and `Passaging.passaged_from_id2`.
+Context grouping by `passage`, `media`, and `flask` can fragment a connected biological history and should not be treated as the modeling object.
+
+The top CandidateSegment is not automatically the final modeling unit. It is a seed for lineage-object discovery on the explicit lineage graph.
 
 ## Dataset-ranking criteria Codex should use
 
 Stage 1 should keep the current CandidateSegment ranking as a fast screen.
 
-Stage 2 should rank discovered TrajectoryBundles using a more biologically meaningful connected-history scorecard.
+Primary lineage traversal should use `Passaging.passaged_from_id1`.
 
-I would define the TrajectoryBundle score like this:
+`Passaging.passaged_from_id2` should be recorded as secondary / exception / merge support and should not expand the primary traversal by default.
+
+`Perspective` attaches through `Perspective.origin`.
+
+`Identity` remains inferred secondary support rather than direct observed phenotype.
+
+Stage 2 should rank discovered `LineagePath` and `RootedTrajectoryBundle` objects using a more biologically meaningful connected-history scorecard.
+
+I would define the lineage-object score like this:
 
 | Criterion | Score contribution | Why |
 |---|---:|---|
@@ -287,7 +298,7 @@ This would make the agent pick the connected event history that best tests the C
 
 ## Attachment policy that should be preserved in code
 
-For TrajectoryBundle construction and ranking:
+For lineage-object construction and ranking:
 
 - attach `Perspective` directly via `Perspective.origin -> Passaging.id`
 - attach `Identity` only as inferred secondary support
@@ -297,5 +308,5 @@ For TrajectoryBundle construction and ranking:
 The workflow should save both stages explicitly:
 
 - CandidateSegment rank and reasons
-- TrajectoryBundle discovery summary
-- TrajectoryBundle rank and component breakdown
+- LineagePath / RootedTrajectoryBundle discovery summary
+- lineage-object rank and component breakdown

@@ -15,6 +15,48 @@ Default behavior: act like a careful, deadline-driven scientist. Preserve proven
 
 ---
 
+## Instruction refresh rule
+
+At the start of every work session, and before stopping, re-read the active coordination files:
+
+- `SUPERVISED_AUTONOMY.md`
+- `WORK_QUEUE.md`
+- `STATUS.md`
+- `QUESTION_QUEUE.md`
+
+Also re-read the domain-specific file most relevant to the current task.
+
+Do not assume that earlier instructions are still fully loaded in context.
+
+## No premature stop rule
+
+Do not stop after identifying a safe next step. If a next task is safe, reversible, deterministic, and does not require user judgment, execute it before stopping.
+
+Before stopping, update `STATUS.md` with the stop checklist from `SUPERVISED_AUTONOMY.md`.
+
+---
+
+When you identify a safe next implementation step, do it. Do not stop at “next safe step identified.” Stop only when the next available branch is blocked by Level 2 or Level 3 uncertainty, unsafe database mutation, unavailable permissions, or scientific judgment requiring user input.
+
+---
+## Git discipline
+
+Read `GIT_WORKFLOW.md` before editing files.
+
+Use Git conservatively:
+
+- check status before starting,
+- do not overwrite user changes,
+- commit after coherent tested work units,
+- do not commit broken work unless explicitly instructed,
+- create branches only for risky/exploratory work,
+- never push or rewrite history unless explicitly instructed.
+
+Before stopping, update `STATUS.md` with the current branch, uncommitted files, last commit hash, tests run, and whether the work was committed.
+
+
+---
+
 # Codex implementation instructions
 
 ## Objective
@@ -26,15 +68,21 @@ The system should use the **full CLONEID database** as its primary source of tru
 The system should:
 
 1. Connect to the CLONEID database in read-only mode.
-2. Inventory candidate datasets across the full database.
-3. Score datasets for mechanistic modelability.
-4. Select one dataset unless a user override is provided.
-5. Select observables and constraints.
-6. Select predefined PhysiCell model families.
-7. Generate PhysiCell candidate model folders.
-8. Run PhysiCell or validate in dry-run mode.
-9. Evaluate candidate models against observed data.
-10. Produce a reproducible report and figures.
+2. Inventory `CandidateSegment` objects across the full database.
+3. Score `CandidateSegment` objects as first-stage local signals.
+4. Construct the explicit lineage graph and discover lineage objects:
+   - `LineagePath`
+   - `RootedTrajectoryBundle`
+5. Rank lineage objects for mechanistic modelability.
+6. Select one lineage object unless a user override is provided.
+7. Select observables and constraints.
+8. Select predefined PhysiCell model families.
+9. Generate PhysiCell candidate model folders.
+10. Run PhysiCell or validate in dry-run mode.
+11. Evaluate candidate models against observed data.
+12. Produce a reproducible report and figures.
+
+Use official PhysiCell core `v1.14.2` as the pinned simulation backend. Automated workflow execution should use command-line PhysiCell runs generated from repository-managed templates. PhysiCell Studio may be used for human inspection or manual XML editing, but it must not be a required runtime dependency. If containers are used, build project-owned Docker and optional Apptainer/Singularity environments from the same pinned `v1.14.2` release.
 
 ## Non-negotiable constraints
 
@@ -158,7 +206,7 @@ python -m cloneid_agent snapshot \
 A fresh user should be able to run one command and obtain:
 
 1. database inventory,
-2. selected dataset,
+2. selected lineage object,
 3. structured agent plan,
 4. generated candidate model folders,
 5. simulation outputs or dry-run outputs,

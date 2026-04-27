@@ -4,7 +4,7 @@
 
 The agent should be given access to the **entire CLONEID database**, not isolated manually prepared exports.
 
-The database is the source of truth. The agent should discover candidate datasets by querying the database, then select records for modeling based on modelability criteria.
+The database is the source of truth. The agent should discover `CandidateSegment` objects and lineage objects by querying the database, then select records for modeling based on modelability criteria.
 
 Exports and snapshots are secondary. They may be used for:
 
@@ -81,7 +81,9 @@ load_context_records(engine) -> dict[str, pandas.DataFrame]
 load_perspective_records(engine) -> pandas.DataFrame
 load_identity_records(engine) -> pandas.DataFrame
 load_qupath_records(engine) -> pandas.DataFrame
-load_candidate_dataset_records(engine, dataset_id: str) -> dict[str, pandas.DataFrame]
+load_candidate_segment_records(engine, segment_id: str) -> dict[str, pandas.DataFrame]
+load_lineage_path_records(engine, lineage_object_id: str) -> dict[str, pandas.DataFrame]
+load_rooted_trajectory_bundle_records(engine, lineage_object_id: str) -> dict[str, pandas.DataFrame]
 ```
 
 All database calls should be centralized in `db.py`. Other modules should call typed functions rather than embedding ad hoc SQL throughout the codebase.
@@ -163,6 +165,12 @@ Relevant fields:
 - `cellSize_um2`
 - `comment`
 
+Lineage semantics for access and bundling:
+
+- `passaged_from_id1` is the primary traversal edge.
+- `passaged_from_id2` is secondary / exception / merge support and should be recorded separately, not traversed by default.
+- local context fields such as `passage`, `media`, and `flask` annotate the lineage graph but do not define graph connectivity.
+
 ### `QuPathEvaluation`
 
 Image-analysis-derived phenotype data.
@@ -197,6 +205,8 @@ Relevant fields:
 
 The `origin` field links to `Passaging.id`.
 
+For lineage-object bundling, attach `Perspective` records through `Perspective.origin`.
+
 ### `Identity`
 
 Inferred clone-level representations reconciled across Perspectives.
@@ -218,6 +228,8 @@ Relevant fields:
 - `hasChildren`
 
 `Identity` is inferred and must not be treated as a directly observed phenotype.
+
+For lineage-object bundling, attach `Identity` only as inferred secondary support.
 
 ### `CellLinesAndPatients`
 
@@ -250,25 +262,32 @@ Relevant fields include medium components, serum percentage, energy source, stre
 
 ---
 
-## Candidate dataset discovery
+## CandidateSegment And Lineage-Object Discovery
 
-The agent should discover modelable datasets using database queries rather than expecting named exports.
+The agent should discover modelable lineage objects using database queries rather than expecting named exports.
 
-A candidate dataset may be defined as a connected event lineage or experimental branch in `Passaging`, possibly grouped by:
+A `CandidateSegment` may be defined as a local context bucket, possibly grouped by:
 
 - cell line,
 - growth type,
-- passage range,
-- media/stressor context,
-- event lineage through `passaged_from_id1` and `passaged_from_id2`,
-- availability of repeated phenotype measurements,
-- availability of endpoint `Perspective` or `Identity` records.
+- passage,
+- media,
+- flask.
 
-For the first implementation, a pragmatic candidate dataset definition is:
+The first-stage `CandidateSegment` rank is a local signal only. It should not be treated as the final modeling unit.
 
-> a group of `Passaging` records with the same `cellLine` and `growthType`, connected or partially connected by passaging relationships, spanning at least two time points, with at least one usable phenotype observable and at least one endpoint Perspective or Identity record.
+The final modeling unit should be a selected lineage object:
+
+- `LineagePath`: an ancestor-to-endpoint path recovered through `Passaging.passaged_from_id1`
+- `RootedTrajectoryBundle`: descendants of a root event recovered through `Passaging.passaged_from_id1`
+
+For the first implementation, a pragmatic `CandidateSegment` definition is:
+
+> a group of `Passaging` records sharing the same `cellLine`, `growthType`, `passage`, `media`, and `flask`.
 
 The exact definition should be recorded in `dataset_inventory.json`.
+
+Connected biological history should then be recovered on the explicit lineage graph. `passaged_from_id2` should be preserved in lineage metadata as secondary support, but it should not expand the primary traversal by default.
 
 ---
 

@@ -14,7 +14,9 @@ Start with the smallest useful handshake:
 
 ```text
 CLONEID database
-→ selected longitudinal dataset
+→ CandidateSegment discovery/ranking
+→ explicit lineage graph construction
+→ selected lineage object
 → selected observables
 → PhysiCell model template
 → simulation output
@@ -23,6 +25,21 @@ CLONEID database
 ```
 
 Only expand after this round trip works.
+
+---
+Lineage-object ranking must be ontology-aware.
+
+Do not rank `CandidateSegment` objects or lineage objects by raw table size or number of files alone.
+
+A high-ranking CLONEID selected lineage object is one in which:
+1. Events reconstruct a coherent specimen history;
+2. Phenotypes provide repeated intact-system observations;
+3. Perspectives provide assay-specific molecular state information;
+4. Identities reconcile Perspectives into inferred clone/state representations;
+5. context is sufficient to initialize and evaluate a PhysiCell model;
+6. the distinction between observed, derived, inferred, and molecular measurements is preserved.
+
+When in doubt, prefer a smaller lineage object with a clean Event–Phenotype–Perspective–Identity chain over a larger but fragmented context grouping with ambiguous connectivity.
 
 ---
 
@@ -59,8 +76,10 @@ The script should report:
 - number of longitudinal phenotype records;
 - number of Perspective records;
 - number of Identity records;
-- datasets with repeated measurements;
+- CandidateSegments with repeated measurements;
+- lineage objects with repeated measurements;
 - datasets with endpoint molecular readouts;
+- where context grouping fragments connected biological history;
 - missing fields that block simulation.
 
 Output:
@@ -73,6 +92,8 @@ runs/<run_id>/database_inventory.md
 ### 3. Understand PhysiCell minimally
 
 Before integrating with real CLONEID records, run one minimal PhysiCell example or template.
+
+Use official PhysiCell core `v1.14.2` as the pinned backend. Treat command-line execution from repository-managed templates as the supported automation path. PhysiCell Studio may be used for manual inspection or XML editing, but it should not be required for automated runs.
 
 Confirm:
 
@@ -102,16 +123,16 @@ The toy bridge should:
 - compare it to the fake observed trajectory;
 - generate a report.
 
-### 5. Only then use a real CLONEID dataset
+### 5. Only then use a real CLONEID lineage object
 
-After the toy bridge works, select one real CLONEID dataset with:
+After the toy bridge works, select one real CLONEID selected lineage object with:
 
 - repeated phenotype measurements;
 - clear event history;
 - sufficient context for simulation initialization;
 - at least one endpoint Perspective or Identity readout.
 
-The first real-data goal is not comprehensive biological discovery. The first goal is to show that the CLONEID-to-PhysiCell round trip is possible.
+The first real-data goal is not comprehensive biological discovery. The first goal is to show that the CLONEID-to-PhysiCell round trip is possible on a connected lineage object rather than a context-local bucket alone.
 
 ---
 
@@ -144,6 +165,12 @@ Read the CLONEID database in read-only mode and summarize available datasets.
 
 Run one minimal PhysiCell model or validate one generated configuration.
 
+The preferred execution order is:
+
+1. local source build of official PhysiCell `v1.14.2`,
+2. project-owned Docker image built from that same release,
+3. optional Apptainer/Singularity image for HPC derived from the same pinned environment.
+
 ### Milestone 3 — toy round trip
 
 Use fake CLONEID-like data to produce a complete model-selection report.
@@ -165,12 +192,14 @@ The first implementation should not depend on an LLM agent.
 Instead, implement deterministic components first:
 
 1. database inventory;
-2. dataset scoring;
-3. observable extraction;
-4. template filling;
-5. simulation execution;
-6. evaluation;
-7. report generation.
+2. CandidateSegment scoring;
+3. explicit lineage-graph construction;
+4. LineagePath / RootedTrajectoryBundle discovery and ranking;
+5. observable extraction;
+6. template filling;
+7. simulation execution;
+8. evaluation;
+9. report generation.
 
 Once these components work, the agent can orchestrate them.
 
@@ -186,7 +215,7 @@ A successful first milestone produces:
 2. a database inventory;
 3. a PhysiCell minimal-run note;
 4. a toy round-trip report;
-5. a clear recommendation for the first real CLONEID dataset to simulate.
+5. a clear recommendation for the first real CLONEID selected lineage object to simulate.
 
 At this stage, no biological claim is required.
 

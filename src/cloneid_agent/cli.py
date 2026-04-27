@@ -10,6 +10,10 @@ from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .inventory import run_inventory
 from .toy_workflow import run_toy_round_trip
+from .trajectory_bundle_ranking import (
+    rank_trajectory_bundles_from_files,
+    write_ranked_trajectory_bundles,
+)
 from .trajectory_bundles import discover_trajectory_bundle_from_file, write_trajectory_bundle
 
 
@@ -138,6 +142,22 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for trajectory_bundle.json and trajectory_bundle.md",
     )
 
+    rank_bundle_parser = subparsers.add_parser(
+        "rank-trajectory-bundles",
+        help="Rank one or more discovered TrajectoryBundle payloads.",
+    )
+    rank_bundle_parser.add_argument(
+        "--input",
+        nargs="+",
+        required=True,
+        help="One or more trajectory_bundle.json paths.",
+    )
+    rank_bundle_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for ranked_trajectory_bundles.json and ranked_trajectory_bundles.md",
+    )
+
     return parser
 
 
@@ -163,6 +183,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "discover-trajectory-bundle":
         bundle = discover_trajectory_bundle_from_file(args.input, args.seed_dataset_id)
         write_trajectory_bundle(args.output_dir, bundle)
+        return 0
+    if args.command == "rank-trajectory-bundles":
+        ranked = rank_trajectory_bundles_from_files(args.input)
+        write_ranked_trajectory_bundles(args.output_dir, ranked)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

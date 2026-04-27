@@ -16,7 +16,7 @@ def _root_event_ids(passaging_records: list[dict[str, Any]]) -> list[str]:
         for record in passaging_records
         if all(
             parent_id in (None, "") or str(parent_id) not in event_ids
-            for parent_id in (record.get("passaged_from_id1"), record.get("passaged_from_id2"))
+            for parent_id in (record.get("passaged_from_id1"),)
         )
     ]
 
@@ -27,7 +27,7 @@ def build_physicell_mapping(
 ) -> dict[str, Any]:
     passaging_records = selected_bundle_payload.get("passaging_records", [])
     features = selected_bundle_payload.get("trajectory_bundle_features", {})
-    root_event_ids = _root_event_ids(passaging_records)
+    root_event_ids = selected_bundle_payload.get("rooted_subtree_root_event_ids", []) or _root_event_ids(passaging_records)
     earliest = passaging_records[0] if passaging_records else {}
     latest = passaging_records[-1] if passaging_records else {}
 
@@ -36,7 +36,7 @@ def build_physicell_mapping(
         "mapping_version": "physicell_mapping_v1",
         "initialization": {
             "root_event_ids": root_event_ids,
-            "initial_event_id": root_event_ids[0] if root_event_ids else earliest.get("id"),
+            "initial_event_id": selected_bundle_payload.get("root_event_id") or (root_event_ids[0] if root_event_ids else earliest.get("id")),
             "initial_cell_line": earliest.get("cellLine"),
             "initial_flask": earliest.get("flask"),
             "initial_media": earliest.get("media"),

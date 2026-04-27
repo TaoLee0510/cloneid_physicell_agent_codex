@@ -6,6 +6,25 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Reworked lineage-object discovery to align with cloneidR analysis semantics:
+  - `passaged_from_id1` is now the primary lineage backbone
+  - rooted descendant traversal uses `passaged_from_id1` only by default
+  - endpoint-to-root path recovery uses `passaged_from_id1` only by default
+  - `passaged_from_id2` is now recorded separately as secondary lineage support and is not traversed by default
+- Added explicit lineage-object artifact fields:
+  - `primary_lineage_edges`
+  - `secondary_lineage_edges`
+  - `rooted_subtree_event_ids`
+  - `lineage_path_event_ids`
+  - `root_event_id`
+  - `endpoint_event_ids`
+  - `candidate_segments_covered`
+  - `context_transitions_primary`
+  - `context_transitions_secondary`
+  - `perspective_origin_event_ids`
+  - `identity_support_records`
+  - `traversal_policy`
+- Updated selection and first-pass mapping helpers to preserve and use the corrected lineage-object fields.
 - Updated root workflow documentation so `CandidateSegment` is explicitly a first-stage local context bucket and the selected modeling unit is a lineage object:
   - `LineagePath`
   - `RootedTrajectoryBundle`
@@ -109,6 +128,10 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `RootedTrajectoryBundle`
   - selected lineage object
 - Root documentation now states that context buckets do not define graph connectivity; context is layered onto the lineage graph.
+- Deterministic lineage-object discovery now follows cloneidR-style primary-backbone semantics:
+  - rooted subtrees are built from `passaged_from_id1`
+  - endpoint-anchored lineage paths are recovered through `passaged_from_id1`
+  - `passaged_from_id2` is preserved as secondary lineage metadata only by default
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
 - The repository scaffold has been classified into existing files, placeholders, operationally empty folders, and minimal missing implementation files.
@@ -204,7 +227,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
+Regenerate and verify live selected lineage-object artifacts under the corrected `passaged_from_id1` traversal policy, then refresh downstream live observable-selection and mapping artifacts.
 
 ---
 
@@ -266,16 +289,16 @@ Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling
 ## Stop checklist
 
 1. What did I complete?
-   - Completed the persistent-install plus minimal PhysiCell smoke-test branch by promoting the successful build to `/Users/4470246/Downloads/PhysiCell-1.14.2`, running a 60-minute/1-thread smoke test, confirming output artifacts, and documenting the result.
-   - Corrected the CLONEID extraction plan so ranked CandidateSegments remain stage 1 only, and added deterministic TrajectoryBundle discovery scaffolding plus mock tests.
-   - Added deterministic TrajectoryBundle ranking so connected histories can be compared before any live selected-bundle extraction branch starts.
-   - Fixed the live candidate-inventory NA-to-zero context bug, verified live TrajectoryBundle discovery from corrected seeds, wrote a selected live TrajectoryBundle bundle, wrote first-pass selected observables from that bundle, built a first-pass CLONEID-to-PhysiCell mapping artifact, and corrected bundle connectivity semantics to use explicit lineage edges and segment connections.
+   - Reworked TrajectoryBundle discovery so the lineage graph is built from explicit `passaged_from_id1` parent-child structure rather than context-bucket adjacency or mixed parent traversal.
+   - Added explicit primary and secondary lineage-edge artifact fields, rooted-subtree fields, endpoint path recovery, traversal-policy metadata, and candidate-segment-as-annotation behavior.
+   - Updated selected-bundle and first-pass mapping layers to preserve the corrected lineage-object fields.
+   - Added and passed deterministic tests covering the corrected lineage semantics and downstream artifact preservation.
 2. What safe next task did I identify?
-   - Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
+   - Regenerate and verify live selected lineage-object artifacts under the corrected `passaged_from_id1` traversal policy, then refresh downstream live observable-selection and mapping artifacts.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Yes. It is a read-only lineage-graph and documentation-alignment task on top of existing CLONEID exports and lineage semantics already documented in the repository.
+   - Yes. It is read-only and deterministic, but it depends on live CLONEID access to regenerate and verify the current real-data artifacts.
 4. If yes, why am I not doing it now?
-   - This checkpoint is being refreshed for a documentation-correction work unit. If I stop after committing, it will be because the next available task starts the separate lineage-object validation branch rather than this documentation branch.
+   - I am stopping this coherent tested work unit after the offline/mock lineage-semantics implementation and test validation. The next step is live verification and artifact refresh through the CLONEID database path.
 5. Am I blocked by:
    - missing credentials? no
    - missing permissions? not for the completed branch; future Docker or live DB work may still require them

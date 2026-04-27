@@ -28,7 +28,7 @@ def _tractability_window(value: float, low: float, ideal_low: float, ideal_high:
 
 def _normalize_bundle_payload(bundle_payload: dict[str, Any]) -> dict[str, Any]:
     normalized = dict(bundle_payload)
-    if "passaging_records" in normalized and "context_transitions" in normalized:
+    if "passaging_records" in normalized:
         normalized["trajectory_bundle_features"] = trajectory_bundle_features(normalized)
     return normalized
 

@@ -20,9 +20,11 @@ For each work block:
 
 ## Ready now
 
-1. Implement or validate selected `LineagePath` / `RootedTrajectoryBundle` bundling using `passaged_from_id1` as the primary lineage backbone and `passaged_from_id2` as secondary recorded support.
-2. Validate that context-local `CandidateSegment` boundaries are layered onto the lineage graph rather than treated as graph connectivity.
-3. After the lineage-object bundling branch is validated, continue with observable extraction, CLONEID-to-PhysiCell mapping, and candidate PhysiCell model-folder generation.
+1. Regenerate and verify live selected `LineagePath` / `RootedTrajectoryBundle` artifacts under the corrected `passaged_from_id1` primary-backbone traversal policy.
+2. Refresh downstream live artifacts derived from the selected lineage object:
+   - observable selection
+   - CLONEID-to-PhysiCell mapping
+3. After live lineage-object artifacts are refreshed, continue with candidate PhysiCell model-folder generation.
 
 ---
 
@@ -88,6 +90,13 @@ _None yet._
 46. Verified a live top-seed TrajectoryBundle export, ranking, selection, and first-pass observable selection under `runs/live_trajectory_bundles_20260427T000100/`.
 47. Added first-pass CLONEID-to-PhysiCell mapping artifacts from the selected live TrajectoryBundle and selected observables.
 48. Corrected TrajectoryBundle connectivity representation to use explicit lineage edges and segment-to-segment transitions rather than timestamp adjacency.
+49. Reworked TrajectoryBundle discovery to follow cloneidR-style lineage semantics:
+   - `passaged_from_id1` is now the primary traversal backbone
+   - `passaged_from_id2` is recorded as secondary support, not traversed by default
+   - bundle artifacts now include explicit rooted-subtree and lineage-path fields
+   - CandidateSegments are attached as annotations on the lineage graph, not used as graph connectivity
+50. Updated selection and mapping layers to preserve the new lineage-object fields.
+51. Added and passed deterministic tests for primary-lineage traversal, secondary-edge recording, rooted subtree fields, endpoint path recovery, and selected-bundle field preservation.
 
 ---
 

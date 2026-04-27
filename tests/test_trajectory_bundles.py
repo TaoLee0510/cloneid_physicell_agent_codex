@@ -72,7 +72,7 @@ def build_mock_bundle_fixture() -> dict[str, list[dict[str, object]]]:
                 "event": "harvest",
                 "date": "2024-01-05 00:00:00",
                 "passaged_from_id1": "seed_B",
-                "passaged_from_id2": None,
+                "passaged_from_id2": "seed_A",
                 "cellCount": 220,
                 "correctedCount": 215,
                 "areaOccupied_um2": 2200.0,
@@ -119,12 +119,29 @@ class TrajectoryBundleTests(unittest.TestCase):
             identity_records=fixture["identity"],
         )
         self.assertEqual(bundle["seed_candidate_segment_id"], "MOCK_LINE__0__5__19__1")
+        self.assertEqual(bundle["traversal_policy"]["primary_backbone"], "passaged_from_id1")
+        self.assertEqual(
+            bundle["traversal_policy"]["secondary_edges"],
+            "passaged_from_id2_recorded_not_traversed",
+        )
+        self.assertEqual(bundle["root_event_id"], "seed_A")
+        self.assertEqual(bundle["endpoint_event_ids"], ["harvest_B"])
+        self.assertEqual(bundle["selected_endpoint_event_id"], "harvest_B")
+        self.assertEqual(bundle["rooted_subtree_event_ids"], ["harvest_A", "harvest_B", "seed_A", "seed_B"])
+        self.assertEqual(bundle["lineage_path_event_ids"], ["seed_A", "harvest_A", "seed_B", "harvest_B"])
+        self.assertEqual(bundle["perspective_origin_event_ids"], ["harvest_B"])
         self.assertEqual(len(bundle["connected_candidate_segments"]), 3)
+        self.assertEqual(len(bundle["candidate_segments_covered"]), 3)
         self.assertEqual(len(bundle["passaging_records"]), 4)
+        self.assertEqual(len(bundle["primary_lineage_edges"]), 3)
+        self.assertEqual(len(bundle["secondary_lineage_edges"]), 1)
         self.assertEqual(len(bundle["lineage_edges"]), 3)
         self.assertEqual(len(bundle["segment_connections"]), 2)
+        self.assertEqual(len(bundle["context_transitions_primary"]), 3)
+        self.assertEqual(len(bundle["context_transitions_secondary"]), 3)
         self.assertEqual(len(bundle["context_transitions"]), 3)
         self.assertEqual(len(bundle["perspective_records"]), 2)
+        self.assertEqual(len(bundle["identity_support_records"]), 1)
         self.assertEqual(len(bundle["identity_records"]), 1)
         self.assertEqual(bundle["trajectory_bundle_features"]["connected_segment_count"], 3)
         self.assertGreater(bundle["trajectory_bundle_features"]["terminal_perspective_support"], 0)
@@ -141,6 +158,8 @@ class TrajectoryBundleTests(unittest.TestCase):
             [change["field"] for change in bundle["segment_connections"][0]["context_changes"]],
             ["passage", "flask"],
         )
+        self.assertEqual(bundle["secondary_lineage_edges"][0]["parent_event_id"], "seed_A")
+        self.assertEqual(bundle["secondary_lineage_edges"][0]["child_event_id"], "harvest_B")
 
     def test_discover_trajectory_bundle_cli_writes_artifacts(self) -> None:
         fixture = build_mock_bundle_fixture()
@@ -175,6 +194,9 @@ class TrajectoryBundleTests(unittest.TestCase):
             self.assertTrue((out_dir / "trajectory_bundle.md").exists())
             payload = json.loads((out_dir / "trajectory_bundle.json").read_text())
             self.assertEqual(payload["trajectory_bundle_features"]["connected_segment_count"], 3)
+            self.assertEqual(payload["root_event_id"], "seed_A")
+            self.assertEqual(payload["selected_endpoint_event_id"], "harvest_B")
+            self.assertEqual(payload["traversal_policy"]["context_grouping_role"], "annotation_only")
 
     def test_subgraph_boundary_counts_as_root_for_depth(self) -> None:
         fixture = build_mock_bundle_fixture()
@@ -188,6 +210,8 @@ class TrajectoryBundleTests(unittest.TestCase):
         )
         self.assertEqual(bundle["trajectory_bundle_features"]["root_event_count"], 1)
         self.assertEqual(bundle["trajectory_bundle_features"]["event_graph_depth"], 1)
+        self.assertEqual(bundle["root_event_id"], "seed_B")
+        self.assertEqual(bundle["lineage_path_event_ids"], ["seed_B", "harvest_B"])
 
 
 if __name__ == "__main__":

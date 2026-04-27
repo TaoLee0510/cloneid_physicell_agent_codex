@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .run_io import write_json, write_markdown
+from .trajectory_bundles import trajectory_bundle_features
 
 
 def _saturating_ratio(value: float, full_at: float) -> float:
@@ -25,7 +26,15 @@ def _tractability_window(value: float, low: float, ideal_low: float, ideal_high:
     return (high - value) / max(high - ideal_high, 1e-9)
 
 
+def _normalize_bundle_payload(bundle_payload: dict[str, Any]) -> dict[str, Any]:
+    normalized = dict(bundle_payload)
+    if "passaging_records" in normalized and "context_transitions" in normalized:
+        normalized["trajectory_bundle_features"] = trajectory_bundle_features(normalized)
+    return normalized
+
+
 def score_trajectory_bundle_payload(bundle_payload: dict[str, Any]) -> dict[str, Any]:
+    bundle_payload = _normalize_bundle_payload(bundle_payload)
     features = bundle_payload["trajectory_bundle_features"]
 
     connected_history_strength = 25.0 * (

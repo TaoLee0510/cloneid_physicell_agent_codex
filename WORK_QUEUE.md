@@ -20,10 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Implement selected-TrajectoryBundle record bundling and observable extraction for a top-ranked seed CandidateSegment after connected-history discovery and bundle-level ranking.
+1. Implement first-pass CLONEID-to-PhysiCell mapping from the selected live TrajectoryBundle and selected observables.
 2. After user confirmation, either:
    - run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
-   - continue the selected-TrajectoryBundle extraction branch.
+   - continue the CLONEID-to-PhysiCell mapping branch.
 
 ---
 
@@ -84,6 +84,9 @@ _None yet._
 41. Added deterministic TrajectoryBundle discovery scaffolding, mock tests, and a CLI entry point seeded from ranked CandidateSegments.
 42. Updated the workflow plan so CandidateSegment ranking remains stage 1 and selected-TrajectoryBundle bundling becomes the modeling-unit branch.
 43. Added a deterministic TrajectoryBundle ranking stage with auditable component scores and CLI/test coverage.
+44. Added a live TrajectoryBundle discovery pipeline seeded from current ranked CandidateSegments through the approved `cloneid` R interface.
+45. Fixed a live candidate-inventory bug that had been corrupting `NULL` context fields to `0` during merge-time NA filling.
+46. Verified a live top-seed TrajectoryBundle export, ranking, selection, and first-pass observable selection under `runs/live_trajectory_bundles_20260427T000100/`.
 
 ---
 

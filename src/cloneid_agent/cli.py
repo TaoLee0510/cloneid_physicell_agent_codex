@@ -9,10 +9,16 @@ from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .inventory import run_inventory
+from .observable_selection import select_observables_from_bundle_file, write_selected_observables
 from .toy_workflow import run_toy_round_trip
+from .trajectory_bundle_pipeline import discover_and_rank_trajectory_bundles
 from .trajectory_bundle_ranking import (
     rank_trajectory_bundles_from_files,
     write_ranked_trajectory_bundles,
+)
+from .trajectory_bundle_selection import (
+    select_top_trajectory_bundle_from_file,
+    write_selected_trajectory_bundle,
 )
 from .trajectory_bundles import discover_trajectory_bundle_from_file, write_trajectory_bundle
 
@@ -158,6 +164,66 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for ranked_trajectory_bundles.json and ranked_trajectory_bundles.md",
     )
 
+    live_bundle_parser = subparsers.add_parser(
+        "discover-live-trajectory-bundles",
+        help="Export seed record fixtures through the approved cloneid R interface, discover TrajectoryBundles, and rank them.",
+    )
+    live_bundle_parser.add_argument(
+        "--ranked-candidates",
+        required=True,
+        help="Path to ranked_candidates.json",
+    )
+    live_bundle_parser.add_argument(
+        "--output",
+        help="Run output directory. Defaults to runs/<run_id>.",
+    )
+    live_bundle_parser.add_argument(
+        "--run-id",
+        help="Run identifier to use when --output is not provided.",
+    )
+    live_bundle_parser.add_argument(
+        "--mode",
+        choices=("live", "mock"),
+        default="live",
+        help="Use live cloneid DB export or mock fixture export.",
+    )
+    live_bundle_parser.add_argument(
+        "--top-n",
+        type=int,
+        default=5,
+        help="Number of top-ranked CandidateSegments to use as TrajectoryBundle seeds.",
+    )
+
+    select_bundle_parser = subparsers.add_parser(
+        "select-trajectory-bundle",
+        help="Select the top-ranked TrajectoryBundle and write a bundled record artifact.",
+    )
+    select_bundle_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to ranked_trajectory_bundles.json",
+    )
+    select_bundle_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_trajectory_bundle artifacts",
+    )
+
+    observables_parser = subparsers.add_parser(
+        "select-observables",
+        help="Select calibration and validation observables from a selected TrajectoryBundle artifact.",
+    )
+    observables_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to selected_trajectory_bundle.json",
+    )
+    observables_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_observables artifacts",
+    )
+
     return parser
 
 
@@ -187,6 +253,23 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "rank-trajectory-bundles":
         ranked = rank_trajectory_bundles_from_files(args.input)
         write_ranked_trajectory_bundles(args.output_dir, ranked)
+        return 0
+    if args.command == "discover-live-trajectory-bundles":
+        discover_and_rank_trajectory_bundles(
+            ranked_candidates_path=args.ranked_candidates,
+            output=args.output,
+            run_id=args.run_id,
+            mode=args.mode,
+            top_n=args.top_n,
+        )
+        return 0
+    if args.command == "select-trajectory-bundle":
+        selected = select_top_trajectory_bundle_from_file(args.input)
+        write_selected_trajectory_bundle(args.output_dir, selected)
+        return 0
+    if args.command == "select-observables":
+        observables = select_observables_from_bundle_file(args.input)
+        write_selected_observables(args.output_dir, observables)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

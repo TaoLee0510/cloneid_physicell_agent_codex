@@ -129,6 +129,35 @@ class TrajectoryBundleRankingTests(unittest.TestCase):
         )
         self.assertEqual(ranked["score_model"], "trajectory_bundle_v1")
 
+    def test_ranking_recomputes_stale_embedded_features(self) -> None:
+        payload = build_bundle(
+            bundle_id="trajectory_bundle::stale",
+            connected_segment_count=1,
+            event_graph_depth=1,
+            event_count=3,
+            transition_count=0,
+            phenotype_observation_count=2,
+            phenotype_time_span_days=2.0,
+            terminal_perspective_support=0,
+            calibration_validation_split_possible=False,
+            trajectory_bundle_complexity_penalty=0,
+        )
+        payload["passaging_records"] = [
+            {"id": "a", "passaged_from_id1": None, "passaged_from_id2": None, "correctedCount": 1, "date": "2024-01-01 00:00:00"},
+            {"id": "b", "passaged_from_id1": "a", "passaged_from_id2": None, "correctedCount": 1, "date": "2024-01-02 00:00:00"},
+            {"id": "c", "passaged_from_id1": "b", "passaged_from_id2": None, "correctedCount": 1, "date": "2024-01-03 00:00:00"},
+        ]
+        payload["context_transitions"] = []
+        payload["perspective_records"] = []
+        payload["identity_records"] = []
+        payload["connected_candidate_segments"] = [{"dataset_id": "x"}]
+        payload["phenotype_time_span_days"] = 2.0
+        payload["trajectory_bundle_features"] = dict(payload["trajectory_bundle_features"])
+        payload["trajectory_bundle_features"]["event_graph_depth"] = 0
+
+        scored = score_trajectory_bundle_payload(payload)
+        self.assertEqual(scored["trajectory_bundle_features"]["event_graph_depth"], 2)
+
     def test_rank_trajectory_bundles_cli_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             first = Path(tmpdir) / "bundle_a.json"

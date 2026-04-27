@@ -168,6 +168,19 @@ class TrajectoryBundleTests(unittest.TestCase):
             payload = json.loads((out_dir / "trajectory_bundle.json").read_text())
             self.assertEqual(payload["trajectory_bundle_features"]["connected_segment_count"], 3)
 
+    def test_subgraph_boundary_counts_as_root_for_depth(self) -> None:
+        fixture = build_mock_bundle_fixture()
+        bundle = discover_trajectory_bundle(
+            seed_dataset_id="MOCK_LINE__0__6__19__2",
+            passaging_records=fixture["passaging"],
+            perspective_records=fixture["perspective"],
+            identity_records=fixture["identity"],
+            max_upstream_depth=0,
+            max_downstream_depth=4,
+        )
+        self.assertEqual(bundle["trajectory_bundle_features"]["root_event_count"], 1)
+        self.assertEqual(bundle["trajectory_bundle_features"]["event_graph_depth"], 1)
+
 
 if __name__ == "__main__":
     unittest.main()

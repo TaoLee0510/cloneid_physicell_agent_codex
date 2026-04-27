@@ -174,7 +174,19 @@ build_live_candidate_inventory <- function(run_id, requested_mode) {
 
   merged <- merge(passaging, qupath, all.x = TRUE, by = c("cellLine", "growthType", "passage", "media", "flask"))
   merged <- merge(merged, perspective, all.x = TRUE, by = c("cellLine", "growthType", "passage", "media", "flask"))
-  merged[is.na(merged)] <- 0
+  zero_fill_columns <- c(
+    "qupath_rows",
+    "qupath_standard_rows",
+    "qupath_cellpose_rows",
+    "perspective_rows",
+    "distinct_perspectives",
+    "distinct_perspective_states"
+  )
+  for (column in zero_fill_columns) {
+    if (column %in% names(merged)) {
+      merged[[column]][is.na(merged[[column]])] <- 0
+    }
+  }
   merged$context_complete <- !(is.na(merged$cellLine) | is.na(merged$growthType) | is.na(merged$media) | is.na(merged$flask))
   merged$dataset_id <- build_dataset_ids(merged)
   merged <- merged[, c(

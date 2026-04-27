@@ -178,10 +178,14 @@ def _graph_distance_from_roots(passaging_records: list[dict[str, Any]]) -> int:
         return 0
 
     children_by_parent = _build_parent_to_children(passaging_records)
+    event_ids = {str(record["id"]) for record in passaging_records}
     roots = [
         str(record["id"])
         for record in passaging_records
-        if record.get("passaged_from_id1") in (None, "") and record.get("passaged_from_id2") in (None, "")
+        if all(
+            parent_id in (None, "") or str(parent_id) not in event_ids
+            for parent_id in (record.get("passaged_from_id1"), record.get("passaged_from_id2"))
+        )
     ]
     if not roots:
         return 0
@@ -259,7 +263,10 @@ def trajectory_bundle_features(bundle_payload: dict[str, Any]) -> dict[str, Any]
     root_ids = {
         str(record["id"])
         for record in passaging_records
-        if record.get("passaged_from_id1") in (None, "") and record.get("passaged_from_id2") in (None, "")
+        if all(
+            parent_id in (None, "") or str(parent_id) not in event_ids
+            for parent_id in (record.get("passaged_from_id1"), record.get("passaged_from_id2"))
+        )
     }
     leaf_ids = event_ids.copy()
     for record in passaging_records:

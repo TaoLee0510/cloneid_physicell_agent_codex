@@ -121,7 +121,9 @@ class TrajectoryBundleTests(unittest.TestCase):
         self.assertEqual(bundle["seed_candidate_segment_id"], "MOCK_LINE__0__5__19__1")
         self.assertEqual(len(bundle["connected_candidate_segments"]), 3)
         self.assertEqual(len(bundle["passaging_records"]), 4)
-        self.assertGreaterEqual(len(bundle["context_transitions"]), 3)
+        self.assertEqual(len(bundle["lineage_edges"]), 3)
+        self.assertEqual(len(bundle["segment_connections"]), 2)
+        self.assertEqual(len(bundle["context_transitions"]), 3)
         self.assertEqual(len(bundle["perspective_records"]), 2)
         self.assertEqual(len(bundle["identity_records"]), 1)
         self.assertEqual(bundle["trajectory_bundle_features"]["connected_segment_count"], 3)
@@ -132,6 +134,12 @@ class TrajectoryBundleTests(unittest.TestCase):
         self.assertEqual(
             bundle["identity_records"][0]["attachment_role"],
             "inferred_secondary_identity_support",
+        )
+        self.assertEqual(bundle["segment_connections"][0]["parent_segment_id"], "MOCK_LINE__0__5__19__1")
+        self.assertEqual(bundle["segment_connections"][0]["child_segment_id"], "MOCK_LINE__0__6__19__2")
+        self.assertEqual(
+            [change["field"] for change in bundle["segment_connections"][0]["context_changes"]],
+            ["passage", "flask"],
         )
 
     def test_discover_trajectory_bundle_cli_writes_artifacts(self) -> None:

@@ -38,6 +38,8 @@ class TrajectoryBundleSelectionTests(unittest.TestCase):
                     "bundle_role": "connected_event_history_modeling_unit",
                     "connected_candidate_segments": [{"dataset_id": "MOCK__0__1__1__1"}],
                     "passaging_records": [{"id": "mock_seed"}],
+                    "lineage_edges": [{"parent_event_id": "a", "child_event_id": "b"}],
+                    "segment_connections": [{"parent_segment_id": "x", "child_segment_id": "y"}],
                     "context_transitions": [],
                     "perspective_records": [],
                     "identity_records": [],
@@ -77,6 +79,8 @@ class TrajectoryBundleSelectionTests(unittest.TestCase):
             self.assertTrue((out_dir / "selected_trajectory_bundle.md").exists())
             payload = json.loads((out_dir / "selected_trajectory_bundle.json").read_text())
             self.assertEqual(payload["selected_bundle_id"], "trajectory_bundle::mock")
+            self.assertEqual(len(payload["lineage_edges"]), 1)
+            self.assertEqual(len(payload["segment_connections"]), 1)
 
 
 if __name__ == "__main__":

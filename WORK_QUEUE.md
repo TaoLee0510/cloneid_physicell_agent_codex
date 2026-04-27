@@ -88,6 +88,7 @@ _None yet._
 45. Fixed a live candidate-inventory bug that had been corrupting `NULL` context fields to `0` during merge-time NA filling.
 46. Verified a live top-seed TrajectoryBundle export, ranking, selection, and first-pass observable selection under `runs/live_trajectory_bundles_20260427T000100/`.
 47. Added first-pass CLONEID-to-PhysiCell mapping artifacts from the selected live TrajectoryBundle and selected observables.
+48. Corrected TrajectoryBundle connectivity representation to use explicit lineage edges and segment-to-segment transitions rather than timestamp adjacency.
 
 ---
 

@@ -173,6 +173,130 @@ def _record_context_transitions(ordered_records: list[dict[str, Any]]) -> list[d
     return transitions
 
 
+def _build_lineage_edges(
+    ordered_records: list[dict[str, Any]],
+    passaging_by_id: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    event_ids = {str(record["id"]) for record in ordered_records}
+    edges: list[dict[str, Any]] = []
+    seen: set[tuple[str, str, str]] = set()
+    for child in ordered_records:
+        child_id = str(child["id"])
+        for field in ("passaged_from_id1", "passaged_from_id2"):
+            parent_id = child.get(field)
+            if parent_id in (None, ""):
+                continue
+            parent_id = str(parent_id)
+            if parent_id not in event_ids:
+                continue
+            parent = passaging_by_id[parent_id]
+            key = (parent_id, child_id, field)
+            if key in seen:
+                continue
+            seen.add(key)
+            edges.append(
+                {
+                    "parent_event_id": parent_id,
+                    "child_event_id": child_id,
+                    "link_field": field,
+                    "parent_date": parent.get("date"),
+                    "child_date": child.get("date"),
+                    "parent_segment_id": dataset_id_from_passaging_record(parent),
+                    "child_segment_id": dataset_id_from_passaging_record(child),
+                }
+            )
+    edges.sort(
+        key=lambda edge: (
+            str(edge.get("parent_date")),
+            str(edge.get("child_date")),
+            edge["parent_event_id"],
+            edge["child_event_id"],
+        )
+    )
+    return edges
+
+
+def _record_context_transitions_from_edges(
+    lineage_edges: list[dict[str, Any]],
+    passaging_by_id: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    transitions: list[dict[str, Any]] = []
+    for edge in lineage_edges:
+        parent = passaging_by_id[edge["parent_event_id"]]
+        child = passaging_by_id[edge["child_event_id"]]
+        for field in TRANSITION_FIELDS:
+            parent_value = parent.get(field)
+            child_value = child.get(field)
+            if parent_value != child_value:
+                transitions.append(
+                    {
+                        "parent_event_id": edge["parent_event_id"],
+                        "child_event_id": edge["child_event_id"],
+                        "link_field": edge["link_field"],
+                        "field": field,
+                        "from_value": parent_value,
+                        "to_value": child_value,
+                        "parent_segment_id": edge["parent_segment_id"],
+                        "child_segment_id": edge["child_segment_id"],
+                    }
+                )
+    return transitions
+
+
+def _build_segment_connections(
+    lineage_edges: list[dict[str, Any]],
+    context_transitions: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    transition_map: dict[tuple[str, str, str], dict[str, Any]] = {}
+    for transition in context_transitions:
+        key = (
+            transition["parent_event_id"],
+            transition["child_event_id"],
+            transition["field"],
+        )
+        transition_map[key] = transition
+
+    grouped: dict[tuple[str, str], dict[str, Any]] = {}
+    for edge in lineage_edges:
+        parent_segment_id = edge["parent_segment_id"]
+        child_segment_id = edge["child_segment_id"]
+        if parent_segment_id == child_segment_id:
+            continue
+        key = (parent_segment_id, child_segment_id)
+        bucket = grouped.setdefault(
+            key,
+            {
+                "parent_segment_id": parent_segment_id,
+                "child_segment_id": child_segment_id,
+                "lineage_edges": [],
+                "context_changes": [],
+            },
+        )
+        bucket["lineage_edges"].append(
+            {
+                "parent_event_id": edge["parent_event_id"],
+                "child_event_id": edge["child_event_id"],
+                "link_field": edge["link_field"],
+                "parent_date": edge.get("parent_date"),
+                "child_date": edge.get("child_date"),
+            }
+        )
+        for field in TRANSITION_FIELDS:
+            transition = transition_map.get((edge["parent_event_id"], edge["child_event_id"], field))
+            if transition is not None:
+                bucket["context_changes"].append(
+                    {
+                        "field": field,
+                        "from_value": transition["from_value"],
+                        "to_value": transition["to_value"],
+                    }
+                )
+
+    connections = list(grouped.values())
+    connections.sort(key=lambda item: (item["parent_segment_id"], item["child_segment_id"]))
+    return connections
+
+
 def _graph_distance_from_roots(passaging_records: list[dict[str, Any]]) -> int:
     if not passaging_records:
         return 0
@@ -334,7 +458,9 @@ def discover_trajectory_bundle(
     )
     connected_segment_ids = sorted({dataset_id_from_passaging_record(record) for record in ordered_records})
     connected_segment_records = [segments[dataset_id] for dataset_id in connected_segment_ids]
-    context_transitions = _record_context_transitions(ordered_records)
+    lineage_edges = _build_lineage_edges(ordered_records, passaging_by_id)
+    context_transitions = _record_context_transitions_from_edges(lineage_edges, passaging_by_id)
+    segment_connections = _build_segment_connections(lineage_edges, context_transitions)
     linked_perspectives = _attach_perspectives(connected_ids, perspective_records)
     linked_identities = _attach_identities(linked_perspectives, identity_records)
 
@@ -358,6 +484,8 @@ def discover_trajectory_bundle(
         },
         "connected_candidate_segments": connected_segment_records,
         "passaging_records": ordered_records,
+        "lineage_edges": lineage_edges,
+        "segment_connections": segment_connections,
         "context_transitions": context_transitions,
         "perspective_records": linked_perspectives,
         "identity_records": linked_identities,

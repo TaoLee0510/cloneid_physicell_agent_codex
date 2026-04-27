@@ -31,6 +31,9 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Added a synthetic CLONEID-like toy fixture and toy round-trip workflow with passing tests.
 - Implemented the documented dataset-scoring rule with passing tests.
 - Implemented higher-level candidate-dataset inventory, ontology-aware ranking, and deterministic top-candidate selection with passing tests.
+- Replaced the coarse candidate ranker with a fine-grained `0-100` score model that better separates repeated phenotype trajectories from sparse molecular-heavy candidates.
+- Added a `fine-rank-candidates` CLI alias while switching `rank-candidates` itself to the new fine-grained model.
+- Re-ranked the saved live candidate inventory and refreshed the selected-candidate artifact in `runs/live_candidate_ranking_20260426T022200/`.
 
 ---
 
@@ -58,15 +61,16 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - `src/cloneid_agent/dataset_scoring.py` now encodes the documented 0-to-5 modelability rule and ranks candidate datasets deterministically.
 - `python -m cloneid_agent candidate-inventory --mode live|auto|mock ...` now writes `dataset_inventory.json` and `dataset_inventory.md`.
 - `python -m cloneid_agent rank-candidates --input ... --output-dir ...` now produces ontology-aware ranked candidate artifacts.
+- `python -m cloneid_agent fine-rank-candidates --input ... --output-dir ...` now aliases the same fine-grained ranking model.
 - `python -m cloneid_agent select-candidate --input ... --output-dir ...` now selects the top-ranked dataset while preserving top-score ties for review.
+- The saved live ranking is now materially more discriminative: the current `runs/live_candidate_ranking_20260426T022200/ranked_candidates.json` has `923` unique scores across `1519` candidates, instead of many coarse ties.
 
 ---
 
 ## What is blocked
 
 - PhysiCell smoke testing is blocked pending an installation/runtime decision.
-- The next meaningful branch, observable extraction from selected live datasets, is blocked by a Level 2 ambiguity: whether first-pass calibration/validation should rely on Perspective, Identity, or a specific split between them.
-- Scientific dataset interpretation beyond score-driven ranking is blocked until that observable-policy ambiguity is resolved.
+- PhysiCell smoke testing is still blocked pending an installation/runtime decision.
 
 ---
 
@@ -78,7 +82,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Review the candidate inventory, ranking, and selection outputs, then answer the new observable-policy question before implementing selected-dataset record bundling and observable extraction.
+Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate, using `Perspective` as the default endpoint molecular constraint and `Identity` as secondary interpretive support.
 
 ---
 
@@ -97,6 +101,8 @@ Review the candidate inventory, ranking, and selection outputs, then answer the 
 - `src/cloneid_agent/dataset_scoring.py`
 - `src/cloneid_agent/dataset_inventory.py`
 - `src/cloneid_agent/dataset_ranking.py`
+- `runs/live_candidate_ranking_20260426T022200/ranked_candidates.json`
+- `runs/live_candidate_ranking_20260426T022200/selected_candidate.json`
 - `src/cloneid_agent/dataset_selection.py`
 - `tests/test_inventory_cli.py`
 - `tests/test_schemas.py`
@@ -115,26 +121,34 @@ Review the candidate inventory, ranking, and selection outputs, then answer the 
 ## Stop checklist
 
 1. What did I complete?
-   - Implemented live/mock/auto candidate inventory, ontology-aware ranking, and deterministic top-candidate selection.
+   - Replaced the coarse candidate ranker with a fine-grained ranking model, added a `fine-rank-candidates` alias, re-ranked the saved live inventory, and refreshed the selected-candidate artifact.
 2. What safe next task did I identify?
-   - Selected-dataset record bundling and observable extraction.
+   - Selected-dataset record bundling and observable extraction for the top fine-ranked candidate.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Not fully. The record-bundling mechanics are deterministic, but first-pass observable policy depends on how Perspective versus Identity should be used in calibration and validation.
+   - Yes, under the now-answered `Perspective`-first policy.
 4. If yes, why am I not doing it now?
-   - Not applicable; the next branch is blocked by Level 2 ambiguity.
+   - This checkpoint closes the ranking-replacement work unit; live record bundling and observable extraction remain to be started as the next read-only branch.
 5. Am I blocked by:
    - missing credentials? no
-   - missing permissions? no for the implemented branch; yes for default-sandbox live DB access, but escalation works
+   - missing permissions? no for the implemented branch; yes for default-sandbox live DB access, but escalation works when needed
    - risk of modifying the real database? no, all implemented work is read-only
-   - scientific judgment requiring user input? yes, for observable-policy interpretation
-   - Level 2 or Level 3 ambiguity? yes, Level 2
+   - scientific judgment requiring user input? no for the completed branch
+   - Level 2 or Level 3 ambiguity? no for the completed branch; the next branch is not blocked by ambiguity
 6. If I am not blocked, continue working instead of stopping.
-   - Current immediate branch is blocked, so this stop is justified.
+   - Current branch is complete; the next safe branch is now observable extraction.
 
 ## Git state
 
 - Current branch: `main`
-- Last completed commit before this status update: `e74b652`
+- Last commit hash: `b7270a0`
 - Tests run this session:
-  - `PYTHONPATH=src python3 -m unittest tests/test_dataset_inventory_cli.py tests/test_dataset_ranking.py tests/test_dataset_selection.py tests/test_dataset_scoring.py tests/test_inventory_cli.py tests/test_schemas.py tests/test_run_io.py tests/test_toy_workflow.py`
-- Work committed yet for the latest unit: not yet; status files are being updated before the final commit
+  - `PYTHONPATH=src python3 -m unittest tests/test_dataset_ranking.py tests/test_dataset_selection.py`
+- Work committed yet for the latest unit: no
+- Uncommitted / user-side files currently present:
+  - modified: `CODEX_INSTRUCTIONS.md`
+  - modified: `ONBOARDING_AND_SCOPE.md`
+  - modified: `SUPERVISED_AUTONOMY.md`
+  - untracked: `.AGENT_WORKFLOW.md.swp`
+  - untracked: `GIT_WORKFLOW.md`
+  - untracked: `ONTOLOGY_FOR_DATASET_RANKING.md`
+  - untracked: `docs/CLONEID_paper.pdf`

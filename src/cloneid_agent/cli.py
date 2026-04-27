@@ -67,19 +67,39 @@ def build_parser() -> argparse.ArgumentParser:
         help="Candidate inventory mode. 'auto' tries live access and falls back to mock.",
     )
 
+    rank_input_kwargs = {
+        "required": True,
+        "help": "Path to dataset_inventory.json",
+    }
+    rank_output_kwargs = {
+        "required": True,
+        "help": "Directory for ranked_candidates.json and ranked_candidates.md",
+    }
+
     rank_parser = subparsers.add_parser(
         "rank-candidates",
-        help="Rank candidate datasets from a dataset_inventory.json artifact.",
+        help="Fine-rank candidate datasets from a dataset_inventory.json artifact.",
     )
     rank_parser.add_argument(
         "--input",
-        required=True,
-        help="Path to dataset_inventory.json",
+        **rank_input_kwargs,
     )
     rank_parser.add_argument(
         "--output-dir",
-        required=True,
-        help="Directory for ranked_candidates.json and ranked_candidates.md",
+        **rank_output_kwargs,
+    )
+
+    fine_rank_parser = subparsers.add_parser(
+        "fine-rank-candidates",
+        help="Alias for rank-candidates using the fine-grained ranking model.",
+    )
+    fine_rank_parser.add_argument(
+        "--input",
+        **rank_input_kwargs,
+    )
+    fine_rank_parser.add_argument(
+        "--output-dir",
+        **rank_output_kwargs,
     )
 
     select_parser = subparsers.add_parser(
@@ -111,7 +131,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "candidate-inventory":
         return run_candidate_inventory(output=args.output, run_id=args.run_id, mode=args.mode)
-    if args.command == "rank-candidates":
+    if args.command in {"rank-candidates", "fine-rank-candidates"}:
         ranked = rank_candidates_from_file(args.input)
         write_ranked_candidates(args.output_dir, ranked)
         return 0

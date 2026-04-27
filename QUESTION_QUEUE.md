@@ -99,15 +99,15 @@ Questions should not block all work unless they are high-risk. When possible, th
 2. Use `Identity` as the primary endpoint state summary, with explicit inferred-status labeling.
 3. Use `Perspective` for calibration and `Identity` only for validation / consistency checks.
 
-**Current default assumption:** No implementation default is being committed yet for selected-dataset observable extraction.
+**Current default assumption:** Use `Perspective` as the default endpoint molecular constraint and treat `Identity` as secondary / interpretive support.
 
 **Blocked work:** Selected-dataset record bundling beyond generic ranking, endpoint observable extraction, and calibration/validation labeling for the first real-data round trip.
 
 **Work continuing meanwhile:** Documentation, dry-run scaffolding, and already-completed candidate inventory/ranking/selection infrastructure.
 
-**Agent recommendation:** Option 3, because it preserves the paper’s distinction between direct assay-specific evidence and inferred reconciliation while still using both layers.
+**Agent recommendation:** Option 1 for the first proof of principle, because it keeps calibration/validation tied to direct assay-specific molecular evidence while avoiding misuse of inferred `Identity` as direct observed phenotype.
 
-**Status:** Open
+**Status:** Answered
 
 ---
 
@@ -124,6 +124,12 @@ Questions should not block all work unless they are high-risk. When possible, th
 **Answered:** Keep the first real-data choice fully score-driven until reviewed.
 
 **Consequence:** Dataset inventory and scoring should remain generic, and the first selected dataset should be presented for review rather than hard-coded by type.
+
+## Q004 — First-pass observable policy for Perspective versus Identity
+
+**Answered:** Use `Perspective` as the default endpoint molecular constraint and treat `Identity` as secondary / interpretive support.
+
+**Consequence:** Observable extraction can proceed with `Perspective`-first endpoint constraints, while `Identity` remains clearly labeled as inferred reconciliation support rather than direct observed phenotype.
 
 ---
 

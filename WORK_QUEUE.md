@@ -20,7 +20,7 @@ For each work block:
 
 ## Ready now
 
-_None currently unblocked._
+1. Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate using `Perspective`-first endpoint constraints and `Identity` as secondary interpretive support.
 
 ---
 
@@ -66,6 +66,9 @@ _None yet._
 25. Added ontology-aware candidate ranking and deterministic top-candidate selection.
 26. Added tests for candidate inventory, ranking, and selection behavior.
 27. Verified candidate inventory, ranking, and selection in live and offline paths.
+28. Replaced the coarse candidate ranker with a fine-grained `0-100` ranking model that favors repeated phenotype trajectories over raw molecular row volume.
+29. Added the `fine-rank-candidates` CLI alias and updated `rank-candidates` to use the fine-grained model by default.
+30. Re-ranked the saved live candidate inventory and refreshed the selected-candidate artifact under `runs/live_candidate_ranking_20260426T022200/`.
 
 ---
 

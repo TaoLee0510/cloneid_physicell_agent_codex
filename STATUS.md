@@ -57,6 +57,16 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
 - Added a smoke-test result note:
   - `docs/derived/physicell_smoke_test_check.md`
+- Switched the CLONEID extraction plan from selected-dataset bundling to selected-TrajectoryBundle bundling.
+- Added deterministic TrajectoryBundle discovery scaffolding:
+  - `src/cloneid_agent/trajectory_bundles.py`
+  - `python -m cloneid_agent discover-trajectory-bundle ...`
+- Added mock TrajectoryBundle discovery tests and updated the toy workflow to emit `trajectory_bundle.json`.
+- Updated workflow and ontology notes so CandidateSegment ranking remains a first-stage screen and TrajectoryBundle discovery/ranking is the preferred modeling-unit path.
+- Added a deterministic TrajectoryBundle ranking stage with:
+  - `src/cloneid_agent/trajectory_bundle_ranking.py`
+  - `python -m cloneid_agent rank-trajectory-bundles ...`
+- Added mock ranking tests for connected-history scoring and ranking artifact output.
 
 ---
 
@@ -107,6 +117,19 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - a minimal command-line smoke test completed successfully
   - expected output artifacts were generated under:
     - `/Users/4470246/Downloads/PhysiCell-1.14.2/output_smoke_20260427T014616Z`
+- A deterministic offline TrajectoryBundle scaffold now exists for connected-history discovery from a seed CandidateSegment:
+  - upstream/downstream expansion through `Passaging.passaged_from_id1/2`
+  - context-transition recording across local segment boundaries
+  - direct `Perspective.origin` attachment
+  - `Identity` attachment only as inferred secondary support
+- The toy round-trip and CLI scaffold can now emit:
+  - `trajectory_bundle.json`
+  - `trajectory_bundle.md`
+- A deterministic second-stage ranking scaffold now exists for discovered TrajectoryBundles:
+  - auditable component scores
+  - explicit tractability penalties
+  - `ranked_trajectory_bundles.json`
+  - `ranked_trajectory_bundles.md`
 
 ---
 
@@ -115,6 +138,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Repository-coupled PhysiCell smoke testing has not been implemented yet; the successful smoke run used the upstream `heterogeneity` sample project.
+- Live TrajectoryBundle discovery and bundling over the selected CLONEID seed candidate have not been executed yet in this branch.
 
 ---
 
@@ -126,9 +150,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Await user confirmation on the completed persistent-install plus minimal smoke-test branch, then either:
-- run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
-- switch back to the CLONEID extraction branch.
+Proceed with the CLONEID extraction branch by using the existing ranked CandidateSegments as seeds for live TrajectoryBundle discovery, then bundle one reviewed TrajectoryBundle for observable extraction.
 
 ---
 
@@ -159,10 +181,14 @@ Await user confirmation on the completed persistent-install plus minimal smoke-t
 - `docker/physicell-v1.14.2/Dockerfile`
 - `containers/apptainer/physicell-v1.14.2.def`
 - `src/cloneid_agent/dataset_selection.py`
+- `src/cloneid_agent/trajectory_bundles.py`
+- `src/cloneid_agent/trajectory_bundle_ranking.py`
 - `tests/test_inventory_cli.py`
 - `tests/test_schemas.py`
 - `tests/test_run_io.py`
 - `tests/test_toy_workflow.py`
+- `tests/test_trajectory_bundles.py`
+- `tests/test_trajectory_bundle_ranking.py`
 - `tests/test_dataset_scoring.py`
 - `tests/test_dataset_inventory_cli.py`
 - `tests/test_dataset_ranking.py`
@@ -177,12 +203,14 @@ Await user confirmation on the completed persistent-install plus minimal smoke-t
 
 1. What did I complete?
    - Completed the persistent-install plus minimal PhysiCell smoke-test branch by promoting the successful build to `/Users/4470246/Downloads/PhysiCell-1.14.2`, running a 60-minute/1-thread smoke test, confirming output artifacts, and documenting the result.
+   - Corrected the CLONEID extraction plan so ranked CandidateSegments remain stage 1 only, and added deterministic TrajectoryBundle discovery scaffolding plus mock tests.
+   - Added deterministic TrajectoryBundle ranking so connected histories can be compared before any live selected-bundle extraction branch starts.
 2. What safe next task did I identify?
-   - Either run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or switch back to the CLONEID extraction branch.
+   - Use top-ranked CandidateSegments as seeds for live TrajectoryBundle discovery, rank the discovered TrajectoryBundles, then prepare selected-TrajectoryBundle bundling for observable extraction.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - The repository-coupled smoke-test branch is reversible but not read-only because it would generate new model/run artifacts. The CLONEID extraction branch remains read-only.
+   - Yes for live TrajectoryBundle discovery and bundling, provided read-only DB access remains available. Observable-selection policy is already resolved as `Perspective`-first with `Identity` secondary.
 4. If yes, why am I not doing it now?
-   - I am stopping here because the user explicitly asked me to promote the build and run a first minimal smoke test, then have them confirm once ready.
+   - I am stopping at the end of the requested pre-bundling planning/scaffolding branch so you can confirm before I start live selected-TrajectoryBundle extraction.
 5. Am I blocked by:
    - missing credentials? no
    - missing permissions? not for the completed branch; future Docker or live DB work may still require them
@@ -195,7 +223,10 @@ Await user confirmation on the completed persistent-install plus minimal smoke-t
 ## Git state
 
 - Current branch: `main`
-- Last commit hash: `6bb5276`
+- Last committed work unit hashes:
+  - `faf35bc` `feat(trajectory): add bundle ranking stage`
+  - `7d25bbb` `feat(trajectory): add bundle discovery scaffold`
+  - `b1c5721` `feat(runtime): add persistent install and smoke test wrappers`
 - Tests run this session:
   - `bash -n scripts/check_physicell_runtime.sh`
   - `scripts/check_physicell_runtime.sh`
@@ -207,7 +238,9 @@ Await user confirmation on the completed persistent-install plus minimal smoke-t
   - `bash -n scripts/run_physicell_smoke_test.sh`
   - `scripts/install_physicell_persistent.sh /tmp/PhysiCell-1.14.2-src /Users/4470246/Downloads/PhysiCell-1.14.2`
   - `scripts/run_physicell_smoke_test.sh /Users/4470246/Downloads/PhysiCell-1.14.2 60 1`
-- Work committed yet for the latest unit: no
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_toy_workflow.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_toy_workflow.py`
+- Work committed yet for the latest unit: yes
 - Uncommitted / user-side files currently present:
   - modified: `CODEX_INSTRUCTIONS.md`
   - modified: `ONBOARDING_AND_SCOPE.md`

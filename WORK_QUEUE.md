@@ -20,10 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Implement selected-dataset record bundling and observable extraction for the top fine-ranked candidate using `Perspective`-first endpoint constraints and `Identity` as secondary interpretive support.
+1. Implement selected-TrajectoryBundle record bundling and observable extraction for a top-ranked seed CandidateSegment after connected-history discovery and bundle-level ranking.
 2. After user confirmation, either:
    - run a first repository-coupled PhysiCell smoke test from a generated template/model stub, or
-   - switch back to the selected-dataset extraction branch.
+   - continue the selected-TrajectoryBundle extraction branch.
 
 ---
 
@@ -81,6 +81,9 @@ _None yet._
 38. Promoted the successful PhysiCell build to the persistent location `/Users/4470246/Downloads/PhysiCell-1.14.2`.
 39. Ran the first minimal PhysiCell smoke test from the persistent install with a temporary short-run config and 1 OpenMP thread.
 40. Confirmed smoke-test output artifacts and documented the result in `docs/derived/physicell_smoke_test_check.md`.
+41. Added deterministic TrajectoryBundle discovery scaffolding, mock tests, and a CLI entry point seeded from ranked CandidateSegments.
+42. Updated the workflow plan so CandidateSegment ranking remains stage 1 and selected-TrajectoryBundle bundling becomes the modeling-unit branch.
+43. Added a deterministic TrajectoryBundle ranking stage with auditable component scores and CLI/test coverage.
 
 ---
 

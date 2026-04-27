@@ -51,14 +51,15 @@ The agent should be given:
 The agent must:
 
 1. Inspect the full CLONEID database.
-2. Inventory candidate datasets.
-3. Select one or more datasets suitable for simulation.
-4. Identify usable observables and constraints.
-5. Generate a small set of competing PhysiCell model candidates from predefined templates.
-6. Instantiate those candidates using CLONEID-derived inputs.
-7. Run or prepare simulations.
-8. Compare simulation outputs to observed CLONEID data.
-9. Produce an auditable model-selection report.
+2. Inventory first-stage candidate segments.
+3. Rank candidate segments and use top segments as seeds for connected-history discovery.
+4. Discover one or more connected `TrajectoryBundle` objects suitable for simulation.
+5. Identify usable observables and constraints.
+6. Generate a small set of competing PhysiCell model candidates from predefined templates.
+7. Instantiate those candidates using CLONEID-derived inputs.
+8. Run or prepare simulations.
+9. Compare simulation outputs to observed CLONEID data.
+10. Produce an auditable model-selection report.
 
 The agent should not invent arbitrary biological mechanisms. It should select among predefined, interpretable model families.
 
@@ -71,9 +72,11 @@ The primary workflow is:
 ```text
 CLONEID database
 → database inventory
-→ candidate dataset discovery
-→ dataset scoring
-→ selected dataset record bundle
+→ CandidateSegment discovery
+→ CandidateSegment ranking
+→ TrajectoryBundle discovery from top-ranked segment seeds
+→ TrajectoryBundle ranking / review
+→ selected TrajectoryBundle record bundle
 → observable selection
 → CLONEID-to-PhysiCell mapping
 → model candidate generation
@@ -88,9 +91,12 @@ A run may create a local cache of the database records used in that run, but thi
 
 ## Dataset-selection logic
 
-The agent should rank candidate CLONEID datasets according to modelability.
+The agent should rank candidate CLONEID records in two stages:
 
-A dataset is modelable if it contains:
+1. `CandidateSegment` ranking for local context-consistent groups.
+2. `TrajectoryBundle` ranking for connected biological histories that may span multiple CandidateSegments.
+
+A modeling unit is modelable if it contains:
 
 1. A clear event history.
 2. Time-stamped repeated phenotypic observations.
@@ -99,9 +105,9 @@ A dataset is modelable if it contains:
 5. At least two plausible competing model families.
 6. At least one observable that can be compared between simulation and experiment.
 
-### Candidate dataset definition
+### CandidateSegment definition
 
-For the first implementation, define a candidate dataset as a group of records from the database that share enough experimental context to be modeled together.
+For the first implementation, define a `CandidateSegment` as a group of records from the database that share enough local experimental context to be summarized together.
 
 Useful grouping fields include:
 
@@ -112,14 +118,36 @@ Useful grouping fields include:
 - `Passaging.flask`
 - `Passaging.passaged_from_id1`
 - `Passaging.passaged_from_id2`
-- `Perspective.origin`
-- `Identity.rootID` or related fields where applicable
+- `Perspective.origin` for later attachment
+- `Identity.rootID` or related fields where applicable as secondary support only
 
-The implementation should record exactly how candidate datasets were defined in `dataset_inventory.json`.
+The implementation should record exactly how CandidateSegments were defined in `dataset_inventory.json`.
 
-### Dataset score
+CandidateSegments are useful as first-stage ranking units, but they are not assumed to be the final biologically meaningful modeling unit. Changes in passage, transfer, media, flask, harvest, or bottleneck structure may split one connected biological history across multiple CandidateSegments.
 
-Implement a dataset score from 0 to 5.
+### TrajectoryBundle definition
+
+Define a `TrajectoryBundle` as a connected event-history modeling unit discovered from one or more CandidateSegment seeds by traversing:
+
+- `Passaging.passaged_from_id1`
+- `Passaging.passaged_from_id2`
+
+A TrajectoryBundle should:
+
+- expand upstream and downstream through the event graph,
+- identify all connected CandidateSegments in scope,
+- record context transitions across passage, media, flask, growth type, and related fields,
+- attach `Perspective` records through `Perspective.origin`,
+- attach `Identity` only as inferred secondary support.
+
+The implementation should preserve the distinction:
+
+- `CandidateSegment` = first-stage local screen
+- `TrajectoryBundle` = preferred modeling unit when connected histories exist
+
+### CandidateSegment score
+
+Implement a first-stage CandidateSegment score from 0 to 5.
 
 ```text
 +1 event history available
@@ -129,7 +157,23 @@ Implement a dataset score from 0 to 5.
 +1 multiple plausible mechanisms distinguishable
 ```
 
-The agent should select the highest-scoring dataset unless the user provides an override.
+The agent should not assume the top-ranked CandidateSegment is the final selected dataset. It should use high-ranked CandidateSegments as seeds for TrajectoryBundle discovery.
+
+### TrajectoryBundle ranking plan
+
+TrajectoryBundle ranking should distinguish which connected histories are best suited for the first CLONEID-to-PhysiCell proof of principle.
+
+Planned ranking features include:
+
+- `connected_segment_count`
+- `event_graph_depth`
+- `transition_count`
+- repeated phenotype observations across the graph
+- terminal `Perspective` support
+- calibration/validation split potential
+- tractability penalty
+
+The selected modeling unit should be the highest-priority reviewed TrajectoryBundle unless the user provides an override.
 
 ---
 
@@ -245,8 +289,8 @@ Recommended metrics:
 Each run must generate `runs/<run_id>/model_selection_report.md` including:
 
 1. Executive summary.
-2. Database provenance and candidate dataset inventory.
-3. Selected dataset and why it was selected.
+2. Database provenance, CandidateSegment inventory, and TrajectoryBundle discovery summary.
+3. Selected TrajectoryBundle and why it was selected.
 4. Available and selected observables.
 5. CLONEID records used.
 6. Candidate model families.
@@ -270,7 +314,7 @@ Use restrained language: “supports,” “is sufficient to recapitulate,” �
 Suggested panels:
 
 1. CLONEID database as structured memory.
-2. Agent database inventory and dataset selection.
+2. Agent database inventory, CandidateSegment ranking, and TrajectoryBundle selection.
 3. CLONEID-to-PhysiCell mapping.
 4. Candidate model families.
 5. Observed versus simulated trajectories.
@@ -283,15 +327,16 @@ Suggested panels:
 The first working version should:
 
 1. Connect to the CLONEID database in read-only mode.
-2. Inventory candidate datasets.
-3. Identify one longitudinal dataset with repeated phenotype measurements.
-4. Select cell count, image-derived count, or area occupied as the main time-series observable.
-5. Select one endpoint Perspective or Identity distribution as the endpoint observable.
-6. Instantiate three model candidates: neutral growth, fixed state-specific fitness, and density-dependent growth.
-7. Run or mock-run PhysiCell.
-8. Compare observed and simulated trajectories.
-9. Produce a model-selection report.
-10. Produce a figure showing observed data, model predictions, and model ranking.
+2. Inventory CandidateSegments.
+3. Discover connected TrajectoryBundles from top-ranked CandidateSegment seeds.
+4. Identify one longitudinal TrajectoryBundle with repeated phenotype measurements.
+5. Select cell count, image-derived count, or area occupied as the main time-series observable.
+6. Select one endpoint Perspective distribution as the primary endpoint observable and retain Identity only as inferred secondary support.
+7. Instantiate three model candidates: neutral growth, fixed state-specific fitness, and density-dependent growth.
+8. Run or mock-run PhysiCell.
+9. Compare observed and simulated trajectories.
+10. Produce a model-selection report.
+11. Produce a figure showing observed data, model predictions, and model ranking.
 
 ---
 
@@ -300,7 +345,7 @@ The first working version should:
 The project is successful when a fresh user can run one command and obtain:
 
 1. A database inventory.
-2. A selected CLONEID dataset.
+2. A selected CLONEID TrajectoryBundle.
 3. A structured agent plan.
 4. Generated PhysiCell candidate models.
 5. Simulation outputs or validated dry-run outputs.

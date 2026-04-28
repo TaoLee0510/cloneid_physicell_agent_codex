@@ -47,6 +47,13 @@ from .phase_planning import (
 )
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .report import write_run_report
+from .simulation_schedule import (
+    build_branch_simulation_schedule,
+    build_matched_simulation_schedule,
+    load_json as load_schedule_json,
+    write_matched_simulation_schedule_markdown,
+    write_simulation_schedule,
+)
 from .toy_workflow import run_toy_round_trip
 from .trajectory_bundle_pipeline import discover_and_rank_trajectory_bundles
 from .trajectory_bundle_ranking import (
@@ -534,6 +541,46 @@ def build_parser() -> argparse.ArgumentParser:
     milestone_matched_phase_plan_parser.add_argument("--output-json", required=True, help="Output json path")
     milestone_matched_phase_plan_parser.add_argument("--output-md", required=True, help="Output markdown path")
 
+    simulation_schedule_parser = subparsers.add_parser(
+        "extract-simulation-schedule",
+        help="Extract branch and matched simulation schedules from milestone-aligned lineage phase plans.",
+    )
+    simulation_schedule_parser.add_argument(
+        "--milestone-matched-plan",
+        required=True,
+        help="Path to milestone_matched_phase_plan json",
+    )
+    simulation_schedule_parser.add_argument(
+        "--anchor-plan",
+        required=True,
+        help="Path to anchor branch phase plan json",
+    )
+    simulation_schedule_parser.add_argument(
+        "--comparison-plan",
+        required=True,
+        help="Path to comparison branch phase plan json",
+    )
+    simulation_schedule_parser.add_argument(
+        "--anchor-output-json",
+        required=True,
+        help="Output json path for anchor branch simulation schedule",
+    )
+    simulation_schedule_parser.add_argument(
+        "--comparison-output-json",
+        required=True,
+        help="Output json path for comparison branch simulation schedule",
+    )
+    simulation_schedule_parser.add_argument(
+        "--matched-output-json",
+        required=True,
+        help="Output json path for matched simulation schedule",
+    )
+    simulation_schedule_parser.add_argument(
+        "--matched-output-md",
+        required=True,
+        help="Output markdown path for matched simulation schedule",
+    )
+
     return parser
 
 
@@ -693,6 +740,30 @@ def main(argv: list[str] | None = None) -> int:
         )
         write_phase_plan(args.output_json, payload)
         write_milestone_matched_phase_plan_markdown(args.output_md, payload)
+        return 0
+    if args.command == "extract-simulation-schedule":
+        milestone_matched_plan = load_schedule_json(args.milestone_matched_plan)
+        anchor_plan = load_schedule_json(args.anchor_plan)
+        comparison_plan = load_schedule_json(args.comparison_plan)
+        anchor_schedule = build_branch_simulation_schedule(
+            phase_plan=anchor_plan,
+            milestone_matched_plan=milestone_matched_plan,
+            branch_role="anchor",
+        )
+        comparison_schedule = build_branch_simulation_schedule(
+            phase_plan=comparison_plan,
+            milestone_matched_plan=milestone_matched_plan,
+            branch_role="comparison",
+        )
+        matched_schedule = build_matched_simulation_schedule(
+            anchor_schedule=anchor_schedule,
+            comparison_schedule=comparison_schedule,
+            milestone_matched_plan=milestone_matched_plan,
+        )
+        write_simulation_schedule(args.anchor_output_json, anchor_schedule)
+        write_simulation_schedule(args.comparison_output_json, comparison_schedule)
+        write_simulation_schedule(args.matched_output_json, matched_schedule)
+        write_matched_simulation_schedule_markdown(args.matched_output_md, matched_schedule)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

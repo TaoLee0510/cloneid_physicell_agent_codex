@@ -1,0 +1,1251 @@
+{
+  "branch_id": "SUM159_2N_O2",
+  "branch_label": "2N",
+  "growth_episodes": [
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A1_seedT1",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-18 13:43:16",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A1_seedT1"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-15 15:45:36",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A1_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 100,
+      "media_to": 100,
+      "milestone_label": "O2_A1_seedT1",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 6872482007.5758,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 188491161.6162
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 6323079,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 580562
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 6323079,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 580562
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A1_seed",
+      "passage_from": 6,
+      "passage_to": 6,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_010",
+      "real_elapsed_minutes": 4198,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A2_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-25 16:02:44",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A2_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-20 15:51:54",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A2_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 101,
+      "media_to": 101,
+      "milestone_label": "O2_A2_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 6795357007.5758,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 102970643.9394
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 6273296,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 366708
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 6273296,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 366708
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A2_seed",
+      "passage_from": 7,
+      "passage_to": 7,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_012",
+      "real_elapsed_minutes": 7211,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A3_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-02 12:59:22",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A3_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-27 13:03:18",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A3_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 102,
+      "media_to": 102,
+      "milestone_label": "O2_A3_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 7348322916.6667,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 155116477.2727
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 7647573,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 402467
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 7647573,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 402467
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A3_seed",
+      "passage_from": 8,
+      "passage_to": 8,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_014",
+      "real_elapsed_minutes": 7196,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A4_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-09 14:44:30",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A4_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-04 17:27:19",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A4_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 103,
+      "media_to": 103,
+      "milestone_label": "O2_A4_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 7400434659.0909,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 72948863.6364
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 7184807,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 523768
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 7184807,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 523768
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A4_seed",
+      "passage_from": 9,
+      "passage_to": 9,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_016",
+      "real_elapsed_minutes": 7037,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A5_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-16 16:02:19",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A5_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-11 17:30:47",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A5_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 104,
+      "media_to": 104,
+      "milestone_label": "O2_A5_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 7415659090.9091,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 500823863.6364
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 11919753,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 809842
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 11919753,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 809842
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A5_seed",
+      "passage_from": 10,
+      "passage_to": 10,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_018",
+      "real_elapsed_minutes": 7112,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A6_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-23 13:24:56",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A6_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-18 16:45:47",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A6_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 105,
+      "media_to": 105,
+      "milestone_label": "O2_A6_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 7398437500,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 38742424.2424
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 7765369,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 480296
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 7765369,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 480296
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A6_seed",
+      "passage_from": 11,
+      "passage_to": 11,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_020",
+      "real_elapsed_minutes": 6999,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A7_seedT2",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-30 16:30:14",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A7_seedT2"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-25 14:54:11",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A7_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": false,
+      "media_from": 106,
+      "media_to": 106,
+      "milestone_label": "O2_A7_seedT2",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 7400196969.697,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 124863636.3636
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 7241601,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 420697
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 7241601,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 420697
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A7_seed",
+      "passage_from": 12,
+      "passage_to": 12,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_022",
+      "real_elapsed_minutes": 7296,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM159_NLS_2N_O2_A7K_harvest",
+      "episode_type": "growth_episode",
+      "event_provenance": {
+        "child_event": {
+          "date": "2025-03-05 15:33:14",
+          "event": "harvest",
+          "id": "SUM159_NLS_2N_O2_A7K_harvest"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2025-03-01 19:43:00",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A7K_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_terminal_perspective_support": true,
+      "media_from": 101,
+      "media_to": 101,
+      "milestone_label": "O2_A7K_harvest",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 6875459280.303,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 2083483901.5152
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 6597233,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 1596546
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 6597233,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 1596546
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A7K_seed",
+      "passage_from": 13,
+      "passage_to": 13,
+      "perspective_record_count_at_child_event": 16,
+      "phase_id": "SUM159_2N_O2::phase_024",
+      "real_elapsed_minutes": 5510,
+      "simulated_duration_minutes": 1440
+    }
+  ],
+  "initial_condition": {
+    "areaOccupied_um2": 188491161.6162,
+    "branch_id": "SUM159_2N_O2",
+    "branch_label": "2N",
+    "cellCount": 580562,
+    "correctedCount": 580562,
+    "event_id": "SUM-159_NLS_2N_O2_A1_seed",
+    "event_provenance": {
+      "child_event": {
+        "date": "2024-11-15 15:45:36",
+        "event": "seeding",
+        "id": "SUM-159_NLS_2N_O2_A1_seed"
+      },
+      "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+      "parent_event": {
+        "date": "2024-11-15 14:38:21",
+        "event": "harvest",
+        "id": "SUM-159_NLS_2N_dp_seedT1"
+      },
+      "root_event_id": "SUM-159_NLS_mCherry"
+    },
+    "flask": 2,
+    "media": 100,
+    "milestone_label": "O2_A1_seed",
+    "passage": 6
+  },
+  "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+  "phase_alignment_source": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "prehistory_context": [
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 8697213,
+      "cellCount_parent": 10000000,
+      "child_event_id": "SUM-159_NLS_2N_A3_seed",
+      "correctedCount_child": 8697213,
+      "correctedCount_parent": null,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-19 13:36:58",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A3_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-17 09:34:20",
+          "event": "harvest",
+          "id": "SUM-159_NLS_mCherry"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": null,
+      "flask_to": 6,
+      "has_perspective_at_child_event": false,
+      "media_from": null,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A3_seed",
+      "parent_event_id": "SUM-159_NLS_mCherry",
+      "passage_from": 1,
+      "passage_to": 2,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_001",
+      "phase_index": 1,
+      "real_elapsed_minutes": 3123,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 13963640,
+      "cellCount_parent": 8697213,
+      "child_event_id": "SUM-159_NLS_2N_A3_harvest_T3",
+      "correctedCount_child": 13963640,
+      "correctedCount_parent": 8697213,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-22 11:26:52",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A3_harvest_T3"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-19 13:36:58",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A3_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 6,
+      "flask_to": 6,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A3_harvest_T3",
+      "parent_event_id": "SUM-159_NLS_2N_A3_seed",
+      "passage_from": 2,
+      "passage_to": 2,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_002",
+      "phase_index": 2,
+      "real_elapsed_minutes": 4190,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 25554623,
+      "cellCount_parent": 13963640,
+      "child_event_id": "SUM-159_NLS_2N_A4_seed",
+      "correctedCount_child": 25554623,
+      "correctedCount_parent": 13963640,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-22 11:43:08",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A4_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-22 11:26:52",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A3_harvest_T3"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 6,
+      "flask_to": 3,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A4_seed",
+      "parent_event_id": "SUM-159_NLS_2N_A3_harvest_T3",
+      "passage_from": 2,
+      "passage_to": 3,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_003",
+      "phase_index": 3,
+      "real_elapsed_minutes": 16,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 23950122,
+      "cellCount_parent": 25554623,
+      "child_event_id": "SUM-159_NLS_2N_A4_harvest_T1",
+      "correctedCount_child": 23950122,
+      "correctedCount_parent": 25554623,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-23 11:54:15",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A4_harvest_T1"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-22 11:43:08",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A4_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 3,
+      "flask_to": 3,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A4_harvest_T1",
+      "parent_event_id": "SUM-159_NLS_2N_A4_seed",
+      "passage_from": 3,
+      "passage_to": 3,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_004",
+      "phase_index": 4,
+      "real_elapsed_minutes": 1451,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 17772025,
+      "cellCount_parent": 23950122,
+      "child_event_id": "SUM-159_NLS_2N_A5_seed",
+      "correctedCount_child": 17772025,
+      "correctedCount_parent": 23950122,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-23 14:07:48",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A5_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-23 11:54:15",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A4_harvest_T1"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 3,
+      "flask_to": 3,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A5_seed",
+      "parent_event_id": "SUM-159_NLS_2N_A4_harvest_T1",
+      "passage_from": 3,
+      "passage_to": 4,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_005",
+      "phase_index": 5,
+      "real_elapsed_minutes": 134,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": null,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 20424642,
+      "cellCount_parent": 17772025,
+      "child_event_id": "SUM-159_NLS_2N_A5_harvest_T3",
+      "correctedCount_child": 20424642,
+      "correctedCount_parent": 17772025,
+      "event_provenance": {
+        "child_event": {
+          "date": "2022-09-26 14:13:49",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A5_harvest_T3"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-23 14:07:48",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_A5_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 3,
+      "flask_to": 3,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 53,
+      "milestone_label": "NLS_2N_A5_harvest_T3",
+      "parent_event_id": "SUM-159_NLS_2N_A5_seed",
+      "passage_from": 4,
+      "passage_to": 4,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_006",
+      "phase_index": 6,
+      "real_elapsed_minutes": 4326,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": 1246443181.8182,
+      "areaOccupied_parent": null,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 1530597,
+      "cellCount_parent": 20424642,
+      "child_event_id": "SUM-159_NLS_2N_dp_seed",
+      "correctedCount_child": 1105060,
+      "correctedCount_parent": 20424642,
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-12 15:55:14",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_dp_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2022-09-26 14:13:49",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_A5_harvest_T3"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 3,
+      "flask_to": 2,
+      "has_perspective_at_child_event": false,
+      "media_from": 53,
+      "media_to": 82,
+      "milestone_label": "dp_seed",
+      "parent_event_id": "SUM-159_NLS_2N_A5_harvest_T3",
+      "passage_from": 4,
+      "passage_to": 5,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_007",
+      "phase_index": 7,
+      "real_elapsed_minutes": 1120421,
+      "simulated_duration_minutes": 1440
+    },
+    {
+      "areaOccupied_child": 6974812500,
+      "areaOccupied_parent": 1246443181.8182,
+      "branch_id": "SUM159_2N_O2",
+      "cellCount_child": 9463191,
+      "cellCount_parent": 1530597,
+      "child_event_id": "SUM-159_NLS_2N_dp_seedT1",
+      "correctedCount_child": 10788818,
+      "correctedCount_parent": 1105060,
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-15 14:38:21",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_dp_seedT1"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-12 15:55:14",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_dp_seed"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "has_perspective_at_child_event": false,
+      "media_from": 82,
+      "media_to": 82,
+      "milestone_label": "dp_seedT1",
+      "parent_event_id": "SUM-159_NLS_2N_dp_seed",
+      "passage_from": 5,
+      "passage_to": 5,
+      "perspective_record_count_at_child_event": 0,
+      "phase_id": "SUM159_2N_O2::phase_008",
+      "phase_index": 8,
+      "real_elapsed_minutes": 4243,
+      "simulated_duration_minutes": 1440
+    }
+  ],
+  "schedule_version": "simulation_schedule_v1",
+  "simulation_window": {
+    "end_event_id": "SUM159_NLS_2N_O2_A7K_harvest",
+    "end_milestone": "O2_A7K_harvest",
+    "raw_elapsed_time_retained_not_runtime": true,
+    "start_event_id": "SUM-159_NLS_2N_O2_A1_seed",
+    "start_milestone": "O2_A1_seed"
+  },
+  "summary": {
+    "growth_episode_count": 8,
+    "proof_of_principle_guardrail_minutes": 86400,
+    "total_growth_simulated_minutes": 11520,
+    "transfer_event_count": 7
+  },
+  "terminal_endpoint": {
+    "event_id": "SUM159_NLS_2N_O2_A7K_harvest",
+    "event_provenance": {
+      "child_event": {
+        "date": "2025-03-05 15:33:14",
+        "event": "harvest",
+        "id": "SUM159_NLS_2N_O2_A7K_harvest"
+      },
+      "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+      "parent_event": {
+        "date": "2025-03-01 19:43:00",
+        "event": "seeding",
+        "id": "SUM-159_NLS_2N_O2_A7K_seed"
+      },
+      "root_event_id": "SUM-159_NLS_mCherry"
+    },
+    "milestone_label": "O2_A7K_harvest",
+    "perspective_record_count_at_event": 16,
+    "perspective_size_support": {
+      "evidence_class": "perspective_molecular",
+      "role": "endpoint_validation"
+    },
+    "terminal_perspective_record_count": 16,
+    "terminal_perspective_supported_event_count": 1
+  },
+  "transfer_events": [
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A2_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-20 15:51:54",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A2_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-18 13:43:16",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A1_seedT1"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.014983035797822609,
+        "cellCount_child_to_parent_ratio": 0.05799516343224559,
+        "correctedCount_child_to_parent_ratio": 0.05799516343224559
+      },
+      "media_from": 100,
+      "media_to": 101,
+      "milestone_label": "O2_A2_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 102970643.9394,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6872482007.5758
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 366708,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6323079
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 366708,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6323079
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A1_seedT1",
+      "passage_from": 6,
+      "passage_to": 7,
+      "phase_id": "SUM159_2N_O2::phase_011",
+      "real_elapsed_minutes": 3009,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A3_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-11-27 13:03:18",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A3_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-11-25 16:02:44",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A2_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.022826832659383237,
+        "cellCount_child_to_parent_ratio": 0.06415558902369664,
+        "correctedCount_child_to_parent_ratio": 0.06415558902369664
+      },
+      "media_from": 101,
+      "media_to": 102,
+      "milestone_label": "O2_A3_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 155116477.2727,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6795357007.5758
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 402467,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6273296
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 402467,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 6273296
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A2_seedT2",
+      "passage_from": 7,
+      "passage_to": 8,
+      "phase_id": "SUM159_2N_O2::phase_013",
+      "real_elapsed_minutes": 2701,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A4_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-04 17:27:19",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A4_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-02 12:59:22",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A3_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.009927280614049362,
+        "cellCount_child_to_parent_ratio": 0.06848813342481333,
+        "correctedCount_child_to_parent_ratio": 0.06848813342481333
+      },
+      "media_from": 102,
+      "media_to": 103,
+      "milestone_label": "O2_A4_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 72948863.6364,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7348322916.6667
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 523768,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7647573
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 523768,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7647573
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A3_seedT2",
+      "passage_from": 8,
+      "passage_to": 9,
+      "phase_id": "SUM159_2N_O2::phase_015",
+      "real_elapsed_minutes": 3148,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A5_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-11 17:30:47",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A5_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-09 14:44:30",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A4_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.06767492542092429,
+        "cellCount_child_to_parent_ratio": 0.11271590176326239,
+        "correctedCount_child_to_parent_ratio": 0.11271590176326239
+      },
+      "media_from": 103,
+      "media_to": 104,
+      "milestone_label": "O2_A5_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 500823863.6364,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7400434659.0909
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 809842,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7184807
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 809842,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7184807
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A4_seedT2",
+      "passage_from": 9,
+      "passage_to": 10,
+      "phase_id": "SUM159_2N_O2::phase_017",
+      "real_elapsed_minutes": 3046,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A6_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-18 16:45:47",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A6_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-16 16:02:19",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A5_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.005224407401615126,
+        "cellCount_child_to_parent_ratio": 0.04029412354433855,
+        "correctedCount_child_to_parent_ratio": 0.04029412354433855
+      },
+      "media_from": 104,
+      "media_to": 105,
+      "milestone_label": "O2_A6_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 38742424.2424,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7415659090.9091
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 480296,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 11919753
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 480296,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 11919753
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A5_seedT2",
+      "passage_from": 10,
+      "passage_to": 11,
+      "phase_id": "SUM159_2N_O2::phase_019",
+      "real_elapsed_minutes": 2923,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A7_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2024-12-25 14:54:11",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A7_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-23 13:24:56",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A6_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.016877027935101162,
+        "cellCount_child_to_parent_ratio": 0.054176047525880615,
+        "correctedCount_child_to_parent_ratio": 0.054176047525880615
+      },
+      "media_from": 105,
+      "media_to": 106,
+      "milestone_label": "O2_A7_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 124863636.3636,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7398437500
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 420697,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7765369
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 420697,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7765369
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A6_seedT2",
+      "passage_from": 11,
+      "passage_to": 12,
+      "phase_id": "SUM159_2N_O2::phase_021",
+      "real_elapsed_minutes": 2969,
+      "simulated_duration_minutes": 0
+    },
+    {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "child_event_id": "SUM-159_NLS_2N_O2_A7K_seed",
+      "episode_type": "transfer_event",
+      "event_provenance": {
+        "child_event": {
+          "date": "2025-03-01 19:43:00",
+          "event": "seeding",
+          "id": "SUM-159_NLS_2N_O2_A7K_seed"
+        },
+        "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+        "parent_event": {
+          "date": "2024-12-30 16:30:14",
+          "event": "harvest",
+          "id": "SUM-159_NLS_2N_O2_A7_seedT2"
+        },
+        "root_event_id": "SUM-159_NLS_mCherry"
+      },
+      "flask_from": 2,
+      "flask_to": 2,
+      "inferred_bottleneck": {
+        "areaOccupied_child_to_parent_ratio": 0.28154438456798375,
+        "cellCount_child_to_parent_ratio": 0.22046865050974226,
+        "correctedCount_child_to_parent_ratio": 0.22046865050974226
+      },
+      "media_from": 106,
+      "media_to": 101,
+      "milestone_label": "O2_A7K_seed",
+      "observables": {
+        "Passaging.areaOccupied_um2": {
+          "derived_quantity": true,
+          "end": 2083483901.5152,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7400196969.697
+        },
+        "Passaging.cellCount": {
+          "derived_quantity": true,
+          "end": 1596546,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7241601
+        },
+        "Passaging.correctedCount": {
+          "derived_quantity": true,
+          "end": 1596546,
+          "evidence_class": "derived_event_linked_phenotype",
+          "is_direct_observation": false,
+          "start": 7241601
+        }
+      },
+      "parent_event_id": "SUM-159_NLS_2N_O2_A7_seedT2",
+      "passage_from": 12,
+      "passage_to": 13,
+      "phase_id": "SUM159_2N_O2::phase_023",
+      "real_elapsed_minutes": 88033,
+      "simulated_duration_minutes": 0
+    }
+  ],
+  "validation": {
+    "O2_A1_seed_used_as_initial_condition_not_growth_endpoint": true,
+    "harvest_to_seed_intervals_labeled_transfer_event": true,
+    "pre_o2_phases_remain_context_only": true,
+    "seed_to_harvest_intervals_labeled_growth_episode": true,
+    "terminal_perspective_support_retained_as_endpoint_validation": true,
+    "total_simulated_growth_duration_within_guardrail": true,
+    "transfer_events_not_assigned_growth_duration": true
+  }
+}

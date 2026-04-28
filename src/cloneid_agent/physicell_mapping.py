@@ -43,6 +43,11 @@ def build_physicell_mapping(
     else:
         planned_max_time_min = max(60, int(round(float(span_days) * 1440.0)))
     within_guardrail = planned_max_time_min <= int(max_proof_of_principle_minutes)
+    simulation_duration_source = (
+        "selected_smoke_lineage_object"
+        if bool(selected_lineage_object_payload.get("smoke_eligible", False))
+        else "selected_bounded_modeling_lineage_object"
+    )
 
     return {
         "selected_lineage_object_id": selected_lineage_object_payload.get(
@@ -68,7 +73,7 @@ def build_physicell_mapping(
             "planned_max_time_min": planned_max_time_min,
             "max_proof_of_principle_minutes": int(max_proof_of_principle_minutes),
             "within_proof_of_principle_guardrail": within_guardrail,
-            "simulation_duration_source": "selected_bounded_modeling_lineage_object",
+            "simulation_duration_source": simulation_duration_source,
         },
         "observables": selected_observables_payload.get("selected", []),
         "context_transitions_primary": selected_lineage_object_payload.get(

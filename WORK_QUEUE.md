@@ -20,11 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Resolve `Q005`: decide whether first proof-of-principle lineage-object selection should enforce the `60`-day runtime guardrail directly, or whether bounded selection and runtime validation should remain separate modes.
-2. After `Q005` is resolved, either:
-   - tighten bounded lineage-object selection for smoke-ready mode, or
-   - add an explicit override path for longer bounded objects.
-3. Only after `Q005` is resolved, resume candidate generation and further smoke testing from the bounded selected lineage object.
+1. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
+2. Add generated-model smoke coverage for a second family from the smoke-selected lineage object after the family-specific scaffold split is in place.
+3. Begin first-pass quantitative evaluation of simulation outputs against the smoke-selected lineage-object observables once a family-specific candidate is available.
 
 ---
 
@@ -154,6 +152,22 @@ _None yet._
    - planned max time: `167040` minutes
    - proof-of-principle threshold: `86400` minutes
    - result: validation failure until a smaller bounded object is selected or the user explicitly overrides.
+72. Added smoke-eligible modeling-lineage-object filtering as a third selection tier on top of bounded modeling candidates:
+   - `smoke_eligible_modeling_lineage_objects.json`
+   - `selected_smoke_lineage_object.json`
+73. Verified the current live smoke-selection state under `runs/live_lineage_objects_20260427T042000/`:
+   - bounded modeling candidates: `3`
+   - smoke-eligible modeling candidates: `2`
+   - selected broader bounded object: `rooted_trajectory_bundle::P20100614`
+   - selected smoke object: `rooted_trajectory_bundle::2586-4`
+74. Verified that the current selected smoke lineage object is candidate-generation ready:
+   - event count: `4`
+   - graph depth: `2`
+   - phenotype time span: `0.003` days
+   - planned max time: `60` minutes
+   - terminal Perspective support: `2`
+   - selected calibration observable: `Passaging.cellCount`
+75. Refreshed downstream artifacts from `selected_smoke_lineage_object.json` and verified default candidate generation is unblocked on the smoke-selected path.
 
 ---
 

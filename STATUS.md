@@ -6,6 +6,13 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Added smoke-eligible modeling-lineage-object selection as a third tier on top of broader bounded modeling candidates:
+  - `smoke_eligible_modeling_lineage_objects.json`
+  - `smoke_eligible_modeling_lineage_objects.md`
+  - `selected_smoke_lineage_object.json`
+  - `selected_smoke_lineage_object.md`
+- Updated default candidate generation to require a smoke-eligible selected lineage object unless a future explicit override path is added.
+- Refreshed downstream artifacts from the smoke-selected lineage object and verified the smoke-selected path is candidate-generation ready.
 - Added bounded modeling-candidate lineage-object selection on top of global lineage-object discovery:
   - `modeling_candidate_lineage_objects.json`
   - `excluded_lineage_objects.json`
@@ -180,25 +187,40 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - phenotype time span: `116.0` days
   - terminal Perspective support: `2`
 - The current bounded-selection totals under `runs/live_lineage_objects_20260427T042000/` are:
-  - `54` modeling-candidate lineage objects
+  - `3` modeling-candidate lineage objects
   - `553` excluded lineage objects
+- The current smoke-selected lineage object is now:
+  - `rooted_trajectory_bundle::2586-4`
+  - type: `RootedTrajectoryBundle`
+  - event count: `4`
+  - graph depth: `2`
+  - phenotype time span: `0.003` days
+  - planned max time: `60` minutes
+  - terminal Perspective support: `2`
+- The current smoke-selection totals under `runs/live_lineage_objects_20260427T042000/` are:
+  - `2` smoke-eligible modeling lineage objects
+  - top near miss: `rooted_trajectory_bundle::P20100614`
+    - `exceeds_smoke_runtime_guardrail`
+    - `weak_calibration_observable`
+    - `cell_size_only_calibration`
+    - `no_count_or_area_trajectory`
 - Downstream deterministic artifact generation is now aligned to the selected global lineage object:
   - `selected_observables.json` now records `selected_lineage_object_id` and `selected_lineage_object_type`
   - `physicell_mapping.json` now records lineage-object identity, traversal policy, and primary/secondary context transitions
 - The refreshed bounded selected-observables artifact under `runs/live_lineage_objects_20260427T042000/` now selects:
-  - calibration / time-series: `Passaging.cellSize_um2` with `5` supporting rows
+  - calibration / time-series: `Passaging.cellCount` with `4` supporting rows
   - endpoint validation / constraint: `Perspective.size` with `4` supporting rows
 - `Passaging.correctedCount`, when selected in this workflow, is now classified as:
   - `derived_event_linked_phenotype`
   - `is_direct_observation = false`
   - `derived_quantity = true`
 - The refreshed bounded mapping artifact under `runs/live_lineage_objects_20260427T042000/` now maps from:
-  - selected lineage object: `rooted_trajectory_bundle::P20100614`
-  - initial event: `P20100614`
+  - selected lineage object: `rooted_trajectory_bundle::2586-4`
+  - initial event: `2586-4`
   - selected lineage object type: `RootedTrajectoryBundle`
-  - planned max time: `167040` minutes
-  - duration source: `selected_bounded_modeling_lineage_object`
-  - guardrail status: `within_proof_of_principle_guardrail = false`
+  - planned max time: `60` minutes
+  - duration source: `selected_smoke_lineage_object`
+  - guardrail status: `within_proof_of_principle_guardrail = true`
 - First-pass repository-owned PhysiCell model candidates now exist under `runs/live_lineage_objects_20260427T042000/model_candidates/` for the recommended families:
   - `neutral_growth`
   - `fixed_state_fitness`
@@ -207,7 +229,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - family: `neutral_growth`
   - executable: `/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity`
   - config source: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/config/PhysiCell_settings.xml`
-  - smoke output: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T013536Z`
+  - smoke output: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T031617Z`
 - First-pass generated-model evaluation artifacts now exist under `runs/live_lineage_objects_20260427T042000/`:
   - `evaluation.json`
   - `evaluation.md`
@@ -301,9 +323,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Family-specific PhysiCell parameterization is still shallow; the generated model candidates currently share a common runtime scaffold and provenance structure, but they are not yet differentiated by family-specific calibrated assumptions.
 - Quantitative comparison between simulation outputs and CLONEID observables is not implemented yet; the current evaluation layer only records runtime readiness and smoke-output presence.
-- Candidate generation from the current bounded selected modeling object is blocked by a Level 2 ambiguity:
-  - the selected bounded object satisfies the broad `<= 180`-day modeling filter but fails the `<= 60`-day proof-of-principle runtime guardrail
-  - see `Q005` for the unresolved choice between tightening selection vs allowing explicit runtime override
+- Broader bounded modeling objects that exceed smoke/runtime guardrails are intentionally excluded from default candidate generation until an explicit override policy is added.
 
 ---
 

@@ -19,9 +19,13 @@ from .lineage_object_selection import (
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
 from .modeling_lineage_selection import (
     classify_lineage_objects_for_modeling_from_file,
+    classify_modeling_candidates_for_smoke_from_file,
     select_modeling_lineage_object_from_file,
+    select_smoke_lineage_object_from_file,
     write_modeling_candidate_artifacts,
+    write_selected_smoke_lineage_object,
     write_selected_modeling_lineage_object,
+    write_smoke_candidate_artifacts,
 )
 from .model_candidate import generate_model_candidates_from_files, write_model_candidates
 from .observable_selection import (
@@ -398,6 +402,36 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for selected_modeling_lineage_object artifacts",
     )
 
+    smoke_candidates_parser = subparsers.add_parser(
+        "select-smoke-lineage-candidates",
+        help="Filter bounded modeling candidates into smoke-eligible modeling candidates.",
+    )
+    smoke_candidates_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to modeling_candidate_lineage_objects.json",
+    )
+    smoke_candidates_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for smoke_eligible_modeling_lineage_objects artifacts",
+    )
+
+    smoke_select_parser = subparsers.add_parser(
+        "select-smoke-lineage-object",
+        help="Select the top smoke-eligible proof-of-principle lineage object.",
+    )
+    smoke_select_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to smoke_eligible_modeling_lineage_objects.json",
+    )
+    smoke_select_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_smoke_lineage_object artifacts",
+    )
+
     live_lineage_parser = subparsers.add_parser(
         "discover-live-lineage-objects",
         help="Export full CLONEID records, discover global lineage objects, rank them, and select one lineage object.",
@@ -522,6 +556,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "select-modeling-lineage-object":
         selection = select_modeling_lineage_object_from_file(args.input)
         write_selected_modeling_lineage_object(args.output_dir, selection)
+        return 0
+    if args.command == "select-smoke-lineage-candidates":
+        payload = classify_modeling_candidates_for_smoke_from_file(args.input)
+        write_smoke_candidate_artifacts(args.output_dir, payload)
+        return 0
+    if args.command == "select-smoke-lineage-object":
+        selection = select_smoke_lineage_object_from_file(args.input)
+        write_selected_smoke_lineage_object(args.output_dir, selection)
         return 0
     if args.command == "discover-live-lineage-objects":
         discover_rank_and_select_lineage_objects(

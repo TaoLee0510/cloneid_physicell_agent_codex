@@ -102,6 +102,11 @@ def generate_model_candidates(
         "selected_lineage_object_type",
         selected_lineage_object_payload.get("selected_lineage_object_type"),
     )
+    smoke_eligible = bool(selected_lineage_object_payload.get("smoke_eligible", False))
+    if not smoke_eligible:
+        raise ValueError(
+            "Default candidate generation requires a smoke-eligible selected lineage object; use selected_smoke_lineage_object.json or add an explicit runtime override."
+        )
 
     candidates: list[dict[str, Any]] = []
     for family in model_families:

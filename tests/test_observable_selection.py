@@ -35,6 +35,21 @@ class ObservableSelectionTests(unittest.TestCase):
         self.assertTrue(observables["selected"][0]["derived_quantity"])
         self.assertTrue(any(item["source"] == "Identity.size/state" for item in observables["excluded"]))
 
+    def test_select_observables_does_not_prefer_cell_size_when_count_or_area_exists(self) -> None:
+        payload = {
+            "selected_lineage_object_id": "rooted_trajectory_bundle::mock_root",
+            "selected_lineage_object_type": "RootedTrajectoryBundle",
+            "passaging_records": [
+                {"cellSize_um2": 100.0, "cellCount": 10},
+                {"cellSize_um2": 110.0, "cellCount": 12},
+                {"cellSize_um2": 120.0, "cellCount": 15},
+            ],
+            "perspective_records": [],
+            "identity_support_records": [],
+        }
+        observables = select_observables_from_lineage_object_payload(payload)
+        self.assertEqual(observables["selected"][0]["source"], "Passaging.cellCount")
+
     def test_select_observables_cli_writes_artifacts(self) -> None:
         payload = {
             "selected_lineage_object_id": "lineage_path::mock_endpoint",

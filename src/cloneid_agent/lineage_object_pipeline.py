@@ -12,9 +12,13 @@ from .lineage_object_selection import select_top_lineage_object, write_selected_
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
 from .modeling_lineage_selection import (
     classify_lineage_objects_for_modeling,
+    classify_modeling_candidates_for_smoke,
     select_modeling_lineage_object,
+    select_smoke_lineage_object,
     write_modeling_candidate_artifacts,
+    write_selected_smoke_lineage_object,
     write_selected_modeling_lineage_object,
+    write_smoke_candidate_artifacts,
 )
 from .run_io import prepare_run_directory, write_json, write_markdown
 
@@ -70,6 +74,13 @@ def discover_rank_and_select_lineage_objects(
     modeling_selection = select_modeling_lineage_object(modeling_payload)
     write_selected_modeling_lineage_object(run_dir, modeling_selection)
 
+    smoke_payload = classify_modeling_candidates_for_smoke(modeling_payload)
+    write_smoke_candidate_artifacts(run_dir, smoke_payload)
+    smoke_selection = None
+    if smoke_payload.get("smoke_eligible_modeling_candidate_count", 0) > 0:
+        smoke_selection = select_smoke_lineage_object(smoke_payload)
+        write_selected_smoke_lineage_object(run_dir, smoke_selection)
+
     summary = {
         "mode": mode,
         "ranked_candidates_source": str(ranked_candidates_path),
@@ -79,6 +90,9 @@ def discover_rank_and_select_lineage_objects(
         "selected_lineage_object_type": selection["selected_lineage_object_type"],
         "selected_modeling_lineage_object_id": modeling_selection["selected_lineage_object_id"],
         "selected_modeling_lineage_object_type": modeling_selection["selected_lineage_object_type"],
+        "smoke_eligible_modeling_candidate_count": smoke_payload.get("smoke_eligible_modeling_candidate_count", 0),
+        "selected_smoke_lineage_object_id": None if smoke_selection is None else smoke_selection["selected_lineage_object_id"],
+        "selected_smoke_lineage_object_type": None if smoke_selection is None else smoke_selection["selected_lineage_object_type"],
         "selection_starts_from_candidate_segment": False,
     }
     write_json(run_dir / "lineage_object_pipeline_summary.json", summary)
@@ -94,6 +108,8 @@ def discover_rank_and_select_lineage_objects(
                 f"- Selected global type: `{selection['selected_lineage_object_type']}`",
                 f"- Selected bounded modeling lineage object: `{modeling_selection['selected_lineage_object_id']}`",
                 f"- Selected bounded type: `{modeling_selection['selected_lineage_object_type']}`",
+                f"- Smoke-eligible modeling candidate count: `{smoke_payload.get('smoke_eligible_modeling_candidate_count', 0)}`",
+                f"- Selected smoke lineage object: `{None if smoke_selection is None else smoke_selection['selected_lineage_object_id']}`",
                 "- Selection starts from CandidateSegment: `false`",
             ]
         )

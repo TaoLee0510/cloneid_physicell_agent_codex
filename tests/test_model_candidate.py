@@ -44,6 +44,7 @@ class ModelCandidateTests(unittest.TestCase):
                 selected_lineage_object_payload={
                     "selected_lineage_object_id": "rooted_trajectory_bundle::mock_root",
                     "selected_lineage_object_type": "RootedTrajectoryBundle",
+                    "smoke_eligible": True,
                 },
                 selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
                 mapping_payload={
@@ -83,6 +84,7 @@ class ModelCandidateTests(unittest.TestCase):
                     {
                         "selected_lineage_object_id": "lineage_path::mock_endpoint",
                         "selected_lineage_object_type": "LineagePath",
+                        "smoke_eligible": True,
                     }
                 )
             )
@@ -141,6 +143,7 @@ class ModelCandidateTests(unittest.TestCase):
                     selected_lineage_object_payload={
                         "selected_lineage_object_id": "rooted_trajectory_bundle::too_big",
                         "selected_lineage_object_type": "RootedTrajectoryBundle",
+                        "smoke_eligible": True,
                     },
                     selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
                     mapping_payload={
@@ -151,6 +154,33 @@ class ModelCandidateTests(unittest.TestCase):
                             "planned_max_time_min": 100000,
                             "max_proof_of_principle_minutes": 86400,
                             "within_proof_of_principle_guardrail": False,
+                        },
+                        "recommended_model_families": ["neutral_growth"],
+                    },
+                    output_dir=root / "run",
+                    physicell_root=physicell_root,
+                )
+
+    def test_generate_model_candidates_rejects_non_smoke_eligible_object_by_default(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            physicell_root = self._fake_physicell_root(root)
+            with self.assertRaises(ValueError):
+                generate_model_candidates(
+                    selected_lineage_object_payload={
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_smoke",
+                        "selected_lineage_object_type": "RootedTrajectoryBundle",
+                        "smoke_eligible": False,
+                    },
+                    selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
+                    mapping_payload={
+                        "mapping_version": "physicell_mapping_v1",
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_smoke",
+                        "selected_lineage_object_type": "RootedTrajectoryBundle",
+                        "timeline": {
+                            "planned_max_time_min": 1440,
+                            "max_proof_of_principle_minutes": 86400,
+                            "within_proof_of_principle_guardrail": True,
                         },
                         "recommended_model_families": ["neutral_growth"],
                     },

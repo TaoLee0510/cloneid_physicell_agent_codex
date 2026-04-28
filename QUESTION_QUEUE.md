@@ -124,15 +124,15 @@ Questions should not block all work unless they are high-risk. When possible, th
    - smoke / proof-of-principle mode (`<= 60` days)
    - broader bounded modeling mode (`<= 180` days)
 
-**Current default assumption:** Keep bounded lineage-object selection and runtime guardrail as separate stages for now; block candidate generation if the bounded object exceeds the runtime guardrail.
+**Current default assumption:** Enforce the `60`-day runtime guardrail by default for the first proof-of-principle modeling target, without runtime override.
 
-**Blocked work:** Candidate generation, further smoke testing, and quantitative simulation comparison from the currently selected bounded lineage object.
+**Blocked work:** None on the smoke-eligible path; broader bounded but non-smoke-eligible objects remain blocked from default candidate generation unless a future override policy is added.
 
 **Work continuing meanwhile:** Documentation cleanup, ranking review, artifact interpretation, and any work that does not require overriding the runtime guardrail.
 
 **Agent recommendation:** Option 3, because it preserves the broader lineage-object screen while making smoke-ready proof-of-principle selection explicit and auditable.
 
-**Status:** Open
+**Status:** Answered
 
 ---
 
@@ -167,6 +167,17 @@ Do not depend on PhysiCell Studio for automated execution. Studio may be used on
 **Answered:** Use `Perspective` as the default endpoint molecular constraint and treat `Identity` as secondary / interpretive support.
 
 **Consequence:** Observable extraction can proceed with `Perspective`-first endpoint constraints, while `Identity` remains clearly labeled as inferred reconciliation support rather than direct observed phenotype.
+
+## Q005 — Should first proof-of-principle selection enforce the 60-day runtime guardrail?
+
+**Answered:** Yes. For the first proof-of-principle modeling target, enforce the `60`-day smoke/runtime guardrail by default. Do not use a runtime override for now. Keep broader bounded lineage-object selection available, but add a second smoke-eligibility tier:
+
+1. `global_lineage_objects`
+2. `bounded_modeling_lineage_objects`
+3. `smoke_eligible_modeling_lineage_objects`
+4. `selected_smoke_lineage_object`
+
+**Consequence:** Candidate generation should use `selected_smoke_lineage_object.json` by default, and broader bounded but non-smoke-eligible objects remain provenance-rich candidates rather than immediate simulation targets.
 
 ---
 

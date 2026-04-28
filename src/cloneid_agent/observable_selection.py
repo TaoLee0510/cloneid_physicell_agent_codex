@@ -13,50 +13,80 @@ def _count_non_null(records: list[dict[str, Any]], field: str) -> int:
     return sum(1 for record in records if record.get(field) is not None)
 
 
+def summarize_calibration_candidates(passaging_records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    candidates = [
+        {
+            "source": "Passaging.correctedCount",
+            "target": "viable cell count",
+            "supporting_rows": _count_non_null(passaging_records, "correctedCount"),
+            "priority": 0,
+            "evidence_class": "derived_event_linked_phenotype",
+            "is_direct_observation": False,
+            "derived_quantity": True,
+        },
+        {
+            "source": "Passaging.cellCount",
+            "target": "raw cell count",
+            "supporting_rows": _count_non_null(passaging_records, "cellCount"),
+            "priority": 1,
+            "evidence_class": "derived_event_linked_phenotype",
+            "is_direct_observation": False,
+            "derived_quantity": True,
+        },
+        {
+            "source": "Passaging.areaOccupied_um2",
+            "target": "occupied area",
+            "supporting_rows": _count_non_null(passaging_records, "areaOccupied_um2"),
+            "priority": 2,
+            "evidence_class": "derived_event_linked_phenotype",
+            "is_direct_observation": False,
+            "derived_quantity": True,
+        },
+        {
+            "source": "Passaging.cellSize_um2",
+            "target": "cell size proxy",
+            "supporting_rows": _count_non_null(passaging_records, "cellSize_um2"),
+            "priority": 3,
+            "evidence_class": "phenotype_observed",
+            "is_direct_observation": True,
+            "derived_quantity": False,
+        },
+    ]
+    candidates = [item for item in candidates if item["supporting_rows"] > 0]
+    candidates.sort(key=lambda item: (-item["supporting_rows"], item["priority"], item["source"]))
+    return candidates
+
+
 def select_observables_from_lineage_object_payload(lineage_object_payload: dict[str, Any]) -> dict[str, Any]:
     passaging_records = lineage_object_payload.get("passaging_records", [])
     perspective_records = lineage_object_payload.get("perspective_records", [])
     identity_records = lineage_object_payload.get("identity_support_records", lineage_object_payload.get("identity_records", []))
 
-    calibration_candidates = [
-        ("Passaging.correctedCount", "viable cell count", _count_non_null(passaging_records, "correctedCount"), 0),
-        ("Passaging.areaOccupied_um2", "occupied area", _count_non_null(passaging_records, "areaOccupied_um2"), 1),
-        ("Passaging.cellCount", "raw cell count", _count_non_null(passaging_records, "cellCount"), 2),
-        ("Passaging.cellSize_um2", "cell size proxy", _count_non_null(passaging_records, "cellSize_um2"), 3),
-    ]
-    calibration_candidates = [item for item in calibration_candidates if item[2] > 0]
-    calibration_candidates.sort(key=lambda item: (-item[2], item[3], item[0]))
+    calibration_candidates = summarize_calibration_candidates(passaging_records)
 
     selected = []
     excluded = []
 
     if calibration_candidates:
-        top_source, top_target, support, _ = calibration_candidates[0]
-        evidence_class = "phenotype_observed"
-        is_direct_observation = True
-        derived_quantity = False
-        if top_source == "Passaging.correctedCount":
-            evidence_class = "derived_event_linked_phenotype"
-            is_direct_observation = False
-            derived_quantity = True
+        top = calibration_candidates[0]
         selected.append(
             {
-                "source": top_source,
-                "target": top_target,
-                "evidence_class": evidence_class,
-                "is_direct_observation": is_direct_observation,
-                "derived_quantity": derived_quantity,
+                "source": top["source"],
+                "target": top["target"],
+                "evidence_class": top["evidence_class"],
+                "is_direct_observation": top["is_direct_observation"],
+                "derived_quantity": top["derived_quantity"],
                 "allowed_uses": ["calibration", "time_series_validation"],
-                "supporting_rows": support,
+                "supporting_rows": top["supporting_rows"],
             }
         )
-        for source, target, support, _ in calibration_candidates[1:]:
+        for item in calibration_candidates[1:]:
             excluded.append(
                 {
-                    "source": source,
-                    "target": target,
-                    "reason": f"Lower-priority phenotype observable than {top_source}",
-                    "supporting_rows": support,
+                    "source": item["source"],
+                    "target": item["target"],
+                    "reason": f"Lower-priority phenotype observable than {top['source']}",
+                    "supporting_rows": item["supporting_rows"],
                 }
             )
 

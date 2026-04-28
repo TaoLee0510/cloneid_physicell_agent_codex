@@ -78,6 +78,7 @@ CLONEID database
 → CandidateSegment discovery / ranking
 → lineage-object ranking / review
 → bounded modeling-candidate lineage-object selection
+→ smoke-eligible modeling-lineage-object selection
 → selected lineage-object record bundle
 → observable selection
 → CLONEID-to-PhysiCell mapping

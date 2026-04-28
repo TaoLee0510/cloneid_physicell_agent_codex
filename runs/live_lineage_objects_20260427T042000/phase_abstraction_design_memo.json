@@ -1,0 +1,190 @@
+{
+  "memo_version": "phase_abstraction_design_memo_v1",
+  "anchor_lineage_object_id": "lineage_path::SUM159_NLS_4N_O2_A7K_harvest",
+  "matched_comparison_branch_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+  "technical_smoke_object_id": "rooted_trajectory_bundle::2586-4",
+  "goal": "Translate long-term CLONEID lineage paths into tractable PhysiCell model phases without simulating raw calendar time minute-by-minute.",
+  "current_artifact_facts": {
+    "anchor": {
+      "event_count": 23,
+      "lineage_path_length": 23,
+      "graph_depth": 22,
+      "raw_elapsed_time_days": 1035.26,
+      "phase_abstraction_summary": {
+        "mapping_policy": "primary_lineage_intervals_normalized",
+        "media_stressor_regime_count": 10,
+        "passage_interval_count": 22,
+        "phase_count": 22,
+        "simulated_total_duration_min": 31680
+      },
+      "observables_available": {
+        "correctedCount": 18,
+        "cellCount": 23,
+        "areaOccupied_um2": 18,
+        "Perspective.size": 19
+      }
+    },
+    "matched_branch": {
+      "event_count": 25,
+      "lineage_path_length": 25,
+      "graph_depth": 24,
+      "raw_elapsed_time_days": 900.249,
+      "observables_available": {
+        "correctedCount": 24,
+        "cellCount": 25,
+        "areaOccupied_um2": 18
+      }
+    }
+  },
+  "strategies": [
+    {
+      "strategy_id": "primary_lineage_interval_phases",
+      "title": "Primary-Lineage Interval Phases",
+      "phase_definition": "Each adjacent primary-lineage interval Event_i -> Event_i+1 along passaged_from_id1 is one phase.",
+      "event_to_physicell_mapping": {
+        "initial_conditions": "First Event on the lineage path initializes the simulation.",
+        "event_schedule": "Each subsequent Event closes one phase and starts the next.",
+        "bottlenecks_passaging": "Passage or reseeding transitions are explicit transfer/bottleneck events between phases.",
+        "harvest_endpoints": "Harvest-labeled Events serve as validation checkpoints or final endpoints.",
+        "perspective_constraints": "Perspective.origin records attached to terminal Events provide endpoint molecular constraints.",
+        "identity_support": "Identity is retained only as inferred secondary support."
+      },
+      "time_mapping": {
+        "mode": "fixed_duration_per_primary_interval",
+        "raw_time_used_literally": false,
+        "normalized_phase_duration_min": 1440,
+        "record_real_elapsed_time": true
+      },
+      "observables": [
+        "Passaging.correctedCount",
+        "Passaging.cellCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size",
+        "Identity as secondary support only"
+      ],
+      "model_family_meaning": {
+        "neutral_growth": "All phases share the same intrinsic rules; only schedule and bottlenecks differ.",
+        "fixed_state_fitness": "2N and 4N branches differ by stable effective fitness across phases.",
+        "density_dependent_or_resource_sensitive_growth": "Branch differences emerge through context-sensitive crowding or resource response during each phase."
+      },
+      "comparison_tests": [
+        "2N versus 4N branch differences under related O2-labeled lineage history",
+        "whether bottleneck structure alone explains divergence",
+        "whether density/resource dependence improves fit over neutral growth"
+      ],
+      "assumptions": [
+        "Each primary-lineage interval is a meaningful biological episode.",
+        "Phase normalization does not destroy the signal of interest.",
+        "Passage transitions matter more than literal waiting time."
+      ],
+      "failure_modes": [
+        "Equal simulated duration may over-compress some intervals and under-compress others.",
+        "Some intervals may still represent heterogeneous biology.",
+        "Passaging effects may be confounded with media or oxygen history."
+      ],
+      "manuscript_safety": "highest"
+    },
+    {
+      "strategy_id": "seed_to_harvest_episode_phases",
+      "title": "Seed-to-Harvest Episode Phases",
+      "phase_definition": "A phase is a bounded seed-to-harvest or seed-to-next-transfer experimental episode, potentially spanning multiple adjacent Events.",
+      "event_to_physicell_mapping": {
+        "initial_conditions": "Seed Events initialize a phase.",
+        "event_schedule": "Intermediate Events inside an episode become internal checkpoints.",
+        "bottlenecks_passaging": "Harvest-to-reseed transitions become hard resets between phases.",
+        "harvest_endpoints": "Harvest Events are the main phase endpoints.",
+        "perspective_constraints": "Terminal Perspective records constrain episode endpoints.",
+        "identity_support": "Identity remains secondary inferred support."
+      },
+      "time_mapping": {
+        "mode": "compressed_episode_duration",
+        "raw_time_used_literally": false,
+        "normalized_phase_duration_min": null,
+        "record_real_elapsed_time": true
+      },
+      "observables": [
+        "Passaging.correctedCount",
+        "Passaging.cellCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size",
+        "Identity as secondary support only"
+      ],
+      "model_family_meaning": {
+        "neutral_growth": "Episodes share one biological program, separated by reseeding or bottlenecks.",
+        "fixed_state_fitness": "Branch-specific fitness is stable across repeated episodes.",
+        "density_dependent_or_resource_sensitive_growth": "Episode-level environment dependence explains divergence within seeded culture periods."
+      },
+      "comparison_tests": [
+        "whether branch differences are stable across repeated seed-to-harvest episodes",
+        "whether bottleneck handling plus density/resource sensitivity is sufficient"
+      ],
+      "assumptions": [
+        "Seed-to-harvest episodes are the right biological unit.",
+        "Grouped Events within an episode are coherent under one local model context."
+      ],
+      "failure_modes": [
+        "Episode boundaries may be ambiguous.",
+        "Grouping may hide informative Event-to-Event variation."
+      ],
+      "manuscript_safety": "medium_high"
+    },
+    {
+      "strategy_id": "regime_bounded_phases",
+      "title": "Regime-Bounded Phases",
+      "phase_definition": "A phase is defined by stable media, stressor, oxygen-labeled, or local flask/seeding regime context.",
+      "event_to_physicell_mapping": {
+        "initial_conditions": "First Event in a regime initializes that phase.",
+        "event_schedule": "Events inside a regime become trajectory checkpoints.",
+        "bottlenecks_passaging": "Regime changes are explicit schedule changes.",
+        "harvest_endpoints": "Terminal harvests remain validation endpoints.",
+        "perspective_constraints": "Perspective.origin records provide endpoint molecular support.",
+        "identity_support": "Identity remains secondary inferred support."
+      },
+      "time_mapping": {
+        "mode": "fixed_duration_per_regime",
+        "raw_time_used_literally": false,
+        "normalized_phase_duration_min": null,
+        "record_real_elapsed_time": true
+      },
+      "observables": [
+        "Passaging.correctedCount",
+        "Passaging.cellCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size",
+        "Identity as secondary support only"
+      ],
+      "model_family_meaning": {
+        "neutral_growth": "One biological program persists across context shifts.",
+        "fixed_state_fitness": "Intrinsic branch differences persist across regimes.",
+        "density_dependent_or_resource_sensitive_growth": "Context switches directly modulate effective growth behavior."
+      },
+      "comparison_tests": [
+        "oxygen/regime adaptation",
+        "media/regime dependence versus stable intrinsic lineage-state differences"
+      ],
+      "assumptions": [
+        "Regime labels capture the dominant selective context.",
+        "Grouping by regime does not collapse too much lineage detail."
+      ],
+      "failure_modes": [
+        "Regime annotations may be incomplete.",
+        "This strategy may over-interpret context labels as mechanisms."
+      ],
+      "manuscript_safety": "medium"
+    }
+  ],
+  "recommended_default_strategy": {
+    "strategy_id": "primary_lineage_interval_phases",
+    "reason": "Closest to the explicit lineage graph, preserves provenance cleanly, and requires the fewest extra biological assumptions."
+  },
+  "backup_strategy": {
+    "strategy_id": "seed_to_harvest_episode_phases",
+    "reason": "Useful if interval-level phases are too fine-grained or if episode boundaries are already clear in the lineage records."
+  },
+  "open_questions_for_user": [
+    "Should the first biological proof-of-principle comparison prioritize 4N/O2 vs 2N/O2, 4N/O2 vs 4N/O1, or a three-branch comparison?",
+    "Should the first manuscript figure emphasize intrinsic 2N vs 4N differences, oxygen/regime adaptation, or both?",
+    "For first implementation, should phase duration stay fixed per lineage interval, fixed per seed-to-harvest episode, or scaled by phenotype change magnitude?",
+    "Should the first biological proof-of-principle use only cellCount, cellCount plus correctedCount, or cellCount plus correctedCount plus areaOccupied_um2 as joint calibration targets?"
+  ]
+}

@@ -6,6 +6,16 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Added global lineage-object discovery over the full `passaged_from_id1` graph before CandidateSegment-based ranking influence:
+  - `LineagePath`
+  - `RootedTrajectoryBundle`
+  - `LineageForest`
+- Added global lineage-object inventory, ranking, and selection artifacts:
+  - `global_lineage_object_inventory.json`
+  - `ranked_lineage_objects.json`
+  - `selected_lineage_object.json`
+- Verified a live global lineage-object run under:
+  - `runs/live_lineage_objects_20260427T042000/`
 - Reworked lineage-object discovery to align with cloneidR analysis semantics:
   - `passaged_from_id1` is now the primary lineage backbone
   - rooted descendant traversal uses `passaged_from_id1` only by default
@@ -132,6 +142,20 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - rooted subtrees are built from `passaged_from_id1`
   - endpoint-anchored lineage paths are recovered through `passaged_from_id1`
   - `passaged_from_id2` is preserved as secondary lineage metadata only by default
+- Global lineage-object discovery now runs before CandidateSegment score influence:
+  - `CandidateSegment` scores are annotations and ranking features only
+  - graph connectivity comes only from the full primary lineage graph
+- The current live global lineage-object inventory under `runs/live_lineage_objects_20260427T042000/` now reports:
+  - `267` discovered `LineagePath` objects
+  - `289` discovered `RootedTrajectoryBundle` objects
+  - `0` discovered `LineageForest` objects
+- The current validated live selected lineage object is now:
+  - `rooted_trajectory_bundle::SNU-668_0`
+  - type: `RootedTrajectoryBundle`
+  - root count: `1`
+  - subtree depth: `161`
+  - selection starts from CandidateSegment: `false`
+- The earlier short local-window artifact was superseded because it was discovered from CandidateSegment-seeded expansion rather than from global primary-graph discovery.
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
 - The repository scaffold has been classified into existing files, placeholders, operationally empty folders, and minimal missing implementation files.
@@ -213,9 +237,8 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Repository-coupled PhysiCell smoke testing has not been implemented yet; the successful smoke run used the upstream `heterogeneity` sample project.
-- Live TrajectoryBundle discovery and bundling over the selected CLONEID seed candidate have not been executed yet in this branch.
-- First-pass CLONEID-to-PhysiCell mapping from the selected live bundle has not been implemented yet.
-- Candidate PhysiCell model-folder generation from the current mapping artifact has not been implemented yet.
+- Downstream observable extraction and CLONEID-to-PhysiCell mapping have not yet been refreshed from `selected_lineage_object.json`; they still target the older selected-TrajectoryBundle artifact shape.
+- Candidate PhysiCell model-folder generation from the selected global lineage object has not been implemented yet.
 
 ---
 
@@ -227,7 +250,7 @@ See `QUESTION_QUEUE.md`.
 
 ## Recommended next action when user returns
 
-Regenerate and verify live selected lineage-object artifacts under the corrected `passaged_from_id1` traversal policy, then refresh downstream live observable-selection and mapping artifacts.
+Adapt observable extraction and downstream mapping to consume `selected_lineage_object.json`, then refresh live observable-selection and CLONEID-to-PhysiCell mapping artifacts from the globally selected lineage object.
 
 ---
 
@@ -289,16 +312,19 @@ Regenerate and verify live selected lineage-object artifacts under the corrected
 ## Stop checklist
 
 1. What did I complete?
+   - Implemented global lineage-object discovery over the full primary lineage graph rather than seeding discovery from CandidateSegments.
+   - Added global lineage-object ranking and selection with validity checks that prevent multi-root objects from being treated as `RootedTrajectoryBundle` or selected.
+   - Verified a live global lineage-object run and confirmed that the current selected object comes from global graph discovery rather than CandidateSegment seeding.
    - Reworked TrajectoryBundle discovery so the lineage graph is built from explicit `passaged_from_id1` parent-child structure rather than context-bucket adjacency or mixed parent traversal.
    - Added explicit primary and secondary lineage-edge artifact fields, rooted-subtree fields, endpoint path recovery, traversal-policy metadata, and candidate-segment-as-annotation behavior.
    - Updated selected-bundle and first-pass mapping layers to preserve the corrected lineage-object fields.
    - Added and passed deterministic tests covering the corrected lineage semantics and downstream artifact preservation.
 2. What safe next task did I identify?
-   - Regenerate and verify live selected lineage-object artifacts under the corrected `passaged_from_id1` traversal policy, then refresh downstream live observable-selection and mapping artifacts.
+   - Adapt observable extraction to consume `selected_lineage_object.json`, then refresh downstream live observable-selection and CLONEID-to-PhysiCell mapping artifacts from the globally selected lineage object.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Yes. It is read-only and deterministic, but it depends on live CLONEID access to regenerate and verify the current real-data artifacts.
+   - Yes. It is deterministic and reversible, and the selected lineage object now passes the required global-discovery validity checks.
 4. If yes, why am I not doing it now?
-   - I am stopping this coherent tested work unit after the offline/mock lineage-semantics implementation and test validation. The next step is live verification and artifact refresh through the CLONEID database path.
+   - I am not stopping here; this checkpoint is being refreshed before moving into the now-unblocked downstream observable-extraction branch.
 5. Am I blocked by:
    - missing credentials? no
    - missing permissions? not for the completed branch; future Docker or live DB work may still require them

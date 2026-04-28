@@ -29,7 +29,7 @@ def _segment_value(value: Any) -> str:
 
 
 def _parse_event_datetime(value: str | None) -> datetime | None:
-    if value in (None, ""):
+    if value in (None, "", "0000-00-00 00:00:00", "0000-00-00"):
         return None
     for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:

@@ -20,11 +20,11 @@ For each work block:
 
 ## Ready now
 
-1. Regenerate and verify live selected `LineagePath` / `RootedTrajectoryBundle` artifacts under the corrected `passaged_from_id1` primary-backbone traversal policy.
-2. Refresh downstream live artifacts derived from the selected lineage object:
+1. Adapt observable extraction to consume `selected_lineage_object.json` from global lineage-object discovery rather than `selected_trajectory_bundle.json`.
+2. Refresh downstream live artifacts derived from the globally selected lineage object:
    - observable selection
    - CLONEID-to-PhysiCell mapping
-3. After live lineage-object artifacts are refreshed, continue with candidate PhysiCell model-folder generation.
+3. After downstream live artifacts are refreshed from global lineage discovery, continue with candidate PhysiCell model-folder generation.
 
 ---
 
@@ -97,6 +97,18 @@ _None yet._
    - CandidateSegments are attached as annotations on the lineage graph, not used as graph connectivity
 50. Updated selection and mapping layers to preserve the new lineage-object fields.
 51. Added and passed deterministic tests for primary-lineage traversal, secondary-edge recording, rooted subtree fields, endpoint path recovery, and selected-bundle field preservation.
+52. Added global lineage-object discovery over the full `passaged_from_id1` graph, with explicit `LineagePath`, `RootedTrajectoryBundle`, and `LineageForest` classification.
+53. Added global lineage-object ranking and selection artifacts:
+   - `global_lineage_object_inventory.json`
+   - `ranked_lineage_objects.json`
+   - `selected_lineage_object.json`
+54. Verified live global lineage-object discovery and selection under `runs/live_lineage_objects_20260427T042000/`.
+55. Verified that the live selected lineage object no longer starts from a `CandidateSegment` seed:
+   - selected object type: `RootedTrajectoryBundle`
+   - selected object id: `rooted_trajectory_bundle::SNU-668_0`
+   - root count: `1`
+   - subtree depth: `161`
+56. Confirmed that the earlier short-path / multi-root problem was a discovery-semantics issue, not an edge-semantics issue, and corrected discovery to start from the full primary lineage graph.
 
 ---
 

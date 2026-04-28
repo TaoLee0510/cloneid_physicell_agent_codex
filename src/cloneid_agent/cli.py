@@ -9,6 +9,13 @@ from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .inventory import run_inventory
+from .lineage_object_pipeline import discover_rank_and_select_lineage_objects
+from .lineage_object_ranking import rank_lineage_objects_from_file, write_ranked_lineage_objects
+from .lineage_object_selection import (
+    select_top_lineage_object_from_file,
+    write_selected_lineage_object,
+)
+from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
 from .observable_selection import select_observables_from_bundle_file, write_selected_observables
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .toy_workflow import run_toy_round_trip
@@ -245,6 +252,79 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for physicell_mapping artifacts",
     )
 
+    discover_lineage_parser = subparsers.add_parser(
+        "discover-lineage-objects",
+        help="Discover global lineage objects from a full-record fixture and annotate them with CandidateSegment scores.",
+    )
+    discover_lineage_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to a JSON fixture containing full passaging, perspective, and optional identity records.",
+    )
+    discover_lineage_parser.add_argument(
+        "--ranked-candidates",
+        help="Optional ranked_candidates.json path for CandidateSegment score annotations.",
+    )
+    discover_lineage_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for global_lineage_object_inventory artifacts",
+    )
+
+    rank_lineage_parser = subparsers.add_parser(
+        "rank-lineage-objects",
+        help="Rank globally discovered lineage objects.",
+    )
+    rank_lineage_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to global_lineage_object_inventory.json",
+    )
+    rank_lineage_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for ranked_lineage_objects artifacts",
+    )
+
+    select_lineage_parser = subparsers.add_parser(
+        "select-lineage-object",
+        help="Select the top-ranked global lineage object.",
+    )
+    select_lineage_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to ranked_lineage_objects.json",
+    )
+    select_lineage_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_lineage_object artifacts",
+    )
+
+    live_lineage_parser = subparsers.add_parser(
+        "discover-live-lineage-objects",
+        help="Export full CLONEID records, discover global lineage objects, rank them, and select one lineage object.",
+    )
+    live_lineage_parser.add_argument(
+        "--ranked-candidates",
+        required=True,
+        help="Path to ranked_candidates.json used only for CandidateSegment score annotations.",
+    )
+    live_lineage_parser.add_argument(
+        "--output",
+        help="Run output directory. Defaults to runs/<run_id>.",
+    )
+    live_lineage_parser.add_argument(
+        "--run-id",
+        help="Run identifier to use when --output is not provided.",
+    )
+    live_lineage_parser.add_argument(
+        "--mode",
+        choices=("live", "mock"),
+        default="live",
+        help="Use live cloneid DB export or mock full-record export.",
+    )
+
     return parser
 
 
@@ -295,6 +375,32 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "map-to-physicell":
         mapping = build_physicell_mapping_from_files(args.bundle, args.observables)
         write_physicell_mapping(args.output_dir, mapping)
+        return 0
+    if args.command == "discover-lineage-objects":
+        ranked_payload = None
+        if args.ranked_candidates:
+            import json
+            from pathlib import Path
+
+            ranked_payload = json.loads(Path(args.ranked_candidates).read_text())
+        inventory = discover_global_lineage_objects_from_file(args.input, ranked_candidates_payload=ranked_payload)
+        write_global_lineage_inventory(args.output_dir, inventory)
+        return 0
+    if args.command == "rank-lineage-objects":
+        ranked = rank_lineage_objects_from_file(args.input)
+        write_ranked_lineage_objects(args.output_dir, ranked)
+        return 0
+    if args.command == "select-lineage-object":
+        selected = select_top_lineage_object_from_file(args.input)
+        write_selected_lineage_object(args.output_dir, selected)
+        return 0
+    if args.command == "discover-live-lineage-objects":
+        discover_rank_and_select_lineage_objects(
+            ranked_candidates_path=args.ranked_candidates,
+            output=args.output,
+            run_id=args.run_id,
+            mode=args.mode,
+        )
         return 0
 
     parser.error(f"Unknown command: {args.command}")

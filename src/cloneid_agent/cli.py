@@ -18,10 +18,14 @@ from .lineage_object_selection import (
 )
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
 from .modeling_lineage_selection import (
+    classify_biological_proof_of_principle_candidates_from_file,
     classify_lineage_objects_for_modeling_from_file,
     classify_modeling_candidates_for_smoke_from_file,
+    select_biological_proof_of_principle_candidate_from_file,
     select_modeling_lineage_object_from_file,
     select_smoke_lineage_object_from_file,
+    write_biological_proof_of_principle_candidate_artifacts,
+    write_selected_biological_proof_of_principle_candidate,
     write_modeling_candidate_artifacts,
     write_selected_smoke_lineage_object,
     write_selected_modeling_lineage_object,
@@ -432,6 +436,36 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for selected_smoke_lineage_object artifacts",
     )
 
+    biological_candidates_parser = subparsers.add_parser(
+        "select-biological-proof-candidates",
+        help="Filter ranked lineage objects into biologically interpretable, phase-abstractable proof-of-principle candidates.",
+    )
+    biological_candidates_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to ranked_lineage_objects.json",
+    )
+    biological_candidates_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for biological_proof_of_principle_candidates artifacts",
+    )
+
+    biological_select_parser = subparsers.add_parser(
+        "select-biological-proof-candidate",
+        help="Select the top phase-abstracted biological proof-of-principle lineage object.",
+    )
+    biological_select_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to biological_proof_of_principle_candidates.json",
+    )
+    biological_select_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_biological_proof_of_principle_candidate artifacts",
+    )
+
     live_lineage_parser = subparsers.add_parser(
         "discover-live-lineage-objects",
         help="Export full CLONEID records, discover global lineage objects, rank them, and select one lineage object.",
@@ -564,6 +598,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "select-smoke-lineage-object":
         selection = select_smoke_lineage_object_from_file(args.input)
         write_selected_smoke_lineage_object(args.output_dir, selection)
+        return 0
+    if args.command == "select-biological-proof-candidates":
+        payload = classify_biological_proof_of_principle_candidates_from_file(args.input)
+        write_biological_proof_of_principle_candidate_artifacts(args.output_dir, payload)
+        return 0
+    if args.command == "select-biological-proof-candidate":
+        selection = select_biological_proof_of_principle_candidate_from_file(args.input)
+        write_selected_biological_proof_of_principle_candidate(args.output_dir, selection)
         return 0
     if args.command == "discover-live-lineage-objects":
         discover_rank_and_select_lineage_objects(

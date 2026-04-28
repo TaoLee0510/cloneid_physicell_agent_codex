@@ -11,10 +11,14 @@ from .lineage_object_ranking import rank_lineage_object_inventory, write_ranked_
 from .lineage_object_selection import select_top_lineage_object, write_selected_lineage_object
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
 from .modeling_lineage_selection import (
+    classify_biological_proof_of_principle_candidates,
     classify_lineage_objects_for_modeling,
     classify_modeling_candidates_for_smoke,
+    select_biological_proof_of_principle_candidate,
     select_modeling_lineage_object,
     select_smoke_lineage_object,
+    write_biological_proof_of_principle_candidate_artifacts,
+    write_selected_biological_proof_of_principle_candidate,
     write_modeling_candidate_artifacts,
     write_selected_smoke_lineage_object,
     write_selected_modeling_lineage_object,
@@ -81,6 +85,13 @@ def discover_rank_and_select_lineage_objects(
         smoke_selection = select_smoke_lineage_object(smoke_payload)
         write_selected_smoke_lineage_object(run_dir, smoke_selection)
 
+    biological_payload = classify_biological_proof_of_principle_candidates(ranked)
+    write_biological_proof_of_principle_candidate_artifacts(run_dir, biological_payload)
+    biological_selection = None
+    if biological_payload.get("biological_proof_of_principle_candidate_count", 0) > 0:
+        biological_selection = select_biological_proof_of_principle_candidate(biological_payload)
+        write_selected_biological_proof_of_principle_candidate(run_dir, biological_selection)
+
     summary = {
         "mode": mode,
         "ranked_candidates_source": str(ranked_candidates_path),
@@ -93,6 +104,9 @@ def discover_rank_and_select_lineage_objects(
         "smoke_eligible_modeling_candidate_count": smoke_payload.get("smoke_eligible_modeling_candidate_count", 0),
         "selected_smoke_lineage_object_id": None if smoke_selection is None else smoke_selection["selected_lineage_object_id"],
         "selected_smoke_lineage_object_type": None if smoke_selection is None else smoke_selection["selected_lineage_object_type"],
+        "biological_proof_of_principle_candidate_count": biological_payload.get("biological_proof_of_principle_candidate_count", 0),
+        "selected_biological_proof_of_principle_candidate_id": None if biological_selection is None else biological_selection["selected_lineage_object_id"],
+        "selected_biological_proof_of_principle_candidate_type": None if biological_selection is None else biological_selection["selected_lineage_object_type"],
         "selection_starts_from_candidate_segment": False,
     }
     write_json(run_dir / "lineage_object_pipeline_summary.json", summary)
@@ -110,6 +124,8 @@ def discover_rank_and_select_lineage_objects(
                 f"- Selected bounded type: `{modeling_selection['selected_lineage_object_type']}`",
                 f"- Smoke-eligible modeling candidate count: `{smoke_payload.get('smoke_eligible_modeling_candidate_count', 0)}`",
                 f"- Selected smoke lineage object: `{None if smoke_selection is None else smoke_selection['selected_lineage_object_id']}`",
+                f"- Biological proof-of-principle candidate count: `{biological_payload.get('biological_proof_of_principle_candidate_count', 0)}`",
+                f"- Selected biological proof-of-principle candidate: `{None if biological_selection is None else biological_selection['selected_lineage_object_id']}`",
                 "- Selection starts from CandidateSegment: `false`",
             ]
         )

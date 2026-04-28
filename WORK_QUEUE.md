@@ -20,9 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
-2. Add generated-model smoke coverage for a second family from the smoke-selected lineage object after the family-specific scaffold split is in place.
-3. Begin first-pass quantitative evaluation of simulation outputs against the smoke-selected lineage-object observables once a family-specific candidate is available.
+1. Add a phase-abstraction-aware mapping artifact for `selected_biological_proof_of_principle_candidate.json`, preserving event order, normalized phase durations, and calibration/validation targets without literal raw-time simulation.
+2. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
+3. Add generated-model smoke coverage for a second family from the smoke-selected lineage object after the family-specific scaffold split is in place.
+4. Begin first-pass quantitative evaluation of simulation outputs against the smoke-selected lineage-object observables once a family-specific candidate is available.
 
 ---
 

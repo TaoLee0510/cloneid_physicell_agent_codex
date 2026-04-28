@@ -79,6 +79,7 @@ CLONEID database
 → lineage-object ranking / review
 → bounded modeling-candidate lineage-object selection
 → smoke-eligible modeling-lineage-object selection
+→ biological proof-of-principle candidate selection
 → selected lineage-object record bundle
 → observable selection
 → CLONEID-to-PhysiCell mapping
@@ -98,6 +99,14 @@ The agent should rank candidate CLONEID records in two stages:
 
 1. `CandidateSegment` ranking for local context-consistent groups.
 2. lineage-object ranking plus bounded modeling-candidate selection for connected biological histories that may span multiple CandidateSegments.
+
+The workflow must distinguish:
+
+1. `raw_time_simulation_eligible`
+2. `phase_abstracted_modeling_eligible`
+3. `biologically_interpretable`
+
+Long-term lineage paths should not be rejected as biologically unsuitable solely because raw elapsed clock time is large. The raw-time guardrail controls the technical smoke-test branch, not the separate biological proof-of-principle branch.
 
 A modeling unit is modelable if it contains:
 
@@ -188,6 +197,14 @@ Planned ranking features include:
 - terminal `Perspective` support
 - calibration/validation split potential
 - tractability penalty
+
+For biological proof-of-principle selection, add a second interpretation layer:
+
+- preserve event order and provenance,
+- treat each primary lineage interval as a candidate model phase,
+- record the mapping from real elapsed time to normalized simulated phase time,
+- avoid simulating idle calendar time literally,
+- preserve raw-time runtime guardrails only for the technical smoke-test branch.
 
 The selected lineage object should be the highest-priority reviewed `LineagePath` or `RootedTrajectoryBundle` unless the user provides an override.
 

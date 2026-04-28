@@ -36,6 +36,13 @@ from .observable_selection import (
     select_observables_from_lineage_object_file,
     write_selected_observables,
 )
+from .phase_planning import (
+    build_matched_primary_lineage_interval_phase_plan,
+    build_primary_lineage_interval_phase_plan_from_inventory,
+    load_inventory,
+    write_matched_phase_plan_markdown,
+    write_phase_plan,
+)
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .report import write_run_report
 from .toy_workflow import run_toy_round_trip
@@ -490,6 +497,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="Use live cloneid DB export or mock full-record export.",
     )
 
+    phase_plan_parser = subparsers.add_parser(
+        "plan-primary-lineage-phases",
+        help="Generate a fixed-duration primary-lineage interval phase plan from global_lineage_object_inventory.json.",
+    )
+    phase_plan_parser.add_argument("--inventory", required=True, help="Path to global_lineage_object_inventory.json")
+    phase_plan_parser.add_argument("--lineage-object-id", required=True, help="Lineage object id to plan")
+    phase_plan_parser.add_argument("--branch-id", required=True, help="Short branch id for emitted phases")
+    phase_plan_parser.add_argument("--output", required=True, help="Output json path")
+
+    matched_phase_plan_parser = subparsers.add_parser(
+        "plan-matched-primary-lineage-phases",
+        help="Align two previously generated primary-lineage interval phase plans by phase index.",
+    )
+    matched_phase_plan_parser.add_argument("--anchor-plan", required=True, help="Path to anchor phase plan json")
+    matched_phase_plan_parser.add_argument("--comparison-plan", required=True, help="Path to comparison phase plan json")
+    matched_phase_plan_parser.add_argument("--output-json", required=True, help="Output json path")
+    matched_phase_plan_parser.add_argument("--output-md", required=True, help="Output markdown path")
+
     return parser
 
 
@@ -614,6 +639,28 @@ def main(argv: list[str] | None = None) -> int:
             run_id=args.run_id,
             mode=args.mode,
         )
+        return 0
+    if args.command == "plan-primary-lineage-phases":
+        inventory = load_inventory(args.inventory)
+        payload = build_primary_lineage_interval_phase_plan_from_inventory(
+            inventory,
+            lineage_object_id=args.lineage_object_id,
+            branch_id=args.branch_id,
+        )
+        write_phase_plan(args.output, payload)
+        return 0
+    if args.command == "plan-matched-primary-lineage-phases":
+        import json
+        from pathlib import Path
+
+        anchor_plan = json.loads(Path(args.anchor_plan).read_text())
+        comparison_plan = json.loads(Path(args.comparison_plan).read_text())
+        payload = build_matched_primary_lineage_interval_phase_plan(
+            anchor_plan=anchor_plan,
+            comparison_plan=comparison_plan,
+        )
+        write_phase_plan(args.output_json, payload)
+        write_matched_phase_plan_markdown(args.output_md, payload)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

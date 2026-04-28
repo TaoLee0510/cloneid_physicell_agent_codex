@@ -20,7 +20,7 @@ For each work block:
 
 ## Ready now
 
-1. Add a phase-abstraction-aware mapping artifact for `selected_biological_proof_of_principle_candidate.json`, preserving event order, normalized phase durations, and calibration/validation targets without literal raw-time simulation.
+1. After user review of the generated SUM159 2N-vs-4N O2 phase plans, convert the approved phase structure into a phase-aware biological-proof mapping artifact and joint-calibration observable bundle.
 2. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
 3. Add generated-model smoke coverage for a second family from the smoke-selected lineage object after the family-specific scaffold split is in place.
 4. Begin first-pass quantitative evaluation of simulation outputs against the smoke-selected lineage-object observables once a family-specific candidate is available.
@@ -36,6 +36,7 @@ _None yet._
 ## Waiting for user
 
 1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
+2. Review the generated SUM159 primary-lineage interval phase plans before I implement phase-aware biological-proof mapping or any family-specific PhysiCell behavior.
 
 ---
 

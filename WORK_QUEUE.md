@@ -20,9 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Add first-pass evaluation/report artifacts tied to the selected lineage object and generated model candidates.
-2. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
-3. If needed, add generated-model smoke coverage for a second family after the family-specific scaffold split is in place.
+1. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
+2. Add generated-model smoke coverage for a second family after the family-specific scaffold split is in place.
+3. Begin first-pass quantitative evaluation of simulation outputs against the selected lineage-object observables, once a family-specific candidate is available rather than only the common runtime shell.
 
 ---
 
@@ -121,6 +121,15 @@ _None yet._
    - candidate family: `neutral_growth`
    - selected lineage object: `rooted_trajectory_bundle::SNU-668_0`
    - output folder: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T013536Z`
+63. Added first-pass deterministic evaluation artifacts for generated model candidates:
+   - `evaluation.json`
+   - `evaluation.md`
+64. Added a concise lineage-object run report:
+   - `report.md`
+65. Verified the current live evaluation state under `runs/live_lineage_objects_20260427T042000/`:
+   - `neutral_growth`: `smoke_verified`
+   - `fixed_state_fitness`: `generated_only`
+   - `density_dependent_growth`: `generated_only`
 
 ---
 

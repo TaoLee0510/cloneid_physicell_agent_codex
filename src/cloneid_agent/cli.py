@@ -8,6 +8,7 @@ import sys
 from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
+from .evaluation import evaluate_generated_model_candidates_from_file, write_evaluation
 from .inventory import run_inventory
 from .lineage_object_pipeline import discover_rank_and_select_lineage_objects
 from .lineage_object_ranking import rank_lineage_objects_from_file, write_ranked_lineage_objects
@@ -22,6 +23,7 @@ from .observable_selection import (
     write_selected_observables,
 )
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
+from .report import write_run_report
 from .toy_workflow import run_toy_round_trip
 from .trajectory_bundle_pipeline import discover_and_rank_trajectory_bundles
 from .trajectory_bundle_ranking import (
@@ -285,6 +287,32 @@ def build_parser() -> argparse.ArgumentParser:
         help="Path to the validated local PhysiCell install. Defaults to the pinned local install path.",
     )
 
+    evaluate_parser = subparsers.add_parser(
+        "evaluate-model-candidates",
+        help="Evaluate generated PhysiCell model candidates for runtime readiness and smoke-output presence.",
+    )
+    evaluate_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to generated_model_candidates.json",
+    )
+    evaluate_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for evaluation artifacts",
+    )
+
+    report_parser = subparsers.add_parser(
+        "write-run-report",
+        help="Write a concise Markdown report from lineage-object and generated-model artifacts.",
+    )
+    report_parser.add_argument("--lineage-object", required=True, help="Path to selected_lineage_object.json")
+    report_parser.add_argument("--observables", required=True, help="Path to selected_observables.json")
+    report_parser.add_argument("--mapping", required=True, help="Path to physicell_mapping.json")
+    report_parser.add_argument("--generated-models", required=True, help="Path to generated_model_candidates.json")
+    report_parser.add_argument("--evaluation", required=True, help="Path to evaluation.json")
+    report_parser.add_argument("--output-dir", required=True, help="Directory for report.md")
+
     discover_lineage_parser = subparsers.add_parser(
         "discover-lineage-objects",
         help="Discover global lineage objects from a full-record fixture and annotate them with CandidateSegment scores.",
@@ -418,6 +446,20 @@ def main(argv: list[str] | None = None) -> int:
             physicell_root=args.physicell_root if args.physicell_root else None,
         )
         write_model_candidates(args.output_dir, payload)
+        return 0
+    if args.command == "evaluate-model-candidates":
+        payload = evaluate_generated_model_candidates_from_file(args.input)
+        write_evaluation(args.output_dir, payload)
+        return 0
+    if args.command == "write-run-report":
+        write_run_report(
+            args.output_dir,
+            selected_lineage_object_path=args.lineage_object,
+            selected_observables_path=args.observables,
+            mapping_path=args.mapping,
+            generated_model_candidates_path=args.generated_models,
+            evaluation_path=args.evaluation,
+        )
         return 0
     if args.command == "discover-lineage-objects":
         ranked_payload = None

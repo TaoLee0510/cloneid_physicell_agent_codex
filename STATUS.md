@@ -174,6 +174,15 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - executable: `/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity`
   - config source: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/config/PhysiCell_settings.xml`
   - smoke output: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T013536Z`
+- First-pass generated-model evaluation artifacts now exist under `runs/live_lineage_objects_20260427T042000/`:
+  - `evaluation.json`
+  - `evaluation.md`
+- The current deterministic evaluation status is:
+  - `neutral_growth`: `smoke_verified`
+  - `fixed_state_fitness`: `generated_only`
+  - `density_dependent_growth`: `generated_only`
+- A concise run report now exists at:
+  - `runs/live_lineage_objects_20260427T042000/report.md`
 - The earlier short local-window artifact was superseded because it was discovered from CandidateSegment-seeded expansion rather than from global primary-graph discovery.
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
@@ -256,6 +265,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Family-specific PhysiCell parameterization is still shallow; the generated model candidates currently share a common runtime scaffold and provenance structure, but they are not yet differentiated by family-specific calibrated assumptions.
+- Quantitative comparison between simulation outputs and CLONEID observables is not implemented yet; the current evaluation layer only records runtime readiness and smoke-output presence.
 
 ---
 

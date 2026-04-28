@@ -52,7 +52,7 @@ The agent must:
 
 1. Inspect the full CLONEID database.
 2. Inventory first-stage `CandidateSegment` objects.
-3. Rank `CandidateSegment` objects and use top segments as seeds for explicit lineage-graph discovery.
+3. Rank `CandidateSegment` objects as local context signals while performing explicit lineage-graph discovery over the full primary `Passaging.passaged_from_id1` graph.
 4. Discover one or more connected lineage objects suitable for simulation:
    - `LineagePath`
    - `RootedTrajectoryBundle`
@@ -111,17 +111,20 @@ A modeling unit is modelable if it contains:
 
 For the first implementation, define a `CandidateSegment` as a local context bucket: a group of records from the database that share enough local experimental context to be summarized together.
 
-Useful grouping fields include:
+Useful grouping fields include local `Passaging` context only:
 
 - `Passaging.cellLine`
 - `Passaging.growthType`
 - `Passaging.passage`
 - `Passaging.media`
 - `Passaging.flask`
-- `Perspective.origin` for later attachment
-- `Identity.rootID` or related fields where applicable as secondary support only
 
 The implementation should record exactly how CandidateSegments were defined in `dataset_inventory.json`.
+
+`Perspective` and `Identity` should not be used to define CandidateSegments. They attach later to discovered lineage objects:
+
+- `Perspective` attaches through `Perspective.origin`
+- `Identity` attaches only as inferred secondary support
 
 CandidateSegments are useful as first-stage ranking units, but they are not assumed to be the final biologically meaningful modeling unit. Changes in passage, transfer, media, flask, harvest, or bottleneck structure may split one connected biological history across multiple CandidateSegments. Context is layered onto the lineage graph; context buckets do not define graph connectivity.
 
@@ -164,12 +167,12 @@ Implement a first-stage CandidateSegment score from 0 to 5.
 ```text
 +1 event history available
 +1 repeated phenotype measurements available
-+1 endpoint Perspective or Identity available
++1 endpoint Perspective support available
 +1 experimental context sufficient for initialization
 +1 multiple plausible mechanisms distinguishable
 ```
 
-The agent should not assume the top-ranked CandidateSegment is the final modeling unit. It should use high-ranked CandidateSegments as seeds for lineage-object discovery.
+The agent should not assume the top-ranked CandidateSegment is the final modeling unit. CandidateSegment scores are annotations and ranking features for globally discovered lineage objects; they do not seed or define primary lineage connectivity.
 
 ### Lineage-Object Ranking Plan
 

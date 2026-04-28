@@ -38,9 +38,11 @@ from .observable_selection import (
 )
 from .phase_planning import (
     build_matched_primary_lineage_interval_phase_plan,
+    build_milestone_matched_primary_lineage_interval_phase_plan,
     build_primary_lineage_interval_phase_plan_from_inventory,
     load_inventory,
     write_matched_phase_plan_markdown,
+    write_milestone_matched_phase_plan_markdown,
     write_phase_plan,
 )
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
@@ -515,6 +517,23 @@ def build_parser() -> argparse.ArgumentParser:
     matched_phase_plan_parser.add_argument("--output-json", required=True, help="Output json path")
     matched_phase_plan_parser.add_argument("--output-md", required=True, help="Output markdown path")
 
+    milestone_matched_phase_plan_parser = subparsers.add_parser(
+        "plan-milestone-matched-primary-lineage-phases",
+        help="Align two previously generated primary-lineage interval phase plans by biological milestone rather than phase index.",
+    )
+    milestone_matched_phase_plan_parser.add_argument(
+        "--anchor-plan",
+        required=True,
+        help="Path to anchor phase plan json",
+    )
+    milestone_matched_phase_plan_parser.add_argument(
+        "--comparison-plan",
+        required=True,
+        help="Path to comparison phase plan json",
+    )
+    milestone_matched_phase_plan_parser.add_argument("--output-json", required=True, help="Output json path")
+    milestone_matched_phase_plan_parser.add_argument("--output-md", required=True, help="Output markdown path")
+
     return parser
 
 
@@ -661,6 +680,19 @@ def main(argv: list[str] | None = None) -> int:
         )
         write_phase_plan(args.output_json, payload)
         write_matched_phase_plan_markdown(args.output_md, payload)
+        return 0
+    if args.command == "plan-milestone-matched-primary-lineage-phases":
+        import json
+        from pathlib import Path
+
+        anchor_plan = json.loads(Path(args.anchor_plan).read_text())
+        comparison_plan = json.loads(Path(args.comparison_plan).read_text())
+        payload = build_milestone_matched_primary_lineage_interval_phase_plan(
+            anchor_plan=anchor_plan,
+            comparison_plan=comparison_plan,
+        )
+        write_phase_plan(args.output_json, payload)
+        write_milestone_matched_phase_plan_markdown(args.output_md, payload)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

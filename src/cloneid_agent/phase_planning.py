@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from datetime import datetime
 from pathlib import Path
+import re
 from typing import Any
 
 from .run_io import write_json, write_markdown
@@ -291,6 +292,165 @@ def build_matched_primary_lineage_interval_phase_plan(
     }
 
 
+def _milestone_label(event_id: str) -> str:
+    text = event_id.replace("SUM159_", "SUM-159_")
+    patterns = [
+        r"O2_A7K_harvest",
+        r"O2_A7K_seed",
+        r"O2_A\d+_seedT\d+",
+        r"O2_A\d+_seed",
+        r"dp_seedT\d+",
+        r"dp_seed",
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, text)
+        if match:
+            return match.group(0)
+    return text.split("_", 1)[-1] if "_" in text else text
+
+
+def _milestone_phase_index(phases: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    index: dict[str, dict[str, Any]] = {}
+    for phase in phases:
+        label = _milestone_label(str(phase["child_event_id"]))
+        index[label] = phase
+    return index
+
+
+def _window_milestones(start_label: str, end_label: str, phases: list[dict[str, Any]]) -> list[str]:
+    labels = [_milestone_label(str(phase["child_event_id"])) for phase in phases]
+    if start_label not in labels or end_label not in labels:
+        raise ValueError("Comparison-window milestones are not both present in the phase plan")
+    start_idx = labels.index(start_label)
+    end_idx = labels.index(end_label)
+    return labels[start_idx : end_idx + 1]
+
+
+def build_milestone_matched_primary_lineage_interval_phase_plan(
+    *,
+    anchor_plan: dict[str, Any],
+    comparison_plan: dict[str, Any],
+    comparison_window_start: str = "O2_A1_seed",
+    comparison_window_end: str = "O2_A7K_harvest",
+) -> dict[str, Any]:
+    anchor_phases = anchor_plan.get("phases", [])
+    comparison_phases = comparison_plan.get("phases", [])
+    anchor_by_milestone = _milestone_phase_index(anchor_phases)
+    comparison_by_milestone = _milestone_phase_index(comparison_phases)
+
+    anchor_window = _window_milestones(comparison_window_start, comparison_window_end, anchor_phases)
+    comparison_window = _window_milestones(comparison_window_start, comparison_window_end, comparison_phases)
+    comparison_window_labels = [label for label in anchor_window if label in comparison_window]
+
+    matched_milestone_phases: list[dict[str, Any]] = []
+    for milestone in comparison_window_labels:
+        matched_milestone_phases.append(
+            {
+                "milestone_label": milestone,
+                "anchor_phase": anchor_by_milestone[milestone],
+                "comparison_phase": comparison_by_milestone[milestone],
+            }
+        )
+
+    def classify_unmatched(phases: list[dict[str, Any]], start: str, end: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+        labels = [_milestone_label(str(phase["child_event_id"])) for phase in phases]
+        start_idx = labels.index(start)
+        end_idx = labels.index(end)
+        prehistory = []
+        extra = []
+        tail = []
+        for idx, phase in enumerate(phases):
+            label = labels[idx]
+            annotated = {**phase, "milestone_label": label}
+            if idx < start_idx:
+                prehistory.append(annotated)
+            elif idx > end_idx:
+                tail.append(annotated)
+            elif label not in comparison_window_labels:
+                extra.append(annotated)
+        return prehistory, extra, tail
+
+    anchor_prehistory, anchor_extra, anchor_tail = classify_unmatched(
+        anchor_phases, comparison_window_start, comparison_window_end
+    )
+    comparison_prehistory, comparison_extra, comparison_tail = classify_unmatched(
+        comparison_phases, comparison_window_start, comparison_window_end
+    )
+
+    anchor_terminal = anchor_by_milestone.get("O2_A7K_harvest")
+    comparison_terminal = comparison_by_milestone.get("O2_A7K_harvest")
+    anchor_terminal_supported = bool(anchor_terminal and anchor_terminal["has_perspective_at_child_event"])
+    comparison_terminal_supported = bool(comparison_terminal and comparison_terminal["has_perspective_at_child_event"])
+    total_simulated_duration_minutes = max(
+        len(comparison_window_labels) * DEFAULT_SIMULATED_DURATION_MINUTES,
+        len(anchor_window) * DEFAULT_SIMULATED_DURATION_MINUTES,
+        len(comparison_window) * DEFAULT_SIMULATED_DURATION_MINUTES,
+    )
+
+    return {
+        "plan_version": "milestone_matched_primary_lineage_interval_phase_plan_v1",
+        "comparison_id": f"{anchor_plan['branch_id']}_vs_{comparison_plan['branch_id']}",
+        "matching_strategy": "biological_milestone_alignment",
+        "comparison_window": {
+            "recommended_start_milestone": comparison_window_start,
+            "recommended_end_milestone": comparison_window_end,
+            "recommended_start_rationale": (
+                "Use O2_A1_seed as the primary manuscript comparison start because both branches are explicitly O2-labeled "
+                "from that point onward; preserve dp history as pre-O2 context rather than forcing it into the direct phase alignment."
+            ),
+            "context_only_prehistory_milestones": ["dp_seed", "dp_seedT1"],
+        },
+        "anchor_branch": {
+            "branch_id": anchor_plan["branch_id"],
+            "lineage_object_id": anchor_plan["lineage_object_id"],
+            "terminal_perspective_supported_event_count": anchor_plan["summary"]["terminal_perspective_supported_event_count"],
+            "terminal_perspective_record_count": anchor_plan["summary"]["terminal_perspective_record_count"],
+        },
+        "comparison_branch": {
+            "branch_id": comparison_plan["branch_id"],
+            "lineage_object_id": comparison_plan["lineage_object_id"],
+            "terminal_perspective_supported_event_count": comparison_plan["summary"]["terminal_perspective_supported_event_count"],
+            "terminal_perspective_record_count": comparison_plan["summary"]["terminal_perspective_record_count"],
+        },
+        "matched_milestone_phases": matched_milestone_phases,
+        "unmatched_pre_o2_phases": {
+            "anchor": anchor_prehistory,
+            "comparison": comparison_prehistory,
+        },
+        "unmatched_extra_branch_history": {
+            "anchor": anchor_extra,
+            "comparison": comparison_extra,
+        },
+        "unmatched_post_comparison_tail": {
+            "anchor": anchor_tail,
+            "comparison": comparison_tail,
+        },
+        "endpoint_alignment": {
+            "both_branches_contain_A7K_harvest": bool(anchor_terminal and comparison_terminal),
+            "both_A7K_harvest_endpoints_have_perspective_support": anchor_terminal_supported and comparison_terminal_supported,
+            "anchor_A7K_harvest_phase": anchor_terminal,
+            "comparison_A7K_harvest_phase": comparison_terminal,
+        },
+        "observable_policy": {
+            "joint_calibration_targets": [
+                "Passaging.cellCount",
+                "Passaging.correctedCount",
+                "Passaging.areaOccupied_um2",
+            ],
+            "terminal_validation_target": "Perspective.size",
+            "identity_role": "secondary_inferred_support_only",
+        },
+        "validation": {
+            "terminal_A7K_harvest_endpoints_aligned": bool(anchor_terminal and comparison_terminal),
+            "terminal_perspective_supported_events_aligned_as_endpoints": anchor_terminal_supported and comparison_terminal_supported,
+            "phase_index_matching_not_primary_alignment": True,
+            "unmatched_phases_labeled_as_prehistory_extra_or_post_tail": True,
+            "total_simulated_duration_within_guardrail": total_simulated_duration_minutes
+            <= DEFAULT_PROOF_OF_PRINCIPLE_GUARDRAIL_MINUTES,
+        },
+    }
+
+
 def write_phase_plan(path: str | Path, payload: dict[str, Any]) -> None:
     write_json(Path(path), payload)
 
@@ -329,4 +489,50 @@ def write_matched_phase_plan_markdown(path: str | Path, payload: dict[str, Any])
         lines.extend(["", "## Unmatched comparison phases", ""])
         for phase in payload["unmatched_comparison_phases"]:
             lines.append(f"- `{phase['phase_id']}` `{phase['parent_event_id']} -> {phase['child_event_id']}`")
+    write_markdown(Path(path), "\n".join(lines) + "\n")
+
+
+def write_milestone_matched_phase_plan_markdown(path: str | Path, payload: dict[str, Any]) -> None:
+    lines = [
+        "# Milestone-Matched Phase Plan",
+        "",
+        f"- Comparison: `{payload['comparison_id']}`",
+        f"- Matching strategy: `{payload['matching_strategy']}`",
+        f"- Recommended comparison window: `{payload['comparison_window']['recommended_start_milestone']} -> {payload['comparison_window']['recommended_end_milestone']}`",
+        f"- Start rationale: {payload['comparison_window']['recommended_start_rationale']}",
+        "",
+        "## Endpoint alignment",
+        "",
+        f"- Both branches contain A7K harvest: `{payload['endpoint_alignment']['both_branches_contain_A7K_harvest']}`",
+        f"- Both A7K harvest endpoints have Perspective support: `{payload['endpoint_alignment']['both_A7K_harvest_endpoints_have_perspective_support']}`",
+        f"- Anchor terminal supported-event count: `{payload['anchor_branch']['terminal_perspective_supported_event_count']}`",
+        f"- Anchor terminal record count: `{payload['anchor_branch']['terminal_perspective_record_count']}`",
+        f"- Comparison terminal supported-event count: `{payload['comparison_branch']['terminal_perspective_supported_event_count']}`",
+        f"- Comparison terminal record count: `{payload['comparison_branch']['terminal_perspective_record_count']}`",
+        "",
+        "## Matched milestone phases",
+        "",
+    ]
+    for pair in payload.get("matched_milestone_phases", []):
+        lines.append(
+            f"- `{pair['milestone_label']}`: anchor `{pair['anchor_phase']['parent_event_id']} -> {pair['anchor_phase']['child_event_id']}` "
+            f"vs comparison `{pair['comparison_phase']['parent_event_id']} -> {pair['comparison_phase']['child_event_id']}`"
+        )
+    for section_key, heading in [
+        ("unmatched_pre_o2_phases", "Unmatched pre-O2 phases"),
+        ("unmatched_extra_branch_history", "Unmatched extra branch history"),
+        ("unmatched_post_comparison_tail", "Unmatched post-comparison tail"),
+    ]:
+        lines.extend(["", f"## {heading}", ""])
+        section = payload[section_key]
+        lines.append(f"- Anchor count: `{len(section['anchor'])}`")
+        lines.append(f"- Comparison count: `{len(section['comparison'])}`")
+        for side in ("anchor", "comparison"):
+            for phase in section[side]:
+                lines.append(
+                    f"- `{side}` `{phase['milestone_label']}` `{phase['parent_event_id']} -> {phase['child_event_id']}`"
+                )
+    lines.extend(["", "## Validation", ""])
+    for key, value in payload.get("validation", {}).items():
+        lines.append(f"- `{key}`: `{value}`")
     write_markdown(Path(path), "\n".join(lines) + "\n")

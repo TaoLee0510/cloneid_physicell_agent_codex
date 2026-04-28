@@ -8,6 +8,8 @@ from typing import Any
 
 from .run_io import write_json, write_markdown
 
+DEFAULT_MAX_PROOF_OF_PRINCIPLE_MIN = 86400
+
 
 def _root_event_ids(passaging_records: list[dict[str, Any]]) -> list[str]:
     event_ids = {str(record["id"]) for record in passaging_records}
@@ -24,6 +26,8 @@ def _root_event_ids(passaging_records: list[dict[str, Any]]) -> list[str]:
 def build_physicell_mapping(
     selected_lineage_object_payload: dict[str, Any],
     selected_observables_payload: dict[str, Any],
+    *,
+    max_proof_of_principle_minutes: int = DEFAULT_MAX_PROOF_OF_PRINCIPLE_MIN,
 ) -> dict[str, Any]:
     passaging_records = selected_lineage_object_payload.get("passaging_records", [])
     features = selected_lineage_object_payload.get(
@@ -33,6 +37,12 @@ def build_physicell_mapping(
     root_event_ids = selected_lineage_object_payload.get("root_event_ids", []) or _root_event_ids(passaging_records)
     earliest = passaging_records[0] if passaging_records else {}
     latest = passaging_records[-1] if passaging_records else {}
+    span_days = features.get("phenotype_time_span_days")
+    if span_days in (None, 0, 0.0):
+        planned_max_time_min = 1440
+    else:
+        planned_max_time_min = max(60, int(round(float(span_days) * 1440.0)))
+    within_guardrail = planned_max_time_min <= int(max_proof_of_principle_minutes)
 
     return {
         "selected_lineage_object_id": selected_lineage_object_payload.get(
@@ -55,6 +65,10 @@ def build_physicell_mapping(
             "phenotype_time_span_days": features.get("phenotype_time_span_days"),
             "first_event_date": earliest.get("date"),
             "last_event_date": latest.get("date"),
+            "planned_max_time_min": planned_max_time_min,
+            "max_proof_of_principle_minutes": int(max_proof_of_principle_minutes),
+            "within_proof_of_principle_guardrail": within_guardrail,
+            "simulation_duration_source": "selected_bounded_modeling_lineage_object",
         },
         "observables": selected_observables_payload.get("selected", []),
         "context_transitions_primary": selected_lineage_object_payload.get(
@@ -75,7 +89,14 @@ def build_physicell_mapping(
         "warnings": [
             "This is a first-pass deterministic mapping artifact, not a final simulation configuration.",
             "Identity support is retained for interpretation only and is not mapped as direct observed phenotype.",
-        ],
+        ]
+        + (
+            []
+            if within_guardrail
+            else [
+                f"Planned max time {planned_max_time_min} exceeds first-proof-of-principle guardrail {int(max_proof_of_principle_minutes)} minutes; select a smaller bounded lineage object or explicitly override."
+            ]
+        ),
     }
 
 

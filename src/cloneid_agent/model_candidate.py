@@ -7,17 +7,11 @@ from pathlib import Path
 from typing import Any
 import xml.etree.ElementTree as ET
 
+from .physicell_mapping import DEFAULT_MAX_PROOF_OF_PRINCIPLE_MIN
 from .run_io import write_json, write_markdown
 
 
 DEFAULT_PHYSICELL_ROOT = Path("/Users/4470246/Downloads/PhysiCell-1.14.2")
-
-
-def _int_minutes_from_mapping(mapping_payload: dict[str, Any]) -> int:
-    span_days = mapping_payload.get("timeline", {}).get("phenotype_time_span_days")
-    if span_days in (None, 0, 0.0):
-        return 1440
-    return max(60, int(round(float(span_days) * 1440.0)))
 
 
 def _load_base_config(physicell_root: str | Path) -> ET.ElementTree:
@@ -84,7 +78,22 @@ def generate_model_candidates(
         raise FileNotFoundError(f"PhysiCell executable not found: {executable_path}")
 
     model_families = mapping_payload.get("recommended_model_families", [])
-    planned_max_time_min = _int_minutes_from_mapping(mapping_payload)
+    planned_max_time_min = int(
+        mapping_payload.get("timeline", {}).get("planned_max_time_min", 1440)
+    )
+    max_proof_of_principle_minutes = int(
+        mapping_payload.get("timeline", {}).get(
+            "max_proof_of_principle_minutes",
+            DEFAULT_MAX_PROOF_OF_PRINCIPLE_MIN,
+        )
+    )
+    within_guardrail = bool(
+        mapping_payload.get("timeline", {}).get("within_proof_of_principle_guardrail", True)
+    )
+    if not within_guardrail:
+        raise ValueError(
+            f"Planned max time {planned_max_time_min} exceeds proof-of-principle guardrail {max_proof_of_principle_minutes} minutes; select a smaller bounded lineage object or add an explicit override."
+        )
     selected_lineage_object_id = mapping_payload.get(
         "selected_lineage_object_id",
         selected_lineage_object_payload.get("selected_lineage_object_id"),
@@ -125,6 +134,7 @@ def generate_model_candidates(
             "selected_observable_sources": [item["source"] for item in selected_observables_payload.get("selected", [])],
             "mapping_version": mapping_payload.get("mapping_version"),
             "traversal_policy": mapping_payload.get("traversal_policy", {}),
+            "max_proof_of_principle_minutes": max_proof_of_principle_minutes,
             "generation_policy": "first_pass_shared_physicell_runtime_scaffold",
         }
         write_json(family_dir / "candidate_manifest.json", candidate)

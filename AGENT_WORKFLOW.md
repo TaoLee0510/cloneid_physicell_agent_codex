@@ -73,11 +73,11 @@ The primary workflow is:
 
 ```text
 CLONEID database
-→ database inventory
+→ global lineage graph discovery
+→ lineage-object inventory
 → CandidateSegment discovery / ranking
-→ explicit lineage graph construction
-→ LineagePath / RootedTrajectoryBundle discovery
 → lineage-object ranking / review
+→ bounded modeling-candidate lineage-object selection
 → selected lineage-object record bundle
 → observable selection
 → CLONEID-to-PhysiCell mapping
@@ -96,7 +96,7 @@ A run may create a local cache of the database records used in that run, but thi
 The agent should rank candidate CLONEID records in two stages:
 
 1. `CandidateSegment` ranking for local context-consistent groups.
-2. lineage-object ranking for connected biological histories that may span multiple CandidateSegments.
+2. lineage-object ranking plus bounded modeling-candidate selection for connected biological histories that may span multiple CandidateSegments.
 
 A modeling unit is modelable if it contains:
 

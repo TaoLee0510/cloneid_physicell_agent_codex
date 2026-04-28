@@ -20,9 +20,11 @@ For each work block:
 
 ## Ready now
 
-1. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
-2. Add generated-model smoke coverage for a second family after the family-specific scaffold split is in place.
-3. Begin first-pass quantitative evaluation of simulation outputs against the selected lineage-object observables, once a family-specific candidate is available rather than only the common runtime shell.
+1. Resolve `Q005`: decide whether first proof-of-principle lineage-object selection should enforce the `60`-day runtime guardrail directly, or whether bounded selection and runtime validation should remain separate modes.
+2. After `Q005` is resolved, either:
+   - tighten bounded lineage-object selection for smoke-ready mode, or
+   - add an explicit override path for longer bounded objects.
+3. Only after `Q005` is resolved, resume candidate generation and further smoke testing from the bounded selected lineage object.
 
 ---
 
@@ -130,6 +132,28 @@ _None yet._
    - `neutral_growth`: `smoke_verified`
    - `fixed_state_fitness`: `generated_only`
    - `density_dependent_growth`: `generated_only`
+66. Added bounded modeling-candidate lineage-object selection on top of global lineage-object discovery:
+   - `modeling_candidate_lineage_objects.json`
+   - `excluded_lineage_objects.json`
+   - `selected_modeling_lineage_object.json`
+67. Verified that `rooted_trajectory_bundle::SNU-668_0` is excluded from first proof-of-principle modeling with:
+   - `too_many_events`
+   - `excessive_depth`
+   - `excessive_time_span`
+   - `too_many_context_regimes`
+   - `whole_cell_line_supertree`
+68. Updated observable classification so `Passaging.correctedCount` is treated as a derived event-linked phenotype, not a direct observation.
+69. Updated runtime mapping so planned simulation duration is derived from the selected bounded lineage object and validated against a proof-of-principle runtime guardrail.
+70. Verified the current bounded live selection under `runs/live_lineage_objects_20260427T042000/`:
+   - selected bounded object: `rooted_trajectory_bundle::P20100614`
+   - event count: `5`
+   - graph depth: `2`
+   - time span: `116.0` days
+   - terminal Perspective support: `2`
+71. Verified that downstream candidate generation is now blocked when the selected bounded object exceeds the runtime guardrail:
+   - planned max time: `167040` minutes
+   - proof-of-principle threshold: `86400` minutes
+   - result: validation failure until a smaller bounded object is selected or the user explicitly overrides.
 
 ---
 

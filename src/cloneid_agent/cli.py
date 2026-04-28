@@ -17,6 +17,12 @@ from .lineage_object_selection import (
     write_selected_lineage_object,
 )
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
+from .modeling_lineage_selection import (
+    classify_lineage_objects_for_modeling_from_file,
+    select_modeling_lineage_object_from_file,
+    write_modeling_candidate_artifacts,
+    write_selected_modeling_lineage_object,
+)
 from .model_candidate import generate_model_candidates_from_files, write_model_candidates
 from .observable_selection import (
     select_observables_from_lineage_object_file,
@@ -362,6 +368,36 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for selected_lineage_object artifacts",
     )
 
+    modeling_candidates_parser = subparsers.add_parser(
+        "select-modeling-lineage-candidates",
+        help="Filter ranked lineage objects into bounded first-proof-of-principle modeling candidates and exclusions.",
+    )
+    modeling_candidates_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to ranked_lineage_objects.json",
+    )
+    modeling_candidates_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for modeling_candidate_lineage_objects and excluded_lineage_objects artifacts",
+    )
+
+    modeling_select_parser = subparsers.add_parser(
+        "select-modeling-lineage-object",
+        help="Select the top bounded modeling lineage object.",
+    )
+    modeling_select_parser.add_argument(
+        "--input",
+        required=True,
+        help="Path to modeling_candidate_lineage_objects.json",
+    )
+    modeling_select_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for selected_modeling_lineage_object artifacts",
+    )
+
     live_lineage_parser = subparsers.add_parser(
         "discover-live-lineage-objects",
         help="Export full CLONEID records, discover global lineage objects, rank them, and select one lineage object.",
@@ -478,6 +514,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "select-lineage-object":
         selected = select_top_lineage_object_from_file(args.input)
         write_selected_lineage_object(args.output_dir, selected)
+        return 0
+    if args.command == "select-modeling-lineage-candidates":
+        payload = classify_lineage_objects_for_modeling_from_file(args.input)
+        write_modeling_candidate_artifacts(args.output_dir, payload)
+        return 0
+    if args.command == "select-modeling-lineage-object":
+        selection = select_modeling_lineage_object_from_file(args.input)
+        write_selected_modeling_lineage_object(args.output_dir, selection)
         return 0
     if args.command == "discover-live-lineage-objects":
         discover_rank_and_select_lineage_objects(

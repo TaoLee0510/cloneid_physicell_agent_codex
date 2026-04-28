@@ -6,6 +6,23 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Added bounded modeling-candidate lineage-object selection on top of global lineage-object discovery:
+  - `modeling_candidate_lineage_objects.json`
+  - `excluded_lineage_objects.json`
+  - `selected_modeling_lineage_object.json`
+- Added explicit first-proof-of-principle exclusion reasons:
+  - `too_many_events`
+  - `excessive_depth`
+  - `excessive_time_span`
+  - `too_many_context_regimes`
+  - `no_terminal_perspective`
+  - `insufficient_repeated_phenotype`
+  - `multi_root_forest`
+  - `whole_cell_line_supertree`
+- Updated observable classification so `Passaging.correctedCount` is treated as a derived event-linked phenotype rather than a direct observation.
+- Updated runtime mapping so planned simulation duration is derived from the selected bounded lineage object and validated against a proof-of-principle runtime guardrail.
+- Verified that the earlier selected global object `rooted_trajectory_bundle::SNU-668_0` is now excluded from first proof-of-principle modeling.
+
 - Added global lineage-object discovery over the full `passaged_from_id1` graph before CandidateSegment-based ranking influence:
   - `LineagePath`
   - `RootedTrajectoryBundle`
@@ -155,16 +172,33 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - root count: `1`
   - subtree depth: `161`
   - selection starts from CandidateSegment: `false`
+- The current bounded selected modeling lineage object is now:
+  - `rooted_trajectory_bundle::P20100614`
+  - type: `RootedTrajectoryBundle`
+  - event count: `5`
+  - graph depth: `2`
+  - phenotype time span: `116.0` days
+  - terminal Perspective support: `2`
+- The current bounded-selection totals under `runs/live_lineage_objects_20260427T042000/` are:
+  - `54` modeling-candidate lineage objects
+  - `553` excluded lineage objects
 - Downstream deterministic artifact generation is now aligned to the selected global lineage object:
   - `selected_observables.json` now records `selected_lineage_object_id` and `selected_lineage_object_type`
   - `physicell_mapping.json` now records lineage-object identity, traversal policy, and primary/secondary context transitions
-- The refreshed live selected-observables artifact under `runs/live_lineage_objects_20260427T042000/` now selects:
-  - calibration / time-series: `Passaging.correctedCount` with `3209` supporting rows
-  - endpoint validation / constraint: `Perspective.size` with `5904` supporting rows
-- The refreshed live mapping artifact under `runs/live_lineage_objects_20260427T042000/` now maps from:
-  - selected lineage object: `rooted_trajectory_bundle::SNU-668_0`
-  - initial event: `SNU-668_0`
+- The refreshed bounded selected-observables artifact under `runs/live_lineage_objects_20260427T042000/` now selects:
+  - calibration / time-series: `Passaging.cellSize_um2` with `5` supporting rows
+  - endpoint validation / constraint: `Perspective.size` with `4` supporting rows
+- `Passaging.correctedCount`, when selected in this workflow, is now classified as:
+  - `derived_event_linked_phenotype`
+  - `is_direct_observation = false`
+  - `derived_quantity = true`
+- The refreshed bounded mapping artifact under `runs/live_lineage_objects_20260427T042000/` now maps from:
+  - selected lineage object: `rooted_trajectory_bundle::P20100614`
+  - initial event: `P20100614`
   - selected lineage object type: `RootedTrajectoryBundle`
+  - planned max time: `167040` minutes
+  - duration source: `selected_bounded_modeling_lineage_object`
+  - guardrail status: `within_proof_of_principle_guardrail = false`
 - First-pass repository-owned PhysiCell model candidates now exist under `runs/live_lineage_objects_20260427T042000/model_candidates/` for the recommended families:
   - `neutral_growth`
   - `fixed_state_fitness`
@@ -184,6 +218,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - A concise run report now exists at:
   - `runs/live_lineage_objects_20260427T042000/report.md`
 - The earlier short local-window artifact was superseded because it was discovered from CandidateSegment-seeded expansion rather than from global primary-graph discovery.
+- The earlier generated model-candidate and evaluation artifacts in `runs/live_lineage_objects_20260427T042000/` are now stale with respect to the bounded selected modeling object, because candidate generation is blocked by the new runtime guardrail until `Q005` is resolved.
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
 - The repository scaffold has been classified into existing files, placeholders, operationally empty folders, and minimal missing implementation files.
@@ -266,6 +301,9 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Family-specific PhysiCell parameterization is still shallow; the generated model candidates currently share a common runtime scaffold and provenance structure, but they are not yet differentiated by family-specific calibrated assumptions.
 - Quantitative comparison between simulation outputs and CLONEID observables is not implemented yet; the current evaluation layer only records runtime readiness and smoke-output presence.
+- Candidate generation from the current bounded selected modeling object is blocked by a Level 2 ambiguity:
+  - the selected bounded object satisfies the broad `<= 180`-day modeling filter but fails the `<= 60`-day proof-of-principle runtime guardrail
+  - see `Q005` for the unresolved choice between tightening selection vs allowing explicit runtime override
 
 ---
 

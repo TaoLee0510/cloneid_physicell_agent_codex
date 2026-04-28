@@ -32,12 +32,20 @@ def select_observables_from_lineage_object_payload(lineage_object_payload: dict[
 
     if calibration_candidates:
         top_source, top_target, support, _ = calibration_candidates[0]
+        evidence_class = "phenotype_observed"
+        is_direct_observation = True
+        derived_quantity = False
+        if top_source == "Passaging.correctedCount":
+            evidence_class = "derived_event_linked_phenotype"
+            is_direct_observation = False
+            derived_quantity = True
         selected.append(
             {
                 "source": top_source,
                 "target": top_target,
-                "evidence_class": "phenotype_observed",
-                "is_direct_observation": True,
+                "evidence_class": evidence_class,
+                "is_direct_observation": is_direct_observation,
+                "derived_quantity": derived_quantity,
                 "allowed_uses": ["calibration", "time_series_validation"],
                 "supporting_rows": support,
             }

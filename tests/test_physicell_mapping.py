@@ -46,6 +46,8 @@ class PhysiCellMappingTests(unittest.TestCase):
         self.assertEqual(mapping["selected_lineage_object_id"], "rooted_trajectory_bundle::mock_root")
         self.assertEqual(mapping["observables"][0]["source"], "Passaging.correctedCount")
         self.assertIn("neutral_growth", mapping["recommended_model_families"])
+        self.assertEqual(mapping["timeline"]["planned_max_time_min"], 1440)
+        self.assertTrue(mapping["timeline"]["within_proof_of_principle_guardrail"])
 
     def test_map_to_physicell_cli_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -94,6 +96,29 @@ class PhysiCellMappingTests(unittest.TestCase):
             self.assertTrue((out_dir / "physicell_mapping.md").exists())
             saved = json.loads((out_dir / "physicell_mapping.json").read_text())
             self.assertEqual(saved["selected_lineage_object_id"], "lineage_path::mock_endpoint")
+
+    def test_mapping_flags_excessive_full_supertree_duration(self) -> None:
+        bundle = {
+            "selected_lineage_object_id": "rooted_trajectory_bundle::too_big",
+            "selected_lineage_object_type": "RootedTrajectoryBundle",
+            "passaging_records": [
+                {"id": "a", "cellLine": "MOCK", "flask": 1, "media": 1, "passage": 1, "date": "2024-01-01 00:00:00", "passaged_from_id1": None, "passaged_from_id2": None},
+                {"id": "b", "cellLine": "MOCK", "flask": 1, "media": 1, "passage": 2, "date": "2024-07-29 00:00:00", "passaged_from_id1": "a", "passaged_from_id2": None},
+            ],
+            "lineage_object_features": {
+                "event_count": 2,
+                "phenotype_time_span_days": 210.0,
+                "terminal_perspective_support": 2,
+                "identity_support_count": 0,
+            },
+            "root_event_ids": ["a"],
+            "root_event_id": "a",
+            "context_transitions_primary": [],
+            "context_transitions_secondary": [],
+        }
+        mapping = build_physicell_mapping(bundle, {"selected": []})
+        self.assertFalse(mapping["timeline"]["within_proof_of_principle_guardrail"])
+        self.assertGreater(mapping["timeline"]["planned_max_time_min"], 86400)
 
 
 if __name__ == "__main__":

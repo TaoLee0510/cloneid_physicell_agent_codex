@@ -10,6 +10,12 @@ from .db import repository_root
 from .lineage_object_ranking import rank_lineage_object_inventory, write_ranked_lineage_objects
 from .lineage_object_selection import select_top_lineage_object, write_selected_lineage_object
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
+from .modeling_lineage_selection import (
+    classify_lineage_objects_for_modeling,
+    select_modeling_lineage_object,
+    write_modeling_candidate_artifacts,
+    write_selected_modeling_lineage_object,
+)
 from .run_io import prepare_run_directory, write_json, write_markdown
 
 
@@ -58,6 +64,12 @@ def discover_rank_and_select_lineage_objects(
     selection = select_top_lineage_object(ranked)
     write_selected_lineage_object(run_dir, selection)
 
+    modeling_payload = classify_lineage_objects_for_modeling(ranked)
+    write_modeling_candidate_artifacts(run_dir, modeling_payload)
+
+    modeling_selection = select_modeling_lineage_object(modeling_payload)
+    write_selected_modeling_lineage_object(run_dir, modeling_selection)
+
     summary = {
         "mode": mode,
         "ranked_candidates_source": str(ranked_candidates_path),
@@ -65,6 +77,8 @@ def discover_rank_and_select_lineage_objects(
         "discovered_object_counts": inventory.get("discovered_object_counts", {}),
         "selected_lineage_object_id": selection["selected_lineage_object_id"],
         "selected_lineage_object_type": selection["selected_lineage_object_type"],
+        "selected_modeling_lineage_object_id": modeling_selection["selected_lineage_object_id"],
+        "selected_modeling_lineage_object_type": modeling_selection["selected_lineage_object_type"],
         "selection_starts_from_candidate_segment": False,
     }
     write_json(run_dir / "lineage_object_pipeline_summary.json", summary)
@@ -76,8 +90,10 @@ def discover_rank_and_select_lineage_objects(
                 "",
                 f"- Mode: `{mode}`",
                 f"- Ranked candidates source: `{ranked_candidates_path}`",
-                f"- Selected lineage object: `{selection['selected_lineage_object_id']}`",
-                f"- Selected type: `{selection['selected_lineage_object_type']}`",
+                f"- Selected global lineage object: `{selection['selected_lineage_object_id']}`",
+                f"- Selected global type: `{selection['selected_lineage_object_type']}`",
+                f"- Selected bounded modeling lineage object: `{modeling_selection['selected_lineage_object_id']}`",
+                f"- Selected bounded type: `{modeling_selection['selected_lineage_object_type']}`",
                 "- Selection starts from CandidateSegment: `false`",
             ]
         )

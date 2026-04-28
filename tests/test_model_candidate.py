@@ -50,7 +50,12 @@ class ModelCandidateTests(unittest.TestCase):
                     "mapping_version": "physicell_mapping_v1",
                     "selected_lineage_object_id": "rooted_trajectory_bundle::mock_root",
                     "selected_lineage_object_type": "RootedTrajectoryBundle",
-                    "timeline": {"phenotype_time_span_days": 2.0},
+                    "timeline": {
+                        "phenotype_time_span_days": 2.0,
+                        "planned_max_time_min": 2880,
+                        "max_proof_of_principle_minutes": 86400,
+                        "within_proof_of_principle_guardrail": True,
+                    },
                     "traversal_policy": {"primary_backbone": "passaged_from_id1"},
                     "recommended_model_families": ["neutral_growth", "fixed_state_fitness"],
                 },
@@ -88,7 +93,12 @@ class ModelCandidateTests(unittest.TestCase):
                         "mapping_version": "physicell_mapping_v1",
                         "selected_lineage_object_id": "lineage_path::mock_endpoint",
                         "selected_lineage_object_type": "LineagePath",
-                        "timeline": {"phenotype_time_span_days": 1.0},
+                        "timeline": {
+                            "phenotype_time_span_days": 1.0,
+                            "planned_max_time_min": 1440,
+                            "max_proof_of_principle_minutes": 86400,
+                            "within_proof_of_principle_guardrail": True,
+                        },
                         "recommended_model_families": ["neutral_growth"],
                     }
                 )
@@ -121,6 +131,32 @@ class ModelCandidateTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue((out_dir / "generated_model_candidates.json").exists())
             self.assertTrue((out_dir / "generated_model_candidates.md").exists())
+
+    def test_generate_model_candidates_rejects_excessive_proof_of_principle_duration(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            root = Path(tmpdir)
+            physicell_root = self._fake_physicell_root(root)
+            with self.assertRaises(ValueError):
+                generate_model_candidates(
+                    selected_lineage_object_payload={
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::too_big",
+                        "selected_lineage_object_type": "RootedTrajectoryBundle",
+                    },
+                    selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
+                    mapping_payload={
+                        "mapping_version": "physicell_mapping_v1",
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::too_big",
+                        "selected_lineage_object_type": "RootedTrajectoryBundle",
+                        "timeline": {
+                            "planned_max_time_min": 100000,
+                            "max_proof_of_principle_minutes": 86400,
+                            "within_proof_of_principle_guardrail": False,
+                        },
+                        "recommended_model_families": ["neutral_growth"],
+                    },
+                    output_dir=root / "run",
+                    physicell_root=physicell_root,
+                )
 
 
 if __name__ == "__main__":

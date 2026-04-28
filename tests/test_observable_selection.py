@@ -30,6 +30,9 @@ class ObservableSelectionTests(unittest.TestCase):
         self.assertEqual(observables["selected"][0]["source"], "Passaging.correctedCount")
         self.assertEqual(observables["selected"][1]["source"], "Perspective.size")
         self.assertEqual(observables["selected_lineage_object_id"], "rooted_trajectory_bundle::mock_root")
+        self.assertEqual(observables["selected"][0]["evidence_class"], "derived_event_linked_phenotype")
+        self.assertFalse(observables["selected"][0]["is_direct_observation"])
+        self.assertTrue(observables["selected"][0]["derived_quantity"])
         self.assertTrue(any(item["source"] == "Identity.size/state" for item in observables["excluded"]))
 
     def test_select_observables_cli_writes_artifacts(self) -> None:

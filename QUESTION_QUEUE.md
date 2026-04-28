@@ -57,7 +57,7 @@ Questions should not block all work unless they are high-risk. When possible, th
 
 **Agent recommendation:** Option 3 for now unless a known-good local binary already exists.
 
-**Status:** Open
+**Status:** Answered
 
 ---
 
@@ -109,9 +109,46 @@ Questions should not block all work unless they are high-risk. When possible, th
 
 **Status:** Answered
 
+## Q005 — Should first proof-of-principle selection enforce the 60-day runtime guardrail?
+
+**Priority:** Important  
+**Risk level:** 2  
+**Question:** The new bounded lineage-object selector excludes whole-cell-line supertrees, but the current top bounded modeling object still spans `116` days and therefore fails the current proof-of-principle runtime guardrail of `60` days (`86,400` minutes). Should first proof-of-principle selection be tightened to require smoke-eligible duration by default, or should longer bounded objects remain selectable but require an explicit runtime override?
+
+**Why it matters:** This determines whether lineage-object selection should optimize directly for smoke-test-ready objects, or whether selection and runtime validation should remain separate stages with explicit override points.
+
+**Options:**
+1. Tighten first proof-of-principle selection so the selected modeling lineage object must also satisfy the `60`-day runtime guardrail.
+2. Keep the broader bounded-selection filter (`<= 180` days) and require explicit override to simulate longer bounded objects.
+3. Use two named modes:
+   - smoke / proof-of-principle mode (`<= 60` days)
+   - broader bounded modeling mode (`<= 180` days)
+
+**Current default assumption:** Keep bounded lineage-object selection and runtime guardrail as separate stages for now; block candidate generation if the bounded object exceeds the runtime guardrail.
+
+**Blocked work:** Candidate generation, further smoke testing, and quantitative simulation comparison from the currently selected bounded lineage object.
+
+**Work continuing meanwhile:** Documentation cleanup, ranking review, artifact interpretation, and any work that does not require overriding the runtime guardrail.
+
+**Agent recommendation:** Option 3, because it preserves the broader lineage-object screen while making smoke-ready proof-of-principle selection explicit and auditable.
+
+**Status:** Open
+
 ---
 
 ## Resolved questions
+
+## Q002 — PhysiCell runtime source for the first smoke test
+
+**Answered:** Use official PhysiCell core `v1.14.2` as the pinned backend. Support:
+
+1. local source build,
+2. project-owned Docker image built from the official `v1.14.2` release,
+3. optional HPC execution through Apptainer/Singularity using the same pinned environment.
+
+Do not depend on PhysiCell Studio for automated execution. Studio may be used only for human inspection or manual XML editing.
+
+**Consequence:** Runtime planning can target command-line PhysiCell execution from repository-managed templates, and local-test / container / HPC branches should all preserve the same pinned PhysiCell provenance.
 
 ## Q001 — Read-only CLONEID connection details
 

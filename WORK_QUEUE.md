@@ -20,7 +20,7 @@ For each work block:
 
 ## Ready now
 
-1. After user review of the extracted SUM159 2N-vs-4N O2 simulation schedules, convert the approved growth/transfer schedule into a phase-aware biological-proof mapping artifact and joint-calibration observable bundle.
+1. After user review of the schedule-aware SUM159 model-family specification, convert the approved family distinctions into a phase-aware biological-proof mapping artifact and family-specific config/rules scaffolds.
 2. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
 3. Add generated-model smoke coverage for a second family from the smoke-selected lineage object after the family-specific scaffold split is in place.
 4. Begin first-pass quantitative evaluation of simulation outputs against the smoke-selected lineage-object observables once a family-specific candidate is available.
@@ -36,7 +36,7 @@ _None yet._
 ## Waiting for user
 
 1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
-2. Review the generated SUM159 phase-aware simulation schedules before I implement phase-aware biological-proof mapping or any family-specific PhysiCell behavior.
+2. Review the generated SUM159 schedule-aware model-family specification before I implement any family-specific PhysiCell behavior.
 
 ---
 

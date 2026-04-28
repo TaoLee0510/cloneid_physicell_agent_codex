@@ -1,0 +1,293 @@
+{
+  "candidate_differentiation_checklist": [
+    {
+      "config_or_rule_surface": "cell phenotype proliferation / death rules",
+      "density_dependent_growth": "density-responsive proliferation with optional branch-specific thresholds",
+      "fixed_state_fitness": "branch-specific proliferation / death balance",
+      "neutral_growth": "shared parameters across 2N and 4N"
+    },
+    {
+      "config_or_rule_surface": "crowding / density response rule",
+      "density_dependent_growth": "must be explicitly enabled and parameterized",
+      "fixed_state_fitness": "not primary driver",
+      "neutral_growth": "not required beyond baseline PhysiCell defaults"
+    },
+    {
+      "config_or_rule_surface": "episode initialization inputs",
+      "density_dependent_growth": "same schedule inputs plus occupancy-sensitive initialization use",
+      "fixed_state_fitness": "same schedule inputs plus branch label",
+      "neutral_growth": "schedule initial_condition and transfer resets"
+    },
+    {
+      "config_or_rule_surface": "transfer-event handling",
+      "density_dependent_growth": "same external transfer update with occupancy reset preserved",
+      "fixed_state_fitness": "same external transfer update",
+      "neutral_growth": "external bottleneck / reseeding update"
+    },
+    {
+      "config_or_rule_surface": "primary calibration observable",
+      "density_dependent_growth": "Passaging.areaOccupied_um2",
+      "fixed_state_fitness": "Passaging.correctedCount",
+      "neutral_growth": "Passaging.cellCount"
+    }
+  ],
+  "comparison_id": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "families": [
+    {
+      "assumptions": [
+        "2N and 4N differ only in observed initialization and transfer history, not intrinsic growth law.",
+        "Derived correctedCount and areaOccupied are acceptable event-linked phenotype targets."
+      ],
+      "failure_condition": "Systematic branch-specific trajectory mismatch remains after shared-parameter fitting, especially if 2N and 4N diverge in consistent opposite directions.",
+      "family_id": "neutral_growth",
+      "growth_episode_handling": "Simulate each growth_episode for fixed 1440 minutes, using observed start counts / area as initialization and observed end values as calibration targets.",
+      "limitations": [
+        "Cannot explain persistent ploidy-specific trajectory differences except through initial conditions.",
+        "Perspective.size is only an endpoint check, so mid-course molecular divergence is ignored."
+      ],
+      "outputs_compared_to_cloneid": [
+        "episode-end total cell count",
+        "episode-end derived correctedCount proxy",
+        "episode-end occupied area / density proxy"
+      ],
+      "parameters_to_expose": [
+        {
+          "name": "shared_proliferation_rate",
+          "placeholder_only": true,
+          "scope": "shared"
+        },
+        {
+          "name": "shared_death_rate",
+          "placeholder_only": true,
+          "scope": "shared"
+        },
+        {
+          "name": "shared_initial_cell_area",
+          "placeholder_only": true,
+          "scope": "shared"
+        }
+      ],
+      "primary_calibration_target": "Passaging.cellCount",
+      "required_input_observables": [
+        "Passaging.cellCount",
+        "Passaging.correctedCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size"
+      ],
+      "required_physicell_features": [
+        "single shared cell rule for both branches",
+        "episode-wise initialization from schedule initial_condition",
+        "external handling of transfer_events as reseeding / bottleneck resets",
+        "time-series export at growth-episode endpoints"
+      ],
+      "scientific_meaning": "Same growth rule for 2N and 4N branches; differences arise only from observed initial conditions and transfer bottlenecks.",
+      "secondary_validation_targets": [
+        "Passaging.correctedCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size"
+      ],
+      "shared_vs_branch_specific": {
+        "branch_specific": [],
+        "shared": [
+          "shared_proliferation_rate",
+          "shared_death_rate",
+          "shared_initial_cell_area"
+        ]
+      },
+      "terminal_perspective_usage": "Use terminal Perspective.size only as endpoint support / validation, not as a growth-episode calibration signal.",
+      "transfer_event_handling": "Apply observed transfer_events as external bottleneck/reseeding updates between growth episodes; do not simulate transfer as growth time.",
+      "win_condition": "One shared growth program explains both 2N and 4N seed-to-harvest trajectories after applying observed transfer bottlenecks."
+    },
+    {
+      "assumptions": [
+        "A stable ploidy-associated fitness difference can be represented by fixed branch-specific parameters.",
+        "Transfer events do not themselves require branch-specific mechanistic modeling beyond the observed bottleneck."
+      ],
+      "failure_condition": "Branch-specific parameters do not improve fit enough to justify extra degrees of freedom.",
+      "family_id": "fixed_state_fitness",
+      "growth_episode_handling": "Simulate fixed 1440-minute growth episodes, but allow 2N and 4N branches to use different intrinsic fitness parameters across the whole matched window.",
+      "limitations": [
+        "Branch labels stand in for biological state without modeling a dynamic switch mechanism.",
+        "Could overfit if schedule differences are actually density- or environment-driven."
+      ],
+      "outputs_compared_to_cloneid": [
+        "episode-end total cell count",
+        "episode-end derived correctedCount proxy",
+        "episode-end occupied area / density proxy"
+      ],
+      "parameters_to_expose": [
+        {
+          "branch": "2N",
+          "name": "proliferation_rate_2N",
+          "placeholder_only": true,
+          "scope": "branch_specific"
+        },
+        {
+          "branch": "4N",
+          "name": "proliferation_rate_4N",
+          "placeholder_only": true,
+          "scope": "branch_specific"
+        },
+        {
+          "branch": "2N",
+          "name": "death_rate_2N",
+          "placeholder_only": true,
+          "scope": "branch_specific"
+        },
+        {
+          "branch": "4N",
+          "name": "death_rate_4N",
+          "placeholder_only": true,
+          "scope": "branch_specific"
+        },
+        {
+          "name": "shared_initial_cell_area",
+          "placeholder_only": true,
+          "scope": "shared"
+        }
+      ],
+      "primary_calibration_target": "Passaging.correctedCount",
+      "required_input_observables": [
+        "Passaging.cellCount",
+        "Passaging.correctedCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size"
+      ],
+      "required_physicell_features": [
+        "branch-specific cell rule parameters or cell definitions",
+        "episode-wise initialization from schedule initial_condition",
+        "external transfer-event reseeding between episodes",
+        "time-series export at growth-episode endpoints"
+      ],
+      "scientific_meaning": "2N and 4N branches may require different intrinsic proliferation / death balance under otherwise matched O2 schedule structure.",
+      "secondary_validation_targets": [
+        "Passaging.cellCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size"
+      ],
+      "shared_vs_branch_specific": {
+        "branch_specific": [
+          "proliferation_rate_2N",
+          "proliferation_rate_4N",
+          "death_rate_2N",
+          "death_rate_4N"
+        ],
+        "shared": [
+          "shared_initial_cell_area"
+        ]
+      },
+      "terminal_perspective_usage": "Use terminal Perspective.size as endpoint support to judge whether branch-specific fitness differences remain biologically consistent at harvest.",
+      "transfer_event_handling": "Same as neutral_growth: apply observed transfer_events as non-growth bottleneck/reseeding resets between growth episodes.",
+      "win_condition": "Branch-specific intrinsic parameters materially improve joint fit across matched episodes relative to neutral_growth."
+    },
+    {
+      "assumptions": [
+        "areaOccupied_um2 is a useful proxy for crowding / density limitation in the matched O2 schedule.",
+        "Density effects operate within each growth episode and transfer events reset occupancy between episodes."
+      ],
+      "failure_condition": "Adding density dependence does not improve the joint count/area fit or only explains one branch.",
+      "family_id": "density_dependent_growth",
+      "growth_episode_handling": "Simulate each 1440-minute growth episode with density-sensitive growth, comparing whether occupied area better explains the seed-to-harvest trajectory than fixed-rate growth.",
+      "limitations": [
+        "areaOccupied_um2 is derived and may not map perfectly onto the PhysiCell crowding variable.",
+        "Branch-specific density response remains optional until justified by fit improvement."
+      ],
+      "outputs_compared_to_cloneid": [
+        "episode-end total cell count",
+        "episode-end occupied area / density proxy",
+        "episode-end derived correctedCount proxy"
+      ],
+      "parameters_to_expose": [
+        {
+          "name": "shared_density_response_threshold",
+          "placeholder_only": true,
+          "scope": "shared"
+        },
+        {
+          "name": "shared_density_response_slope",
+          "placeholder_only": true,
+          "scope": "shared"
+        },
+        {
+          "name": "shared_baseline_proliferation_rate",
+          "placeholder_only": true,
+          "scope": "shared"
+        },
+        {
+          "name": "optional_branch_specific_density_thresholds",
+          "placeholder_only": true,
+          "scope": "optional_branch_specific"
+        }
+      ],
+      "primary_calibration_target": "Passaging.areaOccupied_um2",
+      "required_input_observables": [
+        "Passaging.cellCount",
+        "Passaging.correctedCount",
+        "Passaging.areaOccupied_um2",
+        "Perspective.size"
+      ],
+      "required_physicell_features": [
+        "density- or volume-fraction-dependent proliferation control",
+        "episode-wise initialization from schedule initial_condition",
+        "external transfer-event reseeding between episodes",
+        "time-series export of cell count and occupancy-like outputs at growth-episode endpoints"
+      ],
+      "scientific_meaning": "Growth depends on density / confluence proxy, with areaOccupied_um2 used as the preferred schedule-aware crowding signal.",
+      "secondary_validation_targets": [
+        "Passaging.cellCount",
+        "Passaging.correctedCount",
+        "Perspective.size"
+      ],
+      "shared_vs_branch_specific": {
+        "branch_specific": [
+          "optional_branch_specific_density_thresholds"
+        ],
+        "shared": [
+          "shared_density_response_threshold",
+          "shared_density_response_slope",
+          "shared_baseline_proliferation_rate"
+        ]
+      },
+      "terminal_perspective_usage": "Use terminal Perspective.size only as endpoint support, not as the driver of the density response.",
+      "transfer_event_handling": "Apply observed transfer_events as explicit reductions / resets in seeded cell burden and occupancy before the next growth episode.",
+      "win_condition": "Density-sensitive growth explains both cell-count and area trajectories better than fixed-rate models across the matched episodes."
+    }
+  ],
+  "no_fitted_parameter_values_yet": true,
+  "observable_policy": {
+    "identity_role": "secondary_inferred_support_only",
+    "joint_calibration_targets": [
+      "Passaging.cellCount",
+      "Passaging.correctedCount",
+      "Passaging.areaOccupied_um2"
+    ],
+    "terminal_endpoint_support": "Perspective.size"
+  },
+  "recommended_next_step": "Use this memo to define family-specific XML/config/rules differences before any parameter fitting.",
+  "schedule_sources": {
+    "anchor_schedule": {
+      "branch_id": "SUM159_4N_O2",
+      "branch_label": "4N",
+      "growth_episode_count": 8,
+      "initial_condition_event_id": "SUM-159_NLS_4N_O2_A1_seed",
+      "terminal_endpoint_event_id": "SUM159_NLS_4N_O2_A7K_harvest",
+      "terminal_perspective_record_count": 19,
+      "terminal_perspective_supported_event_count": 1,
+      "total_growth_simulated_minutes": 11520,
+      "transfer_event_count": 7
+    },
+    "comparison_schedule": {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "growth_episode_count": 8,
+      "initial_condition_event_id": "SUM-159_NLS_2N_O2_A1_seed",
+      "terminal_endpoint_event_id": "SUM159_NLS_2N_O2_A7K_harvest",
+      "terminal_perspective_record_count": 16,
+      "terminal_perspective_supported_event_count": 1,
+      "total_growth_simulated_minutes": 11520,
+      "transfer_event_count": 7
+    },
+    "matched_growth_episode_count": 8
+  },
+  "specification_version": "schedule_aware_model_family_specification_v1"
+}

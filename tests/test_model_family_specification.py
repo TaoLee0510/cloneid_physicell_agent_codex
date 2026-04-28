@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 
+from cloneid_agent.model_family_specification import build_schedule_aware_model_family_specification
 from cloneid_agent.phase_planning import (
     build_milestone_matched_primary_lineage_interval_phase_plan,
     build_primary_lineage_interval_phase_plan,
@@ -48,49 +49,10 @@ def _branch_payload(prefix: str, terminal_perspectives: int) -> dict[str, object
     }
 
 
-class SimulationScheduleTests(unittest.TestCase):
-    def test_branch_schedule_separates_initial_growth_and_transfer(self) -> None:
+class ModelFamilySpecificationTests(unittest.TestCase):
+    def test_family_spec_has_expected_families_and_targets(self) -> None:
         anchor_plan = build_primary_lineage_interval_phase_plan(_branch_payload("SUM159_4N", 2), branch_id="SUM159_4N_O2")
-        comparison_plan = build_primary_lineage_interval_phase_plan(
-            _branch_payload("SUM159_2N", 1),
-            branch_id="SUM159_2N_O2",
-        )
-        milestone = build_milestone_matched_primary_lineage_interval_phase_plan(
-            anchor_plan=anchor_plan,
-            comparison_plan=comparison_plan,
-        )
-        schedule = build_branch_simulation_schedule(
-            phase_plan=anchor_plan,
-            milestone_matched_plan=milestone,
-            branch_role="anchor",
-        )
-        self.assertEqual(schedule["initial_condition"]["milestone_label"], "O2_A1_seed")
-        self.assertEqual(schedule["growth_episodes"][0]["milestone_label"], "O2_A1_seedT1")
-        self.assertEqual(schedule["transfer_events"][0]["milestone_label"], "O2_A2_seed")
-        self.assertEqual(schedule["growth_episodes"][0]["simulated_duration_minutes"], 1440)
-        self.assertEqual(schedule["transfer_events"][0]["simulated_duration_minutes"], 0)
-        self.assertIsNone(schedule["prehistory_context"][0]["simulated_duration_minutes"])
-        self.assertEqual(schedule["prehistory_context"][0]["simulation_role"], "context_only_not_simulated")
-        self.assertTrue(schedule["prehistory_context"][0]["excluded_from_primary_runtime"])
-        self.assertTrue(schedule["validation"]["O2_A1_seed_used_as_initial_condition_not_growth_endpoint"])
-        self.assertTrue(schedule["validation"]["seed_to_harvest_intervals_labeled_growth_episode"])
-        self.assertTrue(schedule["validation"]["harvest_to_seed_intervals_labeled_transfer_event"])
-        self.assertTrue(schedule["validation"]["transfer_events_not_assigned_growth_duration"])
-        self.assertEqual(
-            schedule["growth_episodes"][0]["observables"]["Passaging.correctedCount"]["evidence_class"],
-            "derived_event_linked_phenotype",
-        )
-        self.assertEqual(
-            schedule["growth_episodes"][0]["observables"]["Passaging.areaOccupied_um2"]["evidence_class"],
-            "derived_event_linked_phenotype",
-        )
-
-    def test_matched_schedule_aligns_growth_episodes_by_milestone(self) -> None:
-        anchor_plan = build_primary_lineage_interval_phase_plan(_branch_payload("SUM159_4N", 2), branch_id="SUM159_4N_O2")
-        comparison_plan = build_primary_lineage_interval_phase_plan(
-            _branch_payload("SUM159_2N", 3),
-            branch_id="SUM159_2N_O2",
-        )
+        comparison_plan = build_primary_lineage_interval_phase_plan(_branch_payload("SUM159_2N", 1), branch_id="SUM159_2N_O2")
         milestone = build_milestone_matched_primary_lineage_interval_phase_plan(
             anchor_plan=anchor_plan,
             comparison_plan=comparison_plan,
@@ -110,11 +72,19 @@ class SimulationScheduleTests(unittest.TestCase):
             comparison_schedule=comparison_schedule,
             milestone_matched_plan=milestone,
         )
-        labels = [item["milestone_label"] for item in matched_schedule["matched_growth_episodes"]]
-        self.assertEqual(labels, ["O2_A1_seedT1", "O2_A2_seedT2", "O2_A7K_harvest"])
-        self.assertTrue(matched_schedule["endpoint_alignment"]["both_branches_contain_A7K_harvest"])
-        self.assertTrue(matched_schedule["endpoint_alignment"]["both_A7K_harvest_endpoints_have_perspective_support"])
-        self.assertTrue(matched_schedule["validation"]["phase_index_matching_not_primary_alignment"])
+        spec = build_schedule_aware_model_family_specification(
+            anchor_schedule=anchor_schedule,
+            comparison_schedule=comparison_schedule,
+            matched_schedule=matched_schedule,
+        )
+        families = {item["family_id"]: item for item in spec["families"]}
+        self.assertEqual(set(families), {"neutral_growth", "fixed_state_fitness", "density_dependent_growth"})
+        self.assertEqual(families["neutral_growth"]["primary_calibration_target"], "Passaging.cellCount")
+        self.assertEqual(families["fixed_state_fitness"]["primary_calibration_target"], "Passaging.correctedCount")
+        self.assertEqual(families["density_dependent_growth"]["primary_calibration_target"], "Passaging.areaOccupied_um2")
+        self.assertIn("Perspective.size", families["neutral_growth"]["secondary_validation_targets"])
+        self.assertTrue(spec["no_fitted_parameter_values_yet"])
+        self.assertGreaterEqual(len(spec["candidate_differentiation_checklist"]), 3)
 
 
 if __name__ == "__main__":

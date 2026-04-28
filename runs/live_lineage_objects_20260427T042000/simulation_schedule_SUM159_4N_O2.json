@@ -503,6 +503,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": null,
       "flask_to": 1,
       "has_perspective_at_child_event": false,
@@ -516,7 +517,8 @@
       "phase_id": "SUM159_4N_O2::phase_001",
       "phase_index": 1,
       "real_elapsed_minutes": 7241,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     },
     {
       "areaOccupied_child": null,
@@ -541,6 +543,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": 1,
       "flask_to": 1,
       "has_perspective_at_child_event": false,
@@ -554,7 +557,8 @@
       "phase_id": "SUM159_4N_O2::phase_002",
       "phase_index": 2,
       "real_elapsed_minutes": 2867,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     },
     {
       "areaOccupied_child": null,
@@ -579,6 +583,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": 1,
       "flask_to": 3,
       "has_perspective_at_child_event": false,
@@ -592,7 +597,8 @@
       "phase_id": "SUM159_4N_O2::phase_003",
       "phase_index": 3,
       "real_elapsed_minutes": 57,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     },
     {
       "areaOccupied_child": null,
@@ -617,6 +623,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": 3,
       "flask_to": 3,
       "has_perspective_at_child_event": false,
@@ -630,7 +637,8 @@
       "phase_id": "SUM159_4N_O2::phase_004",
       "phase_index": 4,
       "real_elapsed_minutes": 6226,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     },
     {
       "areaOccupied_child": 934243371.2121,
@@ -655,6 +663,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": 3,
       "flask_to": 2,
       "has_perspective_at_child_event": false,
@@ -668,7 +677,8 @@
       "phase_id": "SUM159_4N_O2::phase_005",
       "phase_index": 5,
       "real_elapsed_minutes": 1311673,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     },
     {
       "areaOccupied_child": 6866669507.5758,
@@ -693,6 +703,7 @@
         },
         "root_event_id": "SUM-159_4N_NLS_mCherry"
       },
+      "excluded_from_primary_runtime": true,
       "flask_from": 2,
       "flask_to": 2,
       "has_perspective_at_child_event": false,
@@ -706,7 +717,8 @@
       "phase_id": "SUM159_4N_O2::phase_006",
       "phase_index": 6,
       "real_elapsed_minutes": 4247,
-      "simulated_duration_minutes": 1440
+      "simulated_duration_minutes": null,
+      "simulation_role": "context_only_not_simulated"
     }
   ],
   "schedule_version": "simulation_schedule_v1",

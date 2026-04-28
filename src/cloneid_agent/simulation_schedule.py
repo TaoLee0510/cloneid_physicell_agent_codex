@@ -85,6 +85,17 @@ def _phase_observables(phase: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
+def _annotate_prehistory_context(phases: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    annotated = []
+    for phase in phases:
+        item = dict(phase)
+        item["simulated_duration_minutes"] = None
+        item["simulation_role"] = "context_only_not_simulated"
+        item["excluded_from_primary_runtime"] = True
+        annotated.append(item)
+    return annotated
+
+
 def build_branch_simulation_schedule(
     *,
     phase_plan: dict[str, Any],
@@ -94,7 +105,9 @@ def build_branch_simulation_schedule(
     branch_id = phase_plan["branch_id"]
     start_milestone = milestone_matched_plan["comparison_window"]["recommended_start_milestone"]
     end_milestone = milestone_matched_plan["comparison_window"]["recommended_end_milestone"]
-    prehistory_context = milestone_matched_plan["unmatched_pre_o2_phases"][branch_role]
+    prehistory_context = _annotate_prehistory_context(
+        milestone_matched_plan["unmatched_pre_o2_phases"][branch_role]
+    )
     phases = phase_plan.get("phases", [])
     phase_by_milestone = {_milestone_label(str(phase["child_event_id"])): phase for phase in phases}
 

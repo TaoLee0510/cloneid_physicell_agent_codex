@@ -32,6 +32,12 @@ from .modeling_lineage_selection import (
     write_smoke_candidate_artifacts,
 )
 from .model_candidate import generate_model_candidates_from_files, write_model_candidates
+from .model_family_specification import (
+    build_schedule_aware_model_family_specification,
+    load_json as load_model_family_json,
+    write_schedule_aware_model_family_specification_json,
+    write_schedule_aware_model_family_specification_markdown,
+)
 from .observable_selection import (
     select_observables_from_lineage_object_file,
     write_selected_observables,
@@ -581,6 +587,24 @@ def build_parser() -> argparse.ArgumentParser:
         help="Output markdown path for matched simulation schedule",
     )
 
+    family_spec_parser = subparsers.add_parser(
+        "write-schedule-aware-model-family-specification",
+        help="Generate a schedule-aware model-family specification memo from approved branch and matched simulation schedules.",
+    )
+    family_spec_parser.add_argument("--anchor-schedule", required=True, help="Path to anchor branch simulation schedule json")
+    family_spec_parser.add_argument(
+        "--comparison-schedule",
+        required=True,
+        help="Path to comparison branch simulation schedule json",
+    )
+    family_spec_parser.add_argument(
+        "--matched-schedule",
+        required=True,
+        help="Path to matched simulation schedule json",
+    )
+    family_spec_parser.add_argument("--output-json", required=True, help="Output json path")
+    family_spec_parser.add_argument("--output-md", required=True, help="Output markdown path")
+
     return parser
 
 
@@ -764,6 +788,15 @@ def main(argv: list[str] | None = None) -> int:
         write_simulation_schedule(args.comparison_output_json, comparison_schedule)
         write_simulation_schedule(args.matched_output_json, matched_schedule)
         write_matched_simulation_schedule_markdown(args.matched_output_md, matched_schedule)
+        return 0
+    if args.command == "write-schedule-aware-model-family-specification":
+        payload = build_schedule_aware_model_family_specification(
+            anchor_schedule=load_model_family_json(args.anchor_schedule),
+            comparison_schedule=load_model_family_json(args.comparison_schedule),
+            matched_schedule=load_model_family_json(args.matched_schedule),
+        )
+        write_schedule_aware_model_family_specification_json(args.output_json, payload)
+        write_schedule_aware_model_family_specification_markdown(args.output_md, payload)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

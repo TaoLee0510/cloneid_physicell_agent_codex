@@ -16,6 +16,7 @@ from .lineage_object_selection import (
     write_selected_lineage_object,
 )
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
+from .model_candidate import generate_model_candidates_from_files, write_model_candidates
 from .observable_selection import (
     select_observables_from_lineage_object_file,
     write_selected_observables,
@@ -255,6 +256,35 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory for physicell_mapping artifacts",
     )
 
+    generate_models_parser = subparsers.add_parser(
+        "generate-model-candidates",
+        help="Generate first-pass repository-owned PhysiCell model candidate folders from lineage-object mapping artifacts.",
+    )
+    generate_models_parser.add_argument(
+        "--lineage-object",
+        required=True,
+        help="Path to selected_lineage_object.json",
+    )
+    generate_models_parser.add_argument(
+        "--observables",
+        required=True,
+        help="Path to selected_observables.json",
+    )
+    generate_models_parser.add_argument(
+        "--mapping",
+        required=True,
+        help="Path to physicell_mapping.json",
+    )
+    generate_models_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory for generated_model_candidates artifacts",
+    )
+    generate_models_parser.add_argument(
+        "--physicell-root",
+        help="Path to the validated local PhysiCell install. Defaults to the pinned local install path.",
+    )
+
     discover_lineage_parser = subparsers.add_parser(
         "discover-lineage-objects",
         help="Discover global lineage objects from a full-record fixture and annotate them with CandidateSegment scores.",
@@ -378,6 +408,16 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "map-to-physicell":
         mapping = build_physicell_mapping_from_files(args.bundle, args.observables)
         write_physicell_mapping(args.output_dir, mapping)
+        return 0
+    if args.command == "generate-model-candidates":
+        payload = generate_model_candidates_from_files(
+            selected_lineage_object_path=args.lineage_object,
+            selected_observables_path=args.observables,
+            mapping_path=args.mapping,
+            output_dir=args.output_dir,
+            physicell_root=args.physicell_root if args.physicell_root else None,
+        )
+        write_model_candidates(args.output_dir, payload)
         return 0
     if args.command == "discover-lineage-objects":
         ranked_payload = None

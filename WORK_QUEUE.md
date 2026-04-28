@@ -20,9 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Implement candidate PhysiCell model-folder generation from `selected_lineage_object.json`, `selected_observables.json`, and `physicell_mapping.json`.
-2. Add a repository-coupled PhysiCell smoke test that runs against a generated model candidate rather than the upstream sample project.
-3. After the generated-model smoke test works, add first-pass evaluation/report artifacts tied to the selected lineage object.
+1. Add first-pass evaluation/report artifacts tied to the selected lineage object and generated model candidates.
+2. Tighten model-family-specific candidate generation so `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` diverge in explicit config/assumption scaffolds rather than sharing only a common runtime shell.
+3. If needed, add generated-model smoke coverage for a second family after the family-specific scaffold split is in place.
 
 ---
 
@@ -112,6 +112,15 @@ _None yet._
 59. Refreshed live downstream artifacts from the globally selected lineage object under `runs/live_lineage_objects_20260427T042000/`:
    - `selected_observables.json`
    - `physicell_mapping.json`
+60. Added deterministic repository-owned PhysiCell model-candidate generation from:
+   - `selected_lineage_object.json`
+   - `selected_observables.json`
+   - `physicell_mapping.json`
+61. Added a repository-coupled generated-model smoke-test wrapper that runs the validated local PhysiCell binary against a generated candidate config without mutating the installed PhysiCell tree.
+62. Verified the generated-model smoke path live on:
+   - candidate family: `neutral_growth`
+   - selected lineage object: `rooted_trajectory_bundle::SNU-668_0`
+   - output folder: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T013536Z`
 
 ---
 

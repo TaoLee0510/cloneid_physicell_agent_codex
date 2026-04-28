@@ -20,11 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. Adapt observable extraction to consume `selected_lineage_object.json` from global lineage-object discovery rather than `selected_trajectory_bundle.json`.
-2. Refresh downstream live artifacts derived from the globally selected lineage object:
-   - observable selection
-   - CLONEID-to-PhysiCell mapping
-3. After downstream live artifacts are refreshed from global lineage discovery, continue with candidate PhysiCell model-folder generation.
+1. Implement candidate PhysiCell model-folder generation from `selected_lineage_object.json`, `selected_observables.json`, and `physicell_mapping.json`.
+2. Add a repository-coupled PhysiCell smoke test that runs against a generated model candidate rather than the upstream sample project.
+3. After the generated-model smoke test works, add first-pass evaluation/report artifacts tied to the selected lineage object.
 
 ---
 
@@ -109,6 +107,11 @@ _None yet._
    - root count: `1`
    - subtree depth: `161`
 56. Confirmed that the earlier short-path / multi-root problem was a discovery-semantics issue, not an edge-semantics issue, and corrected discovery to start from the full primary lineage graph.
+57. Adapted observable selection to consume `selected_lineage_object.json` rather than `selected_trajectory_bundle.json`, while preserving backward compatibility for the older artifact shape.
+58. Adapted the first-pass CLONEID-to-PhysiCell mapping layer to consume selected lineage objects and preserve lineage traversal policy plus primary/secondary context transitions.
+59. Refreshed live downstream artifacts from the globally selected lineage object under `runs/live_lineage_objects_20260427T042000/`:
+   - `selected_observables.json`
+   - `physicell_mapping.json`
 
 ---
 

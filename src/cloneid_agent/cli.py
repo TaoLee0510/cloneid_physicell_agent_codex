@@ -16,7 +16,10 @@ from .lineage_object_selection import (
     write_selected_lineage_object,
 )
 from .lineage_objects import discover_global_lineage_objects_from_file, write_global_lineage_inventory
-from .observable_selection import select_observables_from_bundle_file, write_selected_observables
+from .observable_selection import (
+    select_observables_from_lineage_object_file,
+    write_selected_observables,
+)
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .toy_workflow import run_toy_round_trip
 from .trajectory_bundle_pipeline import discover_and_rank_trajectory_bundles
@@ -219,12 +222,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     observables_parser = subparsers.add_parser(
         "select-observables",
-        help="Select calibration and validation observables from a selected TrajectoryBundle artifact.",
+        help="Select calibration and validation observables from a selected lineage-object artifact.",
     )
     observables_parser.add_argument(
         "--input",
         required=True,
-        help="Path to selected_trajectory_bundle.json",
+        help="Path to selected_lineage_object.json",
     )
     observables_parser.add_argument(
         "--output-dir",
@@ -234,12 +237,12 @@ def build_parser() -> argparse.ArgumentParser:
 
     mapping_parser = subparsers.add_parser(
         "map-to-physicell",
-        help="Build a first-pass CLONEID-to-PhysiCell mapping from selected bundle artifacts.",
+        help="Build a first-pass CLONEID-to-PhysiCell mapping from selected lineage-object artifacts.",
     )
     mapping_parser.add_argument(
         "--bundle",
         required=True,
-        help="Path to selected_trajectory_bundle.json",
+        help="Path to selected_lineage_object.json",
     )
     mapping_parser.add_argument(
         "--observables",
@@ -369,7 +372,7 @@ def main(argv: list[str] | None = None) -> int:
         write_selected_trajectory_bundle(args.output_dir, selected)
         return 0
     if args.command == "select-observables":
-        observables = select_observables_from_bundle_file(args.input)
+        observables = select_observables_from_lineage_object_file(args.input)
         write_selected_observables(args.output_dir, observables)
         return 0
     if args.command == "map-to-physicell":

@@ -17,18 +17,23 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 class PhysiCellMappingTests(unittest.TestCase):
     def test_build_physicell_mapping_extracts_initialization_and_observables(self) -> None:
         bundle = {
-            "selected_bundle_id": "trajectory_bundle::mock",
+            "selected_lineage_object_id": "rooted_trajectory_bundle::mock_root",
+            "selected_lineage_object_type": "RootedTrajectoryBundle",
             "passaging_records": [
                 {"id": "a", "cellLine": "MOCK", "flask": 1, "media": 1, "passage": 1, "date": "2024-01-01 00:00:00", "passaged_from_id1": None, "passaged_from_id2": None},
                 {"id": "b", "cellLine": "MOCK", "flask": 1, "media": 1, "passage": 1, "date": "2024-01-02 00:00:00", "passaged_from_id1": "a", "passaged_from_id2": None},
             ],
-            "trajectory_bundle_features": {
+            "lineage_object_features": {
                 "event_count": 2,
                 "phenotype_time_span_days": 1.0,
                 "terminal_perspective_support": 1,
                 "identity_support_count": 0,
             },
-            "context_transitions": [],
+            "root_event_ids": ["a"],
+            "root_event_id": "a",
+            "traversal_policy": {"primary_backbone": "passaged_from_id1"},
+            "context_transitions_primary": [],
+            "context_transitions_secondary": [],
         }
         observables = {
             "selected": [
@@ -38,21 +43,26 @@ class PhysiCellMappingTests(unittest.TestCase):
         }
         mapping = build_physicell_mapping(bundle, observables)
         self.assertEqual(mapping["initialization"]["initial_event_id"], "a")
+        self.assertEqual(mapping["selected_lineage_object_id"], "rooted_trajectory_bundle::mock_root")
         self.assertEqual(mapping["observables"][0]["source"], "Passaging.correctedCount")
         self.assertIn("neutral_growth", mapping["recommended_model_families"])
 
     def test_map_to_physicell_cli_writes_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
-            bundle_path = Path(tmpdir) / "selected_trajectory_bundle.json"
+            bundle_path = Path(tmpdir) / "selected_lineage_object.json"
             observables_path = Path(tmpdir) / "selected_observables.json"
             out_dir = Path(tmpdir) / "mapping"
             bundle_path.write_text(
                 json.dumps(
                     {
-                        "selected_bundle_id": "trajectory_bundle::mock",
+                        "selected_lineage_object_id": "lineage_path::mock_endpoint",
+                        "selected_lineage_object_type": "LineagePath",
                         "passaging_records": [{"id": "a", "cellLine": "MOCK", "flask": 1, "media": 1, "passage": 1, "date": "2024-01-01 00:00:00", "passaged_from_id1": None, "passaged_from_id2": None}],
-                        "trajectory_bundle_features": {"event_count": 1, "phenotype_time_span_days": 0.0, "terminal_perspective_support": 0, "identity_support_count": 0},
-                        "context_transitions": [],
+                        "lineage_object_features": {"event_count": 1, "phenotype_time_span_days": 0.0, "terminal_perspective_support": 0, "identity_support_count": 0},
+                        "root_event_ids": ["a"],
+                        "root_event_id": "a",
+                        "context_transitions_primary": [],
+                        "context_transitions_secondary": [],
                     }
                 )
             )
@@ -82,6 +92,8 @@ class PhysiCellMappingTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue((out_dir / "physicell_mapping.json").exists())
             self.assertTrue((out_dir / "physicell_mapping.md").exists())
+            saved = json.loads((out_dir / "physicell_mapping.json").read_text())
+            self.assertEqual(saved["selected_lineage_object_id"], "lineage_path::mock_endpoint")
 
 
 if __name__ == "__main__":

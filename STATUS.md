@@ -155,6 +155,16 @@ This file is maintained by the agent. It should be updated at the end of each wo
   - root count: `1`
   - subtree depth: `161`
   - selection starts from CandidateSegment: `false`
+- Downstream deterministic artifact generation is now aligned to the selected global lineage object:
+  - `selected_observables.json` now records `selected_lineage_object_id` and `selected_lineage_object_type`
+  - `physicell_mapping.json` now records lineage-object identity, traversal policy, and primary/secondary context transitions
+- The refreshed live selected-observables artifact under `runs/live_lineage_objects_20260427T042000/` now selects:
+  - calibration / time-series: `Passaging.correctedCount` with `3209` supporting rows
+  - endpoint validation / constraint: `Perspective.size` with `5904` supporting rows
+- The refreshed live mapping artifact under `runs/live_lineage_objects_20260427T042000/` now maps from:
+  - selected lineage object: `rooted_trajectory_bundle::SNU-668_0`
+  - initial event: `SNU-668_0`
+  - selected lineage object type: `RootedTrajectoryBundle`
 - The earlier short local-window artifact was superseded because it was discovered from CandidateSegment-seeded expansion rather than from global primary-graph discovery.
 - The project scope, constraints, and unattended-work protocol have been translated into current coordination files.
 - Milestone 0 documentation now exists for safe offline progress without touching the real CLONEID database or PhysiCell runtime.
@@ -237,7 +247,6 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Repository-coupled PhysiCell smoke testing has not been implemented yet; the successful smoke run used the upstream `heterogeneity` sample project.
-- Downstream observable extraction and CLONEID-to-PhysiCell mapping have not yet been refreshed from `selected_lineage_object.json`; they still target the older selected-TrajectoryBundle artifact shape.
 - Candidate PhysiCell model-folder generation from the selected global lineage object has not been implemented yet.
 
 ---

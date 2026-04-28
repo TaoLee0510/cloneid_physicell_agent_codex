@@ -1,4 +1,4 @@
-"""Deterministic observable selection from a selected TrajectoryBundle."""
+"""Deterministic observable selection from a selected lineage object."""
 
 from __future__ import annotations
 
@@ -13,10 +13,10 @@ def _count_non_null(records: list[dict[str, Any]], field: str) -> int:
     return sum(1 for record in records if record.get(field) is not None)
 
 
-def select_observables_from_bundle_payload(bundle_payload: dict[str, Any]) -> dict[str, Any]:
-    passaging_records = bundle_payload.get("passaging_records", [])
-    perspective_records = bundle_payload.get("perspective_records", [])
-    identity_records = bundle_payload.get("identity_records", [])
+def select_observables_from_lineage_object_payload(lineage_object_payload: dict[str, Any]) -> dict[str, Any]:
+    passaging_records = lineage_object_payload.get("passaging_records", [])
+    perspective_records = lineage_object_payload.get("perspective_records", [])
+    identity_records = lineage_object_payload.get("identity_support_records", lineage_object_payload.get("identity_records", []))
 
     calibration_candidates = [
         ("Passaging.correctedCount", "viable cell count", _count_non_null(passaging_records, "correctedCount"), 0),
@@ -74,15 +74,24 @@ def select_observables_from_bundle_payload(bundle_payload: dict[str, Any]) -> di
         )
 
     return {
-        "selected_bundle_id": bundle_payload.get("selected_bundle_id"),
+        "selected_lineage_object_id": lineage_object_payload.get("selected_lineage_object_id", lineage_object_payload.get("selected_bundle_id")),
+        "selected_lineage_object_type": lineage_object_payload.get("selected_lineage_object_type"),
         "selection_policy": "Prefer repeated observed phenotype for calibration and Perspective endpoint support for validation.",
         "selected": selected,
         "excluded": excluded,
     }
 
 
+def select_observables_from_lineage_object_file(path: str | Path) -> dict[str, Any]:
+    return select_observables_from_lineage_object_payload(json.loads(Path(path).read_text()))
+
+
+def select_observables_from_bundle_payload(bundle_payload: dict[str, Any]) -> dict[str, Any]:
+    return select_observables_from_lineage_object_payload(bundle_payload)
+
+
 def select_observables_from_bundle_file(path: str | Path) -> dict[str, Any]:
-    return select_observables_from_bundle_payload(json.loads(Path(path).read_text()))
+    return select_observables_from_lineage_object_file(path)
 
 
 def write_selected_observables(output_dir: str | Path, payload: dict[str, Any]) -> None:
@@ -92,7 +101,8 @@ def write_selected_observables(output_dir: str | Path, payload: dict[str, Any]) 
     lines = [
         "# Selected Observables",
         "",
-        f"- Selected bundle: `{payload.get('selected_bundle_id')}`",
+        f"- Selected lineage object: `{payload.get('selected_lineage_object_id')}`",
+        f"- Type: `{payload.get('selected_lineage_object_type')}`",
         f"- Selection policy: {payload['selection_policy']}",
         "",
         "## Selected",

@@ -1,4 +1,4 @@
-"""First-pass deterministic CLONEID-to-PhysiCell mapping from selected bundle artifacts."""
+"""First-pass deterministic CLONEID-to-PhysiCell mapping from selected lineage objects."""
 
 from __future__ import annotations
 
@@ -22,21 +22,29 @@ def _root_event_ids(passaging_records: list[dict[str, Any]]) -> list[str]:
 
 
 def build_physicell_mapping(
-    selected_bundle_payload: dict[str, Any],
+    selected_lineage_object_payload: dict[str, Any],
     selected_observables_payload: dict[str, Any],
 ) -> dict[str, Any]:
-    passaging_records = selected_bundle_payload.get("passaging_records", [])
-    features = selected_bundle_payload.get("trajectory_bundle_features", {})
-    root_event_ids = selected_bundle_payload.get("rooted_subtree_root_event_ids", []) or _root_event_ids(passaging_records)
+    passaging_records = selected_lineage_object_payload.get("passaging_records", [])
+    features = selected_lineage_object_payload.get(
+        "lineage_object_features",
+        selected_lineage_object_payload.get("trajectory_bundle_features", {}),
+    )
+    root_event_ids = selected_lineage_object_payload.get("root_event_ids", []) or _root_event_ids(passaging_records)
     earliest = passaging_records[0] if passaging_records else {}
     latest = passaging_records[-1] if passaging_records else {}
 
     return {
-        "selected_bundle_id": selected_bundle_payload.get("selected_bundle_id"),
+        "selected_lineage_object_id": selected_lineage_object_payload.get(
+            "selected_lineage_object_id",
+            selected_lineage_object_payload.get("selected_bundle_id"),
+        ),
+        "selected_lineage_object_type": selected_lineage_object_payload.get("selected_lineage_object_type"),
         "mapping_version": "physicell_mapping_v1",
+        "traversal_policy": selected_lineage_object_payload.get("traversal_policy", {}),
         "initialization": {
             "root_event_ids": root_event_ids,
-            "initial_event_id": selected_bundle_payload.get("root_event_id") or (root_event_ids[0] if root_event_ids else earliest.get("id")),
+            "initial_event_id": selected_lineage_object_payload.get("root_event_id") or (root_event_ids[0] if root_event_ids else earliest.get("id")),
             "initial_cell_line": earliest.get("cellLine"),
             "initial_flask": earliest.get("flask"),
             "initial_media": earliest.get("media"),
@@ -49,7 +57,11 @@ def build_physicell_mapping(
             "last_event_date": latest.get("date"),
         },
         "observables": selected_observables_payload.get("selected", []),
-        "context_transitions": selected_bundle_payload.get("context_transitions", []),
+        "context_transitions_primary": selected_lineage_object_payload.get(
+            "context_transitions_primary",
+            selected_lineage_object_payload.get("context_transitions", []),
+        ),
+        "context_transitions_secondary": selected_lineage_object_payload.get("context_transitions_secondary", []),
         "endpoint_support": {
             "terminal_perspective_support": features.get("terminal_perspective_support", 0),
             "identity_support_count": features.get("identity_support_count", 0),
@@ -68,11 +80,11 @@ def build_physicell_mapping(
 
 
 def build_physicell_mapping_from_files(
-    selected_bundle_path: str | Path,
+    selected_lineage_object_path: str | Path,
     selected_observables_path: str | Path,
 ) -> dict[str, Any]:
     return build_physicell_mapping(
-        json.loads(Path(selected_bundle_path).read_text()),
+        json.loads(Path(selected_lineage_object_path).read_text()),
         json.loads(Path(selected_observables_path).read_text()),
     )
 
@@ -84,7 +96,8 @@ def write_physicell_mapping(output_dir: str | Path, payload: dict[str, Any]) -> 
     lines = [
         "# PhysiCell Mapping",
         "",
-        f"- Selected bundle: `{payload.get('selected_bundle_id')}`",
+        f"- Selected lineage object: `{payload.get('selected_lineage_object_id')}`",
+        f"- Type: `{payload.get('selected_lineage_object_type')}`",
         f"- Initial event: `{payload['initialization'].get('initial_event_id')}`",
         f"- Event count: `{payload['timeline'].get('event_count')}`",
         f"- Phenotype time span days: `{payload['timeline'].get('phenotype_time_span_days')}`",

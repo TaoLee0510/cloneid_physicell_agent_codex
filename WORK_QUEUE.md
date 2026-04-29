@@ -20,9 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. After user review of the scaling contract and execution-readiness report, decide whether to run only a schedule-aware syntax/dry-run check for one family or continue holding execution.
-2. If approved, add generated-model smoke coverage for one schedule-aware family without parameter fitting.
-3. After that, implement first-pass quantitative evaluation of schedule-aware simulation outputs against the shared objective vector.
+1. After user review of the dry-run harness and mock evaluation artifacts, decide whether to permit a minimal non-biological PhysiCell syntax/smoke execution for the schedule-aware candidates.
+2. If approved, implement a real-output mapping layer so schedule-aware PhysiCell outputs can be converted into the shared evaluation schema without fitting parameters.
+3. After that, add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector.
 
 ---
 
@@ -36,6 +36,7 @@ _None yet._
 
 1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
 2. Review the generated SUM159 scaling contract and execution-readiness report before I run or extend any family-specific PhysiCell behavior.
+3. Review the new execution-harness artifacts before I attempt any non-biological PhysiCell syntax/smoke execution for the schedule-aware candidates.
 
 ---
 
@@ -169,6 +170,26 @@ _None yet._
    - terminal Perspective support: `2`
    - selected calibration observable: `Passaging.cellCount`
 75. Refreshed downstream artifacts from `selected_smoke_lineage_object.json` and verified default candidate generation is unblocked on the smoke-selected path.
+76. Added a schedule-aware execution harness with three modes:
+   - `dry_run_static`
+   - `dry_run_mock`
+   - `dry_run_physicell` availability reporting without execution
+77. Generated execution-harness artifacts under `runs/live_lineage_objects_20260427T042000/`:
+   - `execution_harness_plan.json`
+   - `execution_harness_plan.md`
+   - `dry_run_static_report.json`
+   - `dry_run_static_report.md`
+   - `dry_run_mock_outputs/`
+   - `dry_run_mock_evaluation_report.json`
+   - `dry_run_mock_evaluation_report.md`
+78. Verified static dry-run invariants:
+   - malformed XML would fail validation
+   - primary shared objectives and weights are identical across families
+   - `Perspective.size` remains endpoint validation only
+   - `prehistory_context` remains non-executable
+   - transfer events retain zero growth duration
+79. Verified deterministic mock outputs cover all `8` matched growth episodes for all three families and map back into the shared evaluation schema without using `Perspective.size` as a fitting target.
+80. Verified that the local PhysiCell install is present and candidate configs appear syntax-ready, but deliberately did not execute the backend in this work unit.
 
 ---
 

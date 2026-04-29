@@ -1,0 +1,274 @@
+{
+  "branch_id": "SUM159_2N_O2",
+  "branch_label": "2N",
+  "episodes": [
+    {
+      "back_scaled_final_cellCount": 6019600,
+      "back_scaled_initial_cellCount": 581696,
+      "episode_id": "SUM159_2N_O2::phase_010",
+      "final_agent_count": 2525,
+      "initial_agent_count": 244,
+      "milestone_label": "O2_A1_seedT1",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 36.46050005023228,
+          "predicted": 36.46050005023228,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 10.891307043864394,
+          "predicted": 10.348360655737705,
+          "residual": -0.5429463881266887
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 10.891307043864394,
+          "predicted": 10.346741691671173,
+          "residual": -0.5445653521932208
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 10.891307043864394,
+      "predicted_seed_to_harvest_fold_change": 10.348360655737705,
+      "residual": -0.5429463881266887
+    },
+    {
+      "back_scaled_final_cellCount": 5967152,
+      "back_scaled_initial_cellCount": 367136,
+      "episode_id": "SUM159_2N_O2::phase_012",
+      "final_agent_count": 2503,
+      "initial_agent_count": 154,
+      "milestone_label": "O2_A2_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 65.9931486062667,
+          "predicted": 65.9931486062667,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 17.107060658616664,
+          "predicted": 16.253246753246753,
+          "residual": -0.8538139053699112
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 17.107060658616664,
+          "predicted": 16.25170762568583,
+          "residual": -0.8553530329308323
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 17.107060658616664,
+      "predicted_seed_to_harvest_fold_change": 16.253246753246753,
+      "residual": -0.8538139053699112
+    },
+    {
+      "back_scaled_final_cellCount": 7273584,
+      "back_scaled_initial_cellCount": 402896,
+      "episode_id": "SUM159_2N_O2::phase_014",
+      "final_agent_count": 3051,
+      "initial_agent_count": 169,
+      "milestone_label": "O2_A3_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 47.37293578262547,
+          "predicted": 47.37293578262547,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 19.001739273033564,
+          "predicted": 18.05325443786982,
+          "residual": -0.9484848351637432
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 19.001739273033564,
+          "predicted": 18.051652309381886,
+          "residual": -0.9500869636516782
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 19.001739273033564,
+      "predicted_seed_to_harvest_fold_change": 18.05325443786982,
+      "residual": -0.9484848351637432
+    },
+    {
+      "back_scaled_final_cellCount": 6834928,
+      "back_scaled_initial_cellCount": 524480,
+      "episode_id": "SUM159_2N_O2::phase_016",
+      "final_agent_count": 2867,
+      "initial_agent_count": 220,
+      "milestone_label": "O2_A4_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 101.44688059812674,
+          "predicted": 101.44688059812674,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 13.717537153854378,
+          "predicted": 13.031818181818181,
+          "residual": -0.6857189720361969
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 13.717537153854378,
+          "predicted": 13.03166029616166,
+          "residual": -0.685876857692719
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 13.717537153854378,
+      "predicted_seed_to_harvest_fold_change": 13.031818181818181,
+      "residual": -0.6857189720361969
+    },
+    {
+      "back_scaled_final_cellCount": 11333536,
+      "back_scaled_initial_cellCount": 810560,
+      "episode_id": "SUM159_2N_O2::phase_018",
+      "final_agent_count": 4754,
+      "initial_agent_count": 340,
+      "milestone_label": "O2_A5_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 14.806920415223857,
+          "predicted": 14.806920415223857,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 14.718615483020145,
+          "predicted": 13.98235294117647,
+          "residual": -0.7362625418436739
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 14.718615483020145,
+          "predicted": 13.982684708869137,
+          "residual": -0.7359307741510079
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 14.718615483020145,
+      "predicted_seed_to_harvest_fold_change": 13.98235294117647,
+      "residual": -0.7362625418436739
+    },
+    {
+      "back_scaled_final_cellCount": 7397552,
+      "back_scaled_initial_cellCount": 481568,
+      "episode_id": "SUM159_2N_O2::phase_020",
+      "final_agent_count": 3103,
+      "initial_agent_count": 202,
+      "milestone_label": "O2_A6_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 190.96475361764004,
+          "predicted": 190.96475361764004,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 16.167881889501473,
+          "predicted": 15.361386138613861,
+          "residual": -0.8064957508876116
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 16.167881889501473,
+          "predicted": 15.359487795026398,
+          "residual": -0.8083940944750747
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 16.167881889501473,
+      "predicted_seed_to_harvest_fold_change": 15.361386138613861,
+      "residual": -0.8064957508876116
+    },
+    {
+      "back_scaled_final_cellCount": 6899296,
+      "back_scaled_initial_cellCount": 421968,
+      "episode_id": "SUM159_2N_O2::phase_022",
+      "final_agent_count": 2894,
+      "initial_agent_count": 177,
+      "milestone_label": "O2_A7_seedT2",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 59.266229826494865,
+          "predicted": 59.266229826494865,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 17.213341193305396,
+          "predicted": 16.350282485875706,
+          "residual": -0.8630587074296905
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 17.213341193305396,
+          "predicted": 16.352674133640125,
+          "residual": -0.8606670596652712
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 17.213341193305396,
+      "predicted_seed_to_harvest_fold_change": 16.350282485875706,
+      "residual": -0.8630587074296905
+    },
+    {
+      "back_scaled_final_cellCount": 6269920,
+      "back_scaled_initial_cellCount": 1597280,
+      "episode_id": "SUM159_2N_O2::phase_024",
+      "final_agent_count": 2630,
+      "initial_agent_count": 670,
+      "milestone_label": "O2_A7K_harvest",
+      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "objective_vector": {
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
+          "observed": 3.2999819558494634,
+          "predicted": 3.2999819558494634,
+          "residual": 0.0
+        },
+        "Passaging.cellCount.seed_to_harvest_fold_change": {
+          "observed": 4.132190992304638,
+          "predicted": 3.925373134328358,
+          "residual": -0.20681785797627983
+        },
+        "Passaging.correctedCount.seed_to_harvest_fold_change": {
+          "observed": 4.132190992304638,
+          "predicted": 3.925581442689406,
+          "residual": -0.20660954961523226
+        }
+      },
+      "observed_seed_to_harvest_fold_change": 4.132190992304638,
+      "predicted_seed_to_harvest_fold_change": 3.925373134328358,
+      "residual": -0.20681785797627983
+    }
+  ],
+  "family_id": "fixed_state_fitness",
+  "output_mode": "dry_run_mock",
+  "perspective_size_fitting_target": false,
+  "prehistory_context_excluded_from_runtime": true,
+  "shared_evaluation_objective": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  },
+  "transfer_events_non_growth": true
+}

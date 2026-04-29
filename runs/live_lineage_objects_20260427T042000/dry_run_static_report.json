@@ -1,0 +1,81 @@
+{
+  "branch_schedule_validation": {
+    "anchor": {
+      "growth_episode_count": 8,
+      "growth_episodes_positive_duration": true,
+      "prehistory_context_non_executable": true,
+      "transfer_event_count": 7,
+      "transfer_events_non_growth": true
+    },
+    "comparison": {
+      "growth_episode_count": 8,
+      "growth_episodes_positive_duration": true,
+      "prehistory_context_non_executable": true,
+      "transfer_event_count": 7,
+      "transfer_events_non_growth": true
+    }
+  },
+  "candidate_root": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware",
+  "dry_run_modes": {
+    "dry_run_mock": "not_yet_run",
+    "dry_run_physicell": "available_not_executed_by_policy",
+    "dry_run_static": "passed"
+  },
+  "execution_readiness_reference": {
+    "ready_for_biological_simulation": false,
+    "ready_for_syntax_dry_run": true
+  },
+  "family_validation": {
+    "density_dependent_growth": {
+      "config_exists": true,
+      "config_xml_error": null,
+      "config_xml_parse_ok": true,
+      "evaluation_plan_exists": true,
+      "parameter_placeholders_exist": true,
+      "physicell_executable_exists": true,
+      "physicell_root_exists": true,
+      "schedule_mapping_exists": true
+    },
+    "fixed_state_fitness": {
+      "config_exists": true,
+      "config_xml_error": null,
+      "config_xml_parse_ok": true,
+      "evaluation_plan_exists": true,
+      "parameter_placeholders_exist": true,
+      "physicell_executable_exists": true,
+      "physicell_root_exists": true,
+      "schedule_mapping_exists": true
+    },
+    "neutral_growth": {
+      "config_exists": true,
+      "config_xml_error": null,
+      "config_xml_parse_ok": true,
+      "evaluation_plan_exists": true,
+      "parameter_placeholders_exist": true,
+      "physicell_executable_exists": true,
+      "physicell_root_exists": true,
+      "schedule_mapping_exists": true
+    }
+  },
+  "issues": [],
+  "passed": true,
+  "report_version": "dry_run_static_report_v1",
+  "scaling_contract_summary": {
+    "agent_count_guardrail": 5000,
+    "cells_per_agent": 2384,
+    "within_agent_count_guardrail": true
+  },
+  "schedule_mapping_invariants": {
+    "matched_growth_episode_labels_preserved": true,
+    "prehistory_context_non_executable": true,
+    "schedule_mapping_identical_across_candidates": true,
+    "transfer_events_have_zero_duration_policy": true
+  },
+  "shared_objective_invariants": {
+    "approved_primary_targets_present": true,
+    "approved_primary_weights_present": true,
+    "endpoint_perspective_size_not_used_for_fitting": true,
+    "primary_fit_target_weights_identical_across_families": true,
+    "primary_fit_targets_identical_across_families": true
+  }
+}

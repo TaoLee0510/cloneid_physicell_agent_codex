@@ -1,0 +1,103 @@
+{
+  "candidate_root": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware",
+  "comparison_id": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "expected_mock_output_schema": {
+    "branch_metadata": [
+      "branch_id",
+      "branch_label",
+      "family_id",
+      "output_mode",
+      "shared_evaluation_objective"
+    ],
+    "episode_fields": [
+      "episode_id",
+      "milestone_label",
+      "initial_agent_count",
+      "final_agent_count",
+      "back_scaled_initial_cellCount",
+      "back_scaled_final_cellCount",
+      "predicted_seed_to_harvest_fold_change",
+      "observed_seed_to_harvest_fold_change",
+      "residual",
+      "notes"
+    ]
+  },
+  "families": {
+    "density_dependent_growth": {
+      "candidate_dir": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/density_dependent_growth",
+      "config_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/density_dependent_growth/config/PhysiCell_settings.xml",
+      "shared_objective_present": true
+    },
+    "fixed_state_fitness": {
+      "candidate_dir": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/fixed_state_fitness",
+      "config_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/fixed_state_fitness/config/PhysiCell_settings.xml",
+      "shared_objective_present": true
+    },
+    "neutral_growth": {
+      "candidate_dir": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth",
+      "config_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth/config/PhysiCell_settings.xml",
+      "shared_objective_present": true
+    }
+  },
+  "invariants": {
+    "perspective_size_endpoint_validation_only": true,
+    "prehistory_context_not_executable": true,
+    "shared_objective_identical_across_families": true,
+    "transfer_events_are_reset_or_bottleneck_not_growth": true
+  },
+  "matched_growth_episode_count": 8,
+  "modes": {
+    "dry_run_mock": {
+      "description": "Emit deterministic mock outputs and evaluation artifacts using the shared evaluation schema and the model-to-data scaling contract.",
+      "enabled": true
+    },
+    "dry_run_physicell": {
+      "enabled": true,
+      "physicell_executable": "/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity",
+      "physicell_root": "/Users/4470246/Downloads/PhysiCell-1.14.2",
+      "reason": "PhysiCell install is present, but this work unit stops at syntax/dry-run harness generation.",
+      "status": "available_not_executed_by_policy"
+    },
+    "dry_run_static": {
+      "description": "Validate XML/configs, schedules, scaling contract, expected paths, and shared evaluation objective invariants without executing PhysiCell.",
+      "enabled": true
+    }
+  },
+  "plan_version": "execution_harness_plan_v1",
+  "scaling_summary": {
+    "agent_count_guardrail": 5000,
+    "cells_per_agent": 2384,
+    "max_simulated_end_target_agent_count": 5000
+  },
+  "shared_objective": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  }
+}

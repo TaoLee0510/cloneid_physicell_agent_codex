@@ -9,6 +9,7 @@ from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .evaluation import evaluate_generated_model_candidates_from_file, write_evaluation
+from .execution_harness import generate_execution_harness_artifacts
 from .execution_readiness import generate_execution_readiness_artifacts
 from .inventory import run_inventory
 from .lineage_object_pipeline import discover_rank_and_select_lineage_objects
@@ -668,6 +669,42 @@ def build_parser() -> argparse.ArgumentParser:
         help="Output path for execution_readiness_report.json",
     )
 
+    harness_parser = subparsers.add_parser(
+        "write-execution-harness-artifacts",
+        help="Generate dry-run execution-harness plan, static validation, and deterministic mock evaluation artifacts.",
+    )
+    harness_parser.add_argument("--anchor-schedule", required=True, help="Path to anchor branch schedule json")
+    harness_parser.add_argument(
+        "--comparison-schedule",
+        required=True,
+        help="Path to comparison branch schedule json",
+    )
+    harness_parser.add_argument(
+        "--matched-schedule",
+        required=True,
+        help="Path to matched schedule json",
+    )
+    harness_parser.add_argument(
+        "--candidate-root",
+        required=True,
+        help="Path to model_candidates_schedule_aware",
+    )
+    harness_parser.add_argument(
+        "--scaling-contract",
+        required=True,
+        help="Path to model_to_data_scaling_contract.json",
+    )
+    harness_parser.add_argument(
+        "--execution-readiness",
+        required=True,
+        help="Path to execution_readiness_report.json",
+    )
+    harness_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Run directory where harness artifacts should be written",
+    )
+
     return parser
 
 
@@ -879,6 +916,17 @@ def main(argv: list[str] | None = None) -> int:
             candidate_root=args.candidate_root,
             scaling_contract_json_path=args.scaling_contract_json,
             execution_readiness_json_path=args.execution_readiness_json,
+        )
+        return 0
+    if args.command == "write-execution-harness-artifacts":
+        generate_execution_harness_artifacts(
+            anchor_schedule_path=args.anchor_schedule,
+            comparison_schedule_path=args.comparison_schedule,
+            matched_schedule_path=args.matched_schedule,
+            candidate_root=args.candidate_root,
+            scaling_contract_path=args.scaling_contract,
+            execution_readiness_path=args.execution_readiness,
+            output_dir=args.output_dir,
         )
         return 0
 

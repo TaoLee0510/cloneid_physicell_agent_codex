@@ -1,0 +1,18 @@
+{
+  "comparison_id": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "families": {
+    "density_dependent_growth": {
+      "anchor_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/density_dependent_growth/SUM159_4N_O2.json",
+      "comparison_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/density_dependent_growth/SUM159_2N_O2.json"
+    },
+    "fixed_state_fitness": {
+      "anchor_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/fixed_state_fitness/SUM159_4N_O2.json",
+      "comparison_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/fixed_state_fitness/SUM159_2N_O2.json"
+    },
+    "neutral_growth": {
+      "anchor_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/neutral_growth/SUM159_4N_O2.json",
+      "comparison_branch_output": "runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/neutral_growth/SUM159_2N_O2.json"
+    }
+  },
+  "output_version": "dry_run_mock_outputs_v1"
+}

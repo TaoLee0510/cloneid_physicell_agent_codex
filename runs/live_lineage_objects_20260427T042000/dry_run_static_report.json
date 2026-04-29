@@ -23,7 +23,7 @@
   },
   "execution_readiness_reference": {
     "ready_for_biological_simulation": false,
-    "ready_for_syntax_dry_run": true
+    "ready_for_syntax_dry_run": false
   },
   "family_validation": {
     "density_dependent_growth": {

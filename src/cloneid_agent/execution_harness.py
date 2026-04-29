@@ -374,14 +374,11 @@ def build_dry_run_static_report(
 
 
 def _family_mock_multiplier(family: str, branch_label: str, area_fold_change: float | None) -> float:
-    if family == "neutral_growth":
-        return 1.0
-    if family == "fixed_state_fitness":
-        return 1.05 if branch_label == "4N" else 0.95
-    density_modifier = 1.0
-    if area_fold_change is not None:
-        density_modifier = max(0.75, min(1.0, 1.0 - 0.03 * max(0.0, area_fold_change - 1.0)))
-    return density_modifier
+    del family
+    del branch_label
+    del area_fold_change
+    # Mock outputs are schema-validation-only and must not imply any family ranking.
+    return 1.0
 
 
 def _episode_fold_change(observable: dict[str, Any]) -> float | None:
@@ -428,6 +425,7 @@ def _mock_branch_payload(
                 "residual": (
                     (back_scaled_final / back_scaled_initial) - cell_fc if cell_fc is not None and back_scaled_initial else None
                 ),
+                "residual_role": "schema_validation_only_not_for_family_ranking",
                 "objective_vector": {
                     "Passaging.cellCount.seed_to_harvest_fold_change": {
                         "predicted": back_scaled_final / back_scaled_initial if back_scaled_initial else None,
@@ -437,23 +435,24 @@ def _mock_branch_payload(
                             if cell_fc is not None and back_scaled_initial
                             else None
                         ),
+                        "residual_role": "schema_validation_only_not_for_family_ranking",
                     },
                     "Passaging.correctedCount.seed_to_harvest_fold_change": {
-                        "predicted": (corrected_fc or 1.0) * mock_multiplier if corrected_fc is not None else None,
+                        "predicted": corrected_fc if corrected_fc is not None else None,
                         "observed": corrected_fc,
                         "residual": (
-                            ((corrected_fc or 1.0) * mock_multiplier) - corrected_fc
-                            if corrected_fc is not None
-                            else None
+                            0.0 if corrected_fc is not None else None
                         ),
+                        "residual_role": "schema_validation_only_not_for_family_ranking",
                     },
                     "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
                         "predicted": area_fc,
                         "observed": area_fc,
                         "residual": 0.0 if area_fc is not None else None,
+                        "residual_role": "schema_validation_only_not_for_family_ranking",
                     },
                 },
-                "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+                "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
             }
         )
 
@@ -592,6 +591,7 @@ def build_dry_run_mock_evaluation_report(
         "passed": not issues,
         "notes": [
             "All outputs are deterministic mock artifacts only.",
+            "Residuals are schema-validation-only and must not be used to rank candidate families.",
             "Perspective.size remains endpoint validation only and is not used for fitting.",
             "prehistory_context remains excluded from executable runtime.",
             "transfer_events remain explicit reset or bottleneck events with zero growth duration.",
@@ -655,6 +655,7 @@ def _markdown_mock_report(payload: dict[str, Any]) -> str:
         f"- Passed: `{payload['passed']}`",
         f"- Comparison: `{payload['comparison_id']}`",
         f"- Families evaluated: `{', '.join(FAMILIES)}`",
+        "- Residuals in this report are schema-validation-only and must not be used for family ranking.",
         "",
         "## Family summaries",
         "",

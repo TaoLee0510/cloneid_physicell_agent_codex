@@ -20,9 +20,9 @@
     "config/PhysiCell_settings.xml": {
       "differs_across_candidates": true,
       "hashes_by_family": {
-        "density_dependent_growth": "26b03c085934d4581981fb6d23d56bb3ef050ee118eb5ba1df965dbc9206be8b",
-        "fixed_state_fitness": "f6fa2924133fd75f30820d28ae8a9fcf66fb7a10c8e7515cb61a41b84f143f26",
-        "neutral_growth": "c71524b08a5204490c9837e1feae8f51a5a65525de7c35c2672716e6c636cc70"
+        "density_dependent_growth": "088e4e2c7dc45aaede48627c53a231fa8fe4b1893393d196e303b62bc88ca90b",
+        "fixed_state_fitness": "eeba04b35b417dd5b6006852755a39d03bff8d8be00a26f0661c99a184d090e6",
+        "neutral_growth": "cb802481cb2e6d70735970bdc68f4b1b1105ed7fe2e4f9eb963202a2d0856df7"
       }
     },
     "evaluation_plan.json": {

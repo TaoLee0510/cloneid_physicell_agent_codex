@@ -1,0 +1,59 @@
+{
+  "branch_id": "SUM159_2N_O2",
+  "command": [
+    "/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity",
+    "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/fixed_state_fitness/fixed_state_fitness__SUM159_2N_O2__O2_A1_seedT1/config/PhysiCell_settings.xml"
+  ],
+  "cwd": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/fixed_state_fitness/fixed_state_fitness__SUM159_2N_O2__O2_A1_seedT1",
+  "episode_milestone_label": "O2_A1_seedT1",
+  "expected_output_files": [
+    "initial.xml",
+    "final.xml",
+    "initial.svg",
+    "final.svg"
+  ],
+  "family": "fixed_state_fitness",
+  "notes": [
+    "This is a one-episode syntax/smoke execution only.",
+    "No parameter fitting, biological interpretation, or model comparison is performed."
+  ],
+  "observed_output_files": [
+    "PhysiCell_settings.xml",
+    "final.svg",
+    "final.xml",
+    "final_attached_cells_graph.txt",
+    "final_cell_neighbor_graph.txt",
+    "final_cells.mat",
+    "final_microenvironment0.mat",
+    "final_spring_attached_cells_graph.txt",
+    "initial.svg",
+    "initial.xml",
+    "initial_attached_cells_graph.txt",
+    "initial_cell_neighbor_graph.txt",
+    "initial_cells.mat",
+    "initial_mesh0.mat",
+    "initial_microenvironment0.mat",
+    "initial_spring_attached_cells_graph.txt",
+    "legend.svg",
+    "output00000000.xml",
+    "output00000000_attached_cells_graph.txt",
+    "output00000000_cell_neighbor_graph.txt",
+    "output00000000_cells.mat",
+    "output00000000_microenvironment0.mat",
+    "output00000000_spring_attached_cells_graph.txt",
+    "output00000001.xml",
+    "output00000001_attached_cells_graph.txt",
+    "output00000001_cell_neighbor_graph.txt",
+    "output00000001_cells.mat",
+    "output00000001_microenvironment0.mat",
+    "output00000001_spring_attached_cells_graph.txt",
+    "snapshot00000000.svg",
+    "snapshot00000001.svg"
+  ],
+  "output_folder": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/fixed_state_fitness/fixed_state_fitness__SUM159_2N_O2__O2_A1_seedT1/simulation_output",
+  "report_version": "single_episode_smoke_report_v1",
+  "return_code": 0,
+  "stderr": "",
+  "stdout": "Using config file /Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/fixed_state_fitness/fixed_state_fitness__SUM159_2N_O2__O2_A1_seedT1/config/PhysiCell_settings.xml ... \nSetting up RNG with seed 0\n1\ndc? 1\nUser parameters in XML config file: \nBool parameters:: \n\nInt parameters:: \nnumber_of_cells: 0 [none]\n\nDouble parameters:: \ntumor_radius: 250 [micron]\noncoprotein_mean: 1 [dimensionless]\noncoprotein_sd: 0.25 [dimensionless]\noncoprotein_min: 0 [dimensionless]\noncoprotein_max: 2 [dimensionless]\ncandidate_family: 0 [dimensionless]\nfamily_rule_mode: 0 [dimensionless]\ntransfer_event_mode: 0 [dimensionless]\nshared_evaluation_objective_id: 0 [dimensionless]\ndeath_rate_2N: 0 [1/min]\ndeath_rate_4N: 0 [1/min]\nproliferation_rate_2N: 0 [1/min]\nproliferation_rate_4N: 0 [1/min]\nshared_initial_cell_area: 0 [micron^2]\n\nString parameters:: \n\n\nwhich boundaries?\n1 1 1 1 0 0\n\nMicroenvironment summary: microenvironment: \n\nMesh information: \ntype: uniform Cartesian\nDomain: [-1000,1000] micron x [-1000,1000] micron x [-10,10] micron\n   resolution: dx = 20 micron\n   voxels: 10000\n   voxel faces: 0\n   volume: 8e+07 cubic micron\nDensities: (1 total)\n   oxygen:\n     units: dimensionless\n     diffusion coefficient: 100000 micron^2 / min\n     decay rate: 0.1 min^-1\n     diffusion length scale: 1000 micron\n     initial condition: 38 dimensionless\n     boundary condition: 38 dimensionless (enabled: false)\n\nvirtual_wall_at_domain_edge: enabled\nPre-processing type 0 named cancer cell\nProcessing cancer cell ... \nNote: setting cell definition to 2D based on microenvironment domain settings ... \n  --------- attachment_elastic_constant = 0.01\nSignals: \n=======\n0 : oxygen\n1 : intracellular oxygen\n2 : oxygen gradient\n3 : pressure\n4 : volume\n5 : contact with cancer cell\n6 : contact with live cell\n7 : contact with dead cell\n8 : contact with apoptotic cell\n9 : contact with necrotic cell\n10 : contact with other dead cell\n11 : contact with basement membrane\n12 : damage\n13 : damage delivered\n14 : attacking\n15 : dead\n16 : total attack time\n17 : time\n18 : custom:oncoprotein\n19 : apoptotic\n20 : necrotic\n\n\nBehaviors: \n=========\n0 : oxygen secretion\n1 : oxygen secretion target\n2 : oxygen uptake\n3 : oxygen export\n4 : cycle entry\n5 : exit from cycle phase 1\n6 : exit from cycle phase 2\n7 : exit from cycle phase 3\n8 : exit from cycle phase 4\n9 : exit from cycle phase 5\n10 : apoptosis\n11 : necrosis\n12 : migration speed\n13 : migration bias\n14 : migration persistence time\n15 : chemotactic response to oxygen\n16 : cell-cell adhesion\n17 : cell-cell adhesion elastic constant\n18 : adhesive affinity to cancer cell\n19 : relative maximum adhesion distance\n20 : cell-cell repulsion\n21 : cell-BM adhesion\n22 : cell-BM repulsion\n23 : phagocytose apoptotic cell\n24 : phagocytose necrotic cell\n25 : phagocytose other dead cell\n26 : phagocytose cancer cell\n27 : attack cancer cell\n28 : fuse to cancer cell\n29 : transition to cancer cell\n30 : asymmetric division to cancer cell\n31 : custom:oncoprotein\n32 : is_movable\n33 : immunogenicity to cancer cell\n34 : cell attachment rate\n35 : cell detachment rate\n36 : maximum number of cell attachments\n37 : attack damage rate\n38 : attack duration\n39 : damage rate\n40 : damage repair rate\n\n\n0 :: type:0 name: cancer cell\n\t cycle model: Live (code=5)\n\t\tPhase 0: Live\n\t\tCycle transitions: \n\t\t-----------------\n\t\tLive --> Live w mean duration 1388.89 min\n\t death models: \n\t\t0 : Apoptosis (code=100) with rate 5.31667e-05 1/min\n\t\tdeath phase transitions: \n\t\t------------------------\n\t\tApoptotic --> Debris w mean duration 516 min\n\t\t1 : Necrosis (code=101) with rate 0 1/min\n\t\tdeath phase transitions: \n\t\t------------------------\n\t\tNecrotic (swelling) --> Necrotic (lysed) w mean duration 1e-16 min\n\t\tNecrotic (lysed) --> Debris w mean duration 86400 min\n\t key functions: \n\t\t migration bias rule: false\n\t\t custom rule: true\n\t\t phenotype rule: true\n\t\t volume update function: true\n\t\t mechanics function: true\n\t\t contact function: true\n\t\t cell division function: false\n\tmotility (enabled: false in 2D)\n\t\tspeed: 1 micron/min\n\t\tbias: 0.5 \n\t\tpersistence time: 1 min\n\t\tchemotaxis (enabled: false)\n\t\t\talong 1 * grad(oxygen) \n\tmechanics:\n\t\tcell_cell_adhesion_strength: 0.4\n\t\tcell_cell_repulsion_strength: 10\n\t\trel max adhesion dist: 1.25\n\t\tcell_BM_adhesion_strength: 4\n\t\tcell_BM_repulsion_strength: 100\n\t\tattachment_elastic_constant: 0.01\n\t\tattachment_rate: 0\n\t\tdetachment_rate: 0\n\tcustom data: \n\t\toncoprotein: 1 dimensionless\n\tcustom vector data: \n\t\t\tNOTE: custom vector data will eventually be merged with custom data\nPlacing cells of type cancer cell ... \n\n\nOncoprotein summary: \n===================\nmean: 1.00055\nstandard deviation: 0.256394\n[min max]: [0.219237 1.99053]\n\nUsing PhysiCell version 1.14.2\n\tPlease cite DOI: 10.1371/journal.pcbi.1005991\n\tProject website: http://physicell.org\n\nSee ALL_CITATIONS.txt for this list.\ncurrent simulated time: 0 min (max: 1440 min)\ntotal agents: 889\ninterval wall time: 0 days, 0 hours, 0 minutes, and 6e-06 seconds \ntotal wall time: 0 days, 0 hours, 0 minutes, and 7e-06 seconds \n\n\nUsing method diffusion_decay_solver__constant_coefficients_LOD_2D (2D LOD with Thomas Algorithm) ... \n\ncurrent simulated time: 1440 min (max: 1440 min)\ntotal agents: 924\ninterval wall time: 0 days, 0 hours, 0 minutes, and 58.2823 seconds \ntotal wall time: 0 days, 0 hours, 0 minutes, and 58.2823 seconds \n\n\nTotal simulation runtime: \n0 days, 0 hours, 0 minutes, and 58.3151 seconds ",
+  "success": true
+}

@@ -60,8 +60,6 @@ def _ensure_user_parameters(root: ET.Element) -> ET.Element:
     node = root.find("./user_parameters")
     if node is None:
         node = ET.SubElement(root, "user_parameters")
-    for child in list(node):
-        node.remove(child)
     return node
 
 
@@ -80,6 +78,9 @@ def _set_or_create_text(root: ET.Element, path: str, text: str) -> None:
 
 
 def _parameter_element(parent: ET.Element, name: str, value: str, units: str, description: str) -> None:
+    existing = parent.find(name)
+    if existing is not None:
+        parent.remove(existing)
     node = ET.SubElement(parent, name)
     node.set("units", units)
     node.set("description", description)

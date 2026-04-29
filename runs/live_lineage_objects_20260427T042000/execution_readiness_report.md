@@ -50,5 +50,5 @@
   - `schedule_mapping_available`: `True`
   - `transfer_event_handling_specified`: `True`
   - `density_proxy_handling_specified`: `True`
-  - `ready_for_syntax_dry_run`: `True`
+  - `ready_for_syntax_dry_run`: `False`
   - `ready_for_biological_simulation`: `False`

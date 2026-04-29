@@ -3,6 +3,7 @@
 - Passed: `True`
 - Comparison: `SUM159_4N_O2_vs_SUM159_2N_O2`
 - Families evaluated: `neutral_growth, fixed_state_fitness, density_dependent_growth`
+- Residuals in this report are schema-validation-only and must not be used for family ranking.
 
 ## Family summaries
 

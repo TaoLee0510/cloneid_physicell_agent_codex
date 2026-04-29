@@ -202,6 +202,21 @@ class ExecutionHarnessTests(unittest.TestCase):
             self.assertFalse(
                 report["families"]["neutral_growth"]["shared_objective"]["endpoint_validation"]["fitting_targets"]
             )
+            neutral_anchor = json.loads((output_dir / "neutral_growth" / "SUM159_4N_O2.json").read_text())
+            fixed_anchor = json.loads((output_dir / "fixed_state_fitness" / "SUM159_4N_O2.json").read_text())
+            density_anchor = json.loads((output_dir / "density_dependent_growth" / "SUM159_4N_O2.json").read_text())
+            neutral_predictions = [
+                item["predicted_seed_to_harvest_fold_change"] for item in neutral_anchor["episodes"]
+            ]
+            fixed_predictions = [
+                item["predicted_seed_to_harvest_fold_change"] for item in fixed_anchor["episodes"]
+            ]
+            density_predictions = [
+                item["predicted_seed_to_harvest_fold_change"] for item in density_anchor["episodes"]
+            ]
+            self.assertEqual(neutral_predictions, fixed_predictions)
+            self.assertEqual(neutral_predictions, density_predictions)
+            self.assertIn("schema-validation-only", report["notes"][1])
 
     def test_static_report_fails_if_transfer_or_prehistory_runtime_leaks(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

@@ -1,0 +1,13 @@
+# Parsed Smoke Output Summary
+
+- Family: `fixed_state_fitness`
+- Branch: `SUM159_4N_O2`
+- Episode milestone: `O2_A1_seedT1`
+- XML files: `5`
+- SVG files: `5`
+- MAT files: `9`
+- Expected files missing: ``
+
+## Mapping status
+
+- `structural_scaffold_only`

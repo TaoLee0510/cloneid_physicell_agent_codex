@@ -8,7 +8,7 @@
       "family_specific_parameters_present": true,
       "parameter_placeholders_present": true,
       "ready_for_biological_simulation": false,
-      "ready_for_syntax_dry_run": true,
+      "ready_for_syntax_dry_run": false,
       "scaling_contract_available": true,
       "schedule_mapping_available": true,
       "shared_objective_present": true,

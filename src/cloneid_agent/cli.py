@@ -56,6 +56,7 @@ from .phase_planning import (
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .report import write_run_report
 from .schedule_aware_candidates import generate_schedule_aware_model_candidates_from_files
+from .schedule_aware_smoke import run_smoke_tests_for_families
 from .simulation_schedule import (
     build_branch_simulation_schedule,
     build_matched_simulation_schedule,
@@ -705,6 +706,47 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run directory where harness artifacts should be written",
     )
 
+    smoke_parser = subparsers.add_parser(
+        "run-schedule-aware-smoke",
+        help="Run one-episode schedule-aware PhysiCell smoke tests with isolated staging, logs, and parsed output summaries.",
+    )
+    smoke_parser.add_argument(
+        "--candidate-root",
+        required=True,
+        help="Path to model_candidates_schedule_aware",
+    )
+    smoke_parser.add_argument(
+        "--branch-schedule",
+        required=True,
+        help="Path to branch simulation schedule json",
+    )
+    smoke_parser.add_argument(
+        "--families",
+        nargs="+",
+        required=True,
+        help="One or more candidate families to smoke test.",
+    )
+    smoke_parser.add_argument(
+        "--episode-milestone",
+        required=True,
+        help="Growth-episode child milestone label, for example O2_A1_seedT1.",
+    )
+    smoke_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Directory under which per-family smoke artifacts should be written.",
+    )
+    smoke_parser.add_argument(
+        "--physicell-root",
+        help="Optional override path to the PhysiCell install root.",
+    )
+    smoke_parser.add_argument(
+        "--omp-threads",
+        type=int,
+        default=1,
+        help="OpenMP thread count for the smoke execution.",
+    )
+
     return parser
 
 
@@ -927,6 +969,17 @@ def main(argv: list[str] | None = None) -> int:
             scaling_contract_path=args.scaling_contract,
             execution_readiness_path=args.execution_readiness,
             output_dir=args.output_dir,
+        )
+        return 0
+    if args.command == "run-schedule-aware-smoke":
+        run_smoke_tests_for_families(
+            candidate_root=args.candidate_root,
+            branch_schedule_path=args.branch_schedule,
+            families=args.families,
+            episode_milestone_label=args.episode_milestone,
+            output_root=args.output_dir,
+            physicell_root=args.physicell_root if args.physicell_root else None,
+            omp_threads=args.omp_threads,
         )
         return 0
 

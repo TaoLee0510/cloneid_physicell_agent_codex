@@ -3,236 +3,268 @@
   "branch_label": "2N",
   "episodes": [
     {
-      "back_scaled_final_cellCount": 4751312,
+      "back_scaled_final_cellCount": 6334288,
       "back_scaled_initial_cellCount": 581696,
       "episode_id": "SUM159_2N_O2::phase_010",
-      "final_agent_count": 1993,
+      "final_agent_count": 2657,
       "initial_agent_count": 244,
       "milestone_label": "O2_A1_seedT1",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 36.46050005023228,
           "predicted": 36.46050005023228,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 10.891307043864394,
-          "predicted": 8.168032786885245,
-          "residual": -2.723274256979149
+          "predicted": 10.889344262295081,
+          "residual": -0.0019627815693130657,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 10.891307043864394,
-          "predicted": 8.168480282898296,
-          "residual": -2.7228267609660985
+          "predicted": 10.891307043864394,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 10.891307043864394,
-      "predicted_seed_to_harvest_fold_change": 8.168032786885245,
-      "residual": -2.723274256979149
+      "predicted_seed_to_harvest_fold_change": 10.889344262295081,
+      "residual": -0.0019627815693130657,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 4710784,
+      "back_scaled_final_cellCount": 6279456,
       "back_scaled_initial_cellCount": 367136,
       "episode_id": "SUM159_2N_O2::phase_012",
-      "final_agent_count": 1976,
+      "final_agent_count": 2634,
       "initial_agent_count": 154,
       "milestone_label": "O2_A2_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 65.9931486062667,
           "predicted": 65.9931486062667,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 17.107060658616664,
-          "predicted": 12.831168831168831,
-          "residual": -4.275891827447833
+          "predicted": 17.103896103896105,
+          "residual": -0.0031645547205592095,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 17.107060658616664,
-          "predicted": 12.830295493962499,
-          "residual": -4.276765164654165
+          "predicted": 17.107060658616664,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 17.107060658616664,
-      "predicted_seed_to_harvest_fold_change": 12.831168831168831,
-      "residual": -4.275891827447833
+      "predicted_seed_to_harvest_fold_change": 17.103896103896105,
+      "residual": -0.0031645547205592095,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 5740672,
+      "back_scaled_final_cellCount": 7655024,
       "back_scaled_initial_cellCount": 402896,
       "episode_id": "SUM159_2N_O2::phase_014",
-      "final_agent_count": 2408,
+      "final_agent_count": 3211,
       "initial_agent_count": 169,
       "milestone_label": "O2_A3_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 47.37293578262547,
           "predicted": 47.37293578262547,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 19.001739273033564,
-          "predicted": 14.248520710059172,
-          "residual": -4.753218562974393
+          "predicted": 19.0,
+          "residual": -0.0017392730335643591,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 19.001739273033564,
-          "predicted": 14.251304454775173,
-          "residual": -4.750434818258391
+          "predicted": 19.001739273033564,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 19.001739273033564,
-      "predicted_seed_to_harvest_fold_change": 14.248520710059172,
-      "residual": -4.753218562974393
+      "predicted_seed_to_harvest_fold_change": 19.0,
+      "residual": -0.0017392730335643591,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 5394992,
+      "back_scaled_final_cellCount": 7194912,
       "back_scaled_initial_cellCount": 524480,
       "episode_id": "SUM159_2N_O2::phase_016",
-      "final_agent_count": 2263,
+      "final_agent_count": 3018,
       "initial_agent_count": 220,
       "milestone_label": "O2_A4_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 101.44688059812674,
           "predicted": 101.44688059812674,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 13.717537153854378,
-          "predicted": 10.286363636363637,
-          "residual": -3.431173517490741
+          "predicted": 13.718181818181819,
+          "residual": 0.0006446643274404806,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 13.717537153854378,
-          "predicted": 10.288152865390783,
-          "residual": -3.429384288463595
+          "predicted": 13.717537153854378,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 13.717537153854378,
-      "predicted_seed_to_harvest_fold_change": 10.286363636363637,
-      "residual": -3.431173517490741
+      "predicted_seed_to_harvest_fold_change": 13.718181818181819,
+      "residual": 0.0006446643274404806,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 8947152,
+      "back_scaled_final_cellCount": 11929536,
       "back_scaled_initial_cellCount": 810560,
       "episode_id": "SUM159_2N_O2::phase_018",
-      "final_agent_count": 3753,
+      "final_agent_count": 5004,
       "initial_agent_count": 340,
       "milestone_label": "O2_A5_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 14.806920415223857,
           "predicted": 14.806920415223857,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 14.718615483020145,
-          "predicted": 11.038235294117648,
-          "residual": -3.6803801889024967
+          "predicted": 14.717647058823529,
+          "residual": -0.0009684241966159135,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 14.718615483020145,
-          "predicted": 11.038961612265108,
-          "residual": -3.679653870755036
+          "predicted": 14.718615483020145,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 14.718615483020145,
-      "predicted_seed_to_harvest_fold_change": 11.038235294117648,
-      "residual": -3.6803801889024967
+      "predicted_seed_to_harvest_fold_change": 14.717647058823529,
+      "residual": -0.0009684241966159135,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 5838416,
+      "back_scaled_final_cellCount": 7786144,
       "back_scaled_initial_cellCount": 481568,
       "episode_id": "SUM159_2N_O2::phase_020",
-      "final_agent_count": 2449,
+      "final_agent_count": 3266,
       "initial_agent_count": 202,
       "milestone_label": "O2_A6_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 190.96475361764004,
           "predicted": 190.96475361764004,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 16.167881889501473,
-          "predicted": 12.123762376237623,
-          "residual": -4.044119513263849
+          "predicted": 16.168316831683168,
+          "residual": 0.00043494218169470855,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 16.167881889501473,
-          "predicted": 12.125911417126105,
-          "residual": -4.041970472375368
+          "predicted": 16.167881889501473,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 16.167881889501473,
-      "predicted_seed_to_harvest_fold_change": 12.123762376237623,
-      "residual": -4.044119513263849
+      "predicted_seed_to_harvest_fold_change": 16.168316831683168,
+      "residual": 0.00043494218169470855,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 5447440,
+      "back_scaled_final_cellCount": 7264048,
       "back_scaled_initial_cellCount": 421968,
       "episode_id": "SUM159_2N_O2::phase_022",
-      "final_agent_count": 2285,
+      "final_agent_count": 3047,
       "initial_agent_count": 177,
       "milestone_label": "O2_A7_seedT2",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 59.266229826494865,
           "predicted": 59.266229826494865,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 17.213341193305396,
-          "predicted": 12.909604519774012,
-          "residual": -4.303736673531384
+          "predicted": 17.214689265536723,
+          "residual": 0.0013480722313268245,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 17.213341193305396,
-          "predicted": 12.910005894979047,
-          "residual": -4.303335298326349
+          "predicted": 17.213341193305396,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 17.213341193305396,
-      "predicted_seed_to_harvest_fold_change": 12.909604519774012,
-      "residual": -4.303736673531384
+      "predicted_seed_to_harvest_fold_change": 17.214689265536723,
+      "residual": 0.0013480722313268245,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     },
     {
-      "back_scaled_final_cellCount": 6145952,
+      "back_scaled_final_cellCount": 6601296,
       "back_scaled_initial_cellCount": 1597280,
       "episode_id": "SUM159_2N_O2::phase_024",
-      "final_agent_count": 2578,
+      "final_agent_count": 2769,
       "initial_agent_count": 670,
       "milestone_label": "O2_A7K_harvest",
-      "notes": "Deterministic mock output only. Not biological, not fitted, and not suitable for interpretation.",
+      "notes": "Deterministic mock output only. Not biological, not fitted, not suitable for interpretation, and not valid for family ranking.",
       "objective_vector": {
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": {
           "observed": 3.2999819558494634,
           "predicted": 3.2999819558494634,
-          "residual": 0.0
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.cellCount.seed_to_harvest_fold_change": {
           "observed": 4.132190992304638,
-          "predicted": 3.8477611940298506,
-          "residual": -0.2844297982747874
+          "predicted": 4.132835820895522,
+          "residual": 0.0006448285908842166,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         },
         "Passaging.correctedCount.seed_to_harvest_fold_change": {
           "observed": 4.132190992304638,
-          "predicted": 3.8470720506919074,
-          "residual": -0.28511894161273066
+          "predicted": 4.132190992304638,
+          "residual": 0.0,
+          "residual_role": "schema_validation_only_not_for_family_ranking"
         }
       },
       "observed_seed_to_harvest_fold_change": 4.132190992304638,
-      "predicted_seed_to_harvest_fold_change": 3.8477611940298506,
-      "residual": -0.2844297982747874
+      "predicted_seed_to_harvest_fold_change": 4.132835820895522,
+      "residual": 0.0006448285908842166,
+      "residual_role": "schema_validation_only_not_for_family_ranking"
     }
   ],
   "family_id": "density_dependent_growth",

@@ -1,0 +1,116 @@
+{
+  "branch_id": "SUM159_2N_O2",
+  "branch_label": "2N",
+  "candidate_config_path": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/density_dependent_growth/config/PhysiCell_settings.xml",
+  "candidate_dir": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/density_dependent_growth",
+  "episode": {
+    "child_event_id": "SUM-159_NLS_2N_O2_A1_seedT1",
+    "milestone_label": "O2_A1_seedT1",
+    "observables": {
+      "Passaging.areaOccupied_um2": {
+        "derived_quantity": true,
+        "end": 6872482007.5758,
+        "evidence_class": "derived_event_linked_phenotype",
+        "is_direct_observation": false,
+        "start": 188491161.6162
+      },
+      "Passaging.cellCount": {
+        "derived_quantity": true,
+        "end": 6323079,
+        "evidence_class": "derived_event_linked_phenotype",
+        "is_direct_observation": false,
+        "start": 580562
+      },
+      "Passaging.correctedCount": {
+        "derived_quantity": true,
+        "end": 6323079,
+        "evidence_class": "derived_event_linked_phenotype",
+        "is_direct_observation": false,
+        "start": 580562
+      }
+    },
+    "parent_event_id": "SUM-159_NLS_2N_O2_A1_seed",
+    "real_elapsed_minutes": 4198,
+    "simulated_duration_minutes": 1440,
+    "window_label": "SUM-159_NLS_2N_O2_A1_seed -> SUM-159_NLS_2N_O2_A1_seedT1"
+  },
+  "execution_invariants": {
+    "no_model_comparison": true,
+    "not_fitted": true,
+    "perspective_size_validation_only": true,
+    "prehistory_context_excluded_from_runtime": true,
+    "transfer_events_not_simulated_as_growth": true
+  },
+  "family": "density_dependent_growth",
+  "initial_condition": {
+    "areaOccupied_um2": 188491161.6162,
+    "branch_id": "SUM159_2N_O2",
+    "branch_label": "2N",
+    "cellCount": 580562,
+    "correctedCount": 580562,
+    "event_id": "SUM-159_NLS_2N_O2_A1_seed",
+    "event_provenance": {
+      "child_event": {
+        "date": "2024-11-15 15:45:36",
+        "event": "seeding",
+        "id": "SUM-159_NLS_2N_O2_A1_seed"
+      },
+      "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+      "parent_event": {
+        "date": "2024-11-15 14:38:21",
+        "event": "harvest",
+        "id": "SUM-159_NLS_2N_dp_seedT1"
+      },
+      "root_event_id": "SUM-159_NLS_mCherry"
+    },
+    "flask": 2,
+    "media": 100,
+    "milestone_label": "O2_A1_seed",
+    "passage": 6
+  },
+  "output_folder": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/density_dependent_growth/density_dependent_growth__SUM159_2N_O2__O2_A1_seedT1/simulation_output",
+  "physicell_executable": "/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity",
+  "plan_version": "single_episode_smoke_plan_v1",
+  "runtime": {
+    "expected_output_files": [
+      "initial.xml",
+      "final.xml",
+      "initial.svg",
+      "final.svg"
+    ],
+    "omp_threads": 1
+  },
+  "shared_evaluation_objective": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  },
+  "stage_dir": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/density_dependent_growth/density_dependent_growth__SUM159_2N_O2__O2_A1_seedT1",
+  "staged_config_path": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/density_dependent_growth/density_dependent_growth__SUM159_2N_O2__O2_A1_seedT1/config/PhysiCell_settings.xml"
+}

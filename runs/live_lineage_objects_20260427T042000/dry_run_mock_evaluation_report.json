@@ -7,15 +7,15 @@
           "branch_id": "SUM159_4N_O2",
           "branch_label": "4N",
           "episode_count": 8,
-          "mean_cellCount_fold_change_residual": -1.9711861849565842,
-          "mean_correctedCount_fold_change_residual": -1.970539513519962
+          "mean_cellCount_fold_change_residual": -0.00019048020426071233,
+          "mean_correctedCount_fold_change_residual": 0.0
         },
         "comparison": {
           "branch_id": "SUM159_2N_O2",
           "branch_label": "2N",
           "episode_count": 8,
-          "mean_cellCount_fold_change_residual": -3.437028042358079,
-          "mean_correctedCount_fold_change_residual": -3.436186201926467
+          "mean_cellCount_fold_change_residual": -0.0005953157735882897,
+          "mean_correctedCount_fold_change_residual": 0.0
         }
       },
       "endpoint_validation": {
@@ -70,15 +70,15 @@
           "branch_id": "SUM159_4N_O2",
           "branch_label": "4N",
           "episode_count": 8,
-          "mean_cellCount_fold_change_residual": 0.42819857263783634,
-          "mean_correctedCount_fold_change_residual": 0.42808114513778617
+          "mean_cellCount_fold_change_residual": -0.00019048020426071233,
+          "mean_correctedCount_fold_change_residual": 0.0
         },
         "comparison": {
           "branch_id": "SUM159_2N_O2",
           "branch_label": "2N",
           "episode_count": 8,
-          "mean_cellCount_fold_change_residual": -0.7054498698542244,
-          "mean_correctedCount_fold_change_residual": -0.7059354605468795
+          "mean_cellCount_fold_change_residual": -0.0005953157735882897,
+          "mean_correctedCount_fold_change_residual": 0.0
         }
       },
       "endpoint_validation": {
@@ -194,6 +194,7 @@
   "issues": [],
   "notes": [
     "All outputs are deterministic mock artifacts only.",
+    "Residuals are schema-validation-only and must not be used to rank candidate families.",
     "Perspective.size remains endpoint validation only and is not used for fitting.",
     "prehistory_context remains excluded from executable runtime.",
     "transfer_events remain explicit reset or bottleneck events with zero growth duration."

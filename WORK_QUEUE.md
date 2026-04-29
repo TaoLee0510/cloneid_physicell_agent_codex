@@ -20,9 +20,9 @@ For each work block:
 
 ## Ready now
 
-1. After user review of the dry-run harness and mock evaluation artifacts, decide whether to permit a minimal non-biological PhysiCell syntax/smoke execution for the schedule-aware candidates.
-2. If approved, implement a real-output mapping layer so schedule-aware PhysiCell outputs can be converted into the shared evaluation schema without fitting parameters.
-3. After that, add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector.
+1. Extend the current structural smoke-output parser so it can extract episode-end simulation metadata into a more explicit shared-evaluation placeholder schema without fitting parameters.
+2. Decide whether to keep expanding one-episode smoke coverage or stop at the current `4N` and `2N` branch smoke matrix before moving to richer real-output parsing.
+3. After that, add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector, still without parameter fitting.
 
 ---
 
@@ -37,6 +37,7 @@ _None yet._
 1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
 2. Review the generated SUM159 scaling contract and execution-readiness report before I run or extend any family-specific PhysiCell behavior.
 3. Review the new execution-harness artifacts before I attempt any non-biological PhysiCell syntax/smoke execution for the schedule-aware candidates.
+4. Review the completed one-episode schedule-aware smoke reports before I extend real-output parsing beyond the current structural scaffold.
 
 ---
 
@@ -190,6 +191,29 @@ _None yet._
    - transfer events retain zero growth duration
 79. Verified deterministic mock outputs cover all `8` matched growth episodes for all three families and map back into the shared evaluation schema without using `Perspective.size` as a fitting target.
 80. Verified that the local PhysiCell install is present and candidate configs appear syntax-ready, but deliberately did not execute the backend in this work unit.
+81. Corrected the dry-run mock semantics so mock residuals are explicitly schema-validation-only and no longer imply any family ranking; mock predictions are now identical across families.
+82. Fixed schedule-aware candidate generation to preserve backend-required base PhysiCell `user_parameters` while overlaying schedule-aware placeholders, resolving the startup failure from missing `number_of_cells`.
+83. Added a real one-episode schedule-aware smoke harness with:
+   - isolated per-family staging directories
+   - captured command, return code, stdout, and stderr
+   - explicit smoke-test plan and report artifacts
+   - structural output-parser summaries
+84. Added and passed deterministic tests for:
+   - mock family parity
+   - one-episode smoke success with a fake backend
+   - one-episode smoke failure capture
+85. Verified a real single-episode PhysiCell smoke run for `neutral_growth`, branch `SUM159_4N_O2`, episode `O2_A1_seed -> O2_A1_seedT1`.
+86. Verified additional real one-episode smoke runs on the same `SUM159_4N_O2` episode for:
+   - `fixed_state_fitness`
+   - `density_dependent_growth`
+87. Verified matched-branch real one-episode smoke runs for `SUM159_2N_O2`, episode `O2_A1_seed -> O2_A1_seedT1`, across:
+   - `neutral_growth`
+   - `fixed_state_fitness`
+   - `density_dependent_growth`
+88. Verified that all completed one-episode smoke runs produced parseable structural outputs with the expected core files present, while preserving:
+   - `Perspective.size` as endpoint validation only
+   - non-executable `prehistory_context`
+   - zero-duration transfer-event semantics
 
 ---
 

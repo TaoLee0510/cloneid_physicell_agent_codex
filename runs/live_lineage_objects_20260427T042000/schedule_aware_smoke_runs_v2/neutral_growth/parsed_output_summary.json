@@ -1,0 +1,117 @@
+{
+  "branch_id": "SUM159_4N_O2",
+  "episode_milestone_label": "O2_A1_seedT1",
+  "expected_files_missing": [],
+  "expected_files_present": [
+    "initial.xml",
+    "final.xml",
+    "initial.svg",
+    "final.svg"
+  ],
+  "family": "neutral_growth",
+  "mat_files": [
+    "final_cells.mat",
+    "final_microenvironment0.mat",
+    "initial_cells.mat",
+    "initial_mesh0.mat",
+    "initial_microenvironment0.mat",
+    "output00000000_cells.mat",
+    "output00000000_microenvironment0.mat",
+    "output00000001_cells.mat",
+    "output00000001_microenvironment0.mat"
+  ],
+  "observed_files": [
+    "PhysiCell_settings.xml",
+    "final.svg",
+    "final.xml",
+    "final_attached_cells_graph.txt",
+    "final_cell_neighbor_graph.txt",
+    "final_cells.mat",
+    "final_microenvironment0.mat",
+    "final_spring_attached_cells_graph.txt",
+    "initial.svg",
+    "initial.xml",
+    "initial_attached_cells_graph.txt",
+    "initial_cell_neighbor_graph.txt",
+    "initial_cells.mat",
+    "initial_mesh0.mat",
+    "initial_microenvironment0.mat",
+    "initial_spring_attached_cells_graph.txt",
+    "legend.svg",
+    "output00000000.xml",
+    "output00000000_attached_cells_graph.txt",
+    "output00000000_cell_neighbor_graph.txt",
+    "output00000000_cells.mat",
+    "output00000000_microenvironment0.mat",
+    "output00000000_spring_attached_cells_graph.txt",
+    "output00000001.xml",
+    "output00000001_attached_cells_graph.txt",
+    "output00000001_cell_neighbor_graph.txt",
+    "output00000001_cells.mat",
+    "output00000001_microenvironment0.mat",
+    "output00000001_spring_attached_cells_graph.txt",
+    "snapshot00000000.svg",
+    "snapshot00000001.svg"
+  ],
+  "output_folder": "/Users/4470246/Repositories/cloneid_physicell_agent_codex/runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_v2/neutral_growth/neutral_growth__SUM159_4N_O2__O2_A1_seedT1/simulation_output",
+  "parser_version": "schedule_aware_smoke_output_parser_v1",
+  "shared_evaluation_schema_mapping": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "episode_level_counts_available": false,
+    "mapping_status": "structural_scaffold_only",
+    "notes": [
+      "Real PhysiCell output folder was parsed structurally only.",
+      "No biological parameter fitting or model comparison is performed here.",
+      "Perspective.size remains endpoint validation metadata only."
+    ],
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  },
+  "svg_files": [
+    "final.svg",
+    "initial.svg",
+    "legend.svg",
+    "snapshot00000000.svg",
+    "snapshot00000001.svg"
+  ],
+  "xml_files": [
+    "PhysiCell_settings.xml",
+    "final.xml",
+    "initial.xml",
+    "output00000000.xml",
+    "output00000001.xml"
+  ],
+  "xml_parse_status": {
+    "PhysiCell_settings.xml": true,
+    "final.xml": true,
+    "initial.xml": true,
+    "output00000000.xml": true,
+    "output00000001.xml": true
+  }
+}

@@ -47,7 +47,17 @@ def build_schedule_aware_model_family_specification(
     families = [
         {
             "family_id": "neutral_growth",
+            "family_rule_mode": "shared_growth_rules_across_branches",
             "scientific_meaning": "Same growth rule for 2N and 4N branches; differences arise only from observed initial conditions and transfer bottlenecks.",
+            "rules": [
+                "Use identical proliferation/death rule structure for 2N and 4N branches.",
+                "Apply observed transfer-event bottlenecks externally between episodes.",
+            ],
+            "placeholder_parameters": {
+                "shared_proliferation_rate": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "shared_death_rate": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "shared_initial_cell_area": {"value": "UNFITTED_PLACEHOLDER", "units": "micron^2"},
+            },
             "required_physicell_features": [
                 "single shared cell rule for both branches",
                 "episode-wise initialization from schedule initial_condition",
@@ -91,7 +101,20 @@ def build_schedule_aware_model_family_specification(
         },
         {
             "family_id": "fixed_state_fitness",
+            "family_rule_mode": "branch_specific_fitness_parameters",
             "scientific_meaning": "2N and 4N branches may require different intrinsic proliferation / death balance under otherwise matched O2 schedule structure.",
+            "rules": [
+                "Use branch-specific proliferation/death placeholders for 2N and 4N.",
+                "Do not introduce density dependence as the main mechanism.",
+                "Apply observed transfer-event bottlenecks externally between episodes.",
+            ],
+            "placeholder_parameters": {
+                "proliferation_rate_2N": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "proliferation_rate_4N": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "death_rate_2N": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "death_rate_4N": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "shared_initial_cell_area": {"value": "UNFITTED_PLACEHOLDER", "units": "micron^2"},
+            },
             "required_physicell_features": [
                 "branch-specific cell rule parameters or cell definitions",
                 "episode-wise initialization from schedule initial_condition",
@@ -142,7 +165,20 @@ def build_schedule_aware_model_family_specification(
         },
         {
             "family_id": "density_dependent_growth",
+            "family_rule_mode": "shared_density_dependent_growth",
             "scientific_meaning": "Growth depends on density / confluence proxy, with areaOccupied_um2 used as the preferred schedule-aware crowding signal.",
+            "rules": [
+                "Use density/confluence-linked growth modulation informed by areaOccupied_um2.",
+                "Avoid branch-specific density parameters initially.",
+                "Apply observed transfer-event bottlenecks externally between episodes.",
+            ],
+            "placeholder_parameters": {
+                "shared_baseline_proliferation_rate": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "shared_death_rate": {"value": "UNFITTED_PLACEHOLDER", "units": "1/min"},
+                "density_response_threshold": {"value": "UNFITTED_PLACEHOLDER", "units": "relative_area_proxy"},
+                "density_response_slope": {"value": "UNFITTED_PLACEHOLDER", "units": "1/relative_area_proxy"},
+                "area_proxy_mode": {"value": "areaOccupied_um2", "units": "label"},
+            },
             "required_physicell_features": [
                 "density- or volume-fraction-dependent proliferation control",
                 "episode-wise initialization from schedule initial_condition",

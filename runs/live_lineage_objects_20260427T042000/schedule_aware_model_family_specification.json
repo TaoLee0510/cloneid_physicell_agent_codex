@@ -40,6 +40,7 @@
       ],
       "failure_condition": "Systematic branch-specific trajectory mismatch remains after shared-parameter fitting, especially if 2N and 4N diverge in consistent opposite directions.",
       "family_id": "neutral_growth",
+      "family_rule_mode": "shared_growth_rules_across_branches",
       "growth_episode_handling": "Simulate each growth_episode for fixed 1440 minutes, using observed start counts / area as initialization and observed end values as calibration targets.",
       "limitations": [
         "Cannot explain persistent ploidy-specific trajectory differences except through initial conditions.",
@@ -67,6 +68,20 @@
           "scope": "shared"
         }
       ],
+      "placeholder_parameters": {
+        "shared_death_rate": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "shared_initial_cell_area": {
+          "units": "micron^2",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "shared_proliferation_rate": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        }
+      },
       "primary_calibration_target": "Passaging.cellCount",
       "required_input_observables": [
         "Passaging.cellCount",
@@ -79,6 +94,10 @@
         "episode-wise initialization from schedule initial_condition",
         "external handling of transfer_events as reseeding / bottleneck resets",
         "time-series export at growth-episode endpoints"
+      ],
+      "rules": [
+        "Use identical proliferation/death rule structure for 2N and 4N branches.",
+        "Apply observed transfer-event bottlenecks externally between episodes."
       ],
       "scientific_meaning": "Same growth rule for 2N and 4N branches; differences arise only from observed initial conditions and transfer bottlenecks.",
       "secondary_validation_targets": [
@@ -105,6 +124,7 @@
       ],
       "failure_condition": "Branch-specific parameters do not improve fit enough to justify extra degrees of freedom.",
       "family_id": "fixed_state_fitness",
+      "family_rule_mode": "branch_specific_fitness_parameters",
       "growth_episode_handling": "Simulate fixed 1440-minute growth episodes, but allow 2N and 4N branches to use different intrinsic fitness parameters across the whole matched window.",
       "limitations": [
         "Branch labels stand in for biological state without modeling a dynamic switch mechanism.",
@@ -146,6 +166,28 @@
           "scope": "shared"
         }
       ],
+      "placeholder_parameters": {
+        "death_rate_2N": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "death_rate_4N": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "proliferation_rate_2N": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "proliferation_rate_4N": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "shared_initial_cell_area": {
+          "units": "micron^2",
+          "value": "UNFITTED_PLACEHOLDER"
+        }
+      },
       "primary_calibration_target": "Passaging.correctedCount",
       "required_input_observables": [
         "Passaging.cellCount",
@@ -158,6 +200,11 @@
         "episode-wise initialization from schedule initial_condition",
         "external transfer-event reseeding between episodes",
         "time-series export at growth-episode endpoints"
+      ],
+      "rules": [
+        "Use branch-specific proliferation/death placeholders for 2N and 4N.",
+        "Do not introduce density dependence as the main mechanism.",
+        "Apply observed transfer-event bottlenecks externally between episodes."
       ],
       "scientific_meaning": "2N and 4N branches may require different intrinsic proliferation / death balance under otherwise matched O2 schedule structure.",
       "secondary_validation_targets": [
@@ -187,6 +234,7 @@
       ],
       "failure_condition": "Adding density dependence does not improve the joint count/area fit or only explains one branch.",
       "family_id": "density_dependent_growth",
+      "family_rule_mode": "shared_density_dependent_growth",
       "growth_episode_handling": "Simulate each 1440-minute growth episode with density-sensitive growth, comparing whether occupied area better explains the seed-to-harvest trajectory than fixed-rate growth.",
       "limitations": [
         "areaOccupied_um2 is derived and may not map perfectly onto the PhysiCell crowding variable.",
@@ -219,6 +267,28 @@
           "scope": "optional_branch_specific"
         }
       ],
+      "placeholder_parameters": {
+        "area_proxy_mode": {
+          "units": "label",
+          "value": "areaOccupied_um2"
+        },
+        "density_response_slope": {
+          "units": "1/relative_area_proxy",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "density_response_threshold": {
+          "units": "relative_area_proxy",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "shared_baseline_proliferation_rate": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        },
+        "shared_death_rate": {
+          "units": "1/min",
+          "value": "UNFITTED_PLACEHOLDER"
+        }
+      },
       "primary_calibration_target": "Passaging.areaOccupied_um2",
       "required_input_observables": [
         "Passaging.cellCount",
@@ -231,6 +301,11 @@
         "episode-wise initialization from schedule initial_condition",
         "external transfer-event reseeding between episodes",
         "time-series export of cell count and occupancy-like outputs at growth-episode endpoints"
+      ],
+      "rules": [
+        "Use density/confluence-linked growth modulation informed by areaOccupied_um2.",
+        "Avoid branch-specific density parameters initially.",
+        "Apply observed transfer-event bottlenecks externally between episodes."
       ],
       "scientific_meaning": "Growth depends on density / confluence proxy, with areaOccupied_um2 used as the preferred schedule-aware crowding signal.",
       "secondary_validation_targets": [

@@ -1,0 +1,43 @@
+{
+  "endpoint_validation": {
+    "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+    "fitting_targets": [],
+    "validation_targets": [
+      "Perspective.size"
+    ]
+  },
+  "family_id": "density_dependent_growth",
+  "matched_growth_episode_labels": [
+    "O2_A1_seedT1",
+    "O2_A2_seedT2",
+    "O2_A3_seedT2",
+    "O2_A4_seedT2",
+    "O2_A5_seedT2",
+    "O2_A6_seedT2",
+    "O2_A7_seedT2",
+    "O2_A7K_harvest"
+  ],
+  "not_yet_fitted": true,
+  "primary_shared_objective": {
+    "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+    "fit_targets": [
+      "Passaging.cellCount.seed_to_harvest_fold_change",
+      "Passaging.correctedCount.seed_to_harvest_fold_change"
+    ]
+  },
+  "required_outputs": [
+    "simulated episode-end cell count",
+    "simulated seed-to-harvest fold change",
+    "simulated area/density proxy where available",
+    "branch-level residuals for 2N and 4N",
+    "matched-episode residuals",
+    "terminal endpoint validation against Perspective.size metadata only"
+  ],
+  "secondary_objective": {
+    "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+    "validation_targets": [
+      "Passaging.areaOccupied_um2.episode_end_value",
+      "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+    ]
+  }
+}

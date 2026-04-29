@@ -1,0 +1,27 @@
+{
+  "family_id": "fixed_state_fitness",
+  "family_rule_mode": "branch_specific_fitness_parameters",
+  "not_yet_fitted": true,
+  "placeholder_parameters": {
+    "death_rate_2N": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "death_rate_4N": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "proliferation_rate_2N": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "proliferation_rate_4N": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "shared_initial_cell_area": {
+      "units": "micron^2",
+      "value": "UNFITTED_PLACEHOLDER"
+    }
+  }
+}

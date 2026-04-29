@@ -1,0 +1,41 @@
+{
+  "candidate_dir": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth",
+  "candidate_id": "neutral_growth",
+  "config_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth/config/PhysiCell_settings.xml",
+  "evaluation_plan_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth/evaluation_plan.json",
+  "family": "neutral_growth",
+  "family_rule_mode": "shared_growth_rules_across_branches",
+  "mechanistic_hypothesis": "Same growth rule for 2N and 4N branches; differences arise only from observed initial conditions and transfer bottlenecks.",
+  "not_yet_fitted": true,
+  "parameter_placeholders_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth/parameter_placeholders.json",
+  "perspective_size_used_for_fitting": false,
+  "physicell_executable": "/Users/4470246/Downloads/PhysiCell-1.14.2/heterogeneity",
+  "physicell_root": "/Users/4470246/Downloads/PhysiCell-1.14.2",
+  "prehistory_context_executable": false,
+  "runnable_status": "config_ready_placeholder_parameters_only",
+  "schedule_mapping_path": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth/schedule_mapping.json",
+  "shared_evaluation_objective": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  },
+  "transfer_events_simulated_as_growth": false
+}

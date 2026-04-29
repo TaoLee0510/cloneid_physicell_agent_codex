@@ -1,0 +1,169 @@
+{
+  "candidate_root": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware",
+  "file_differences": {
+    "README.md": {
+      "differs_across_candidates": true,
+      "hashes_by_family": {
+        "density_dependent_growth": "fb34cd538ca4aec0cfbcf2baef6523b61550d20ee93e346d0d7ca0d625157c1a",
+        "fixed_state_fitness": "ddf76b8c869528e590adfaa0482af999815abb0ebb0e711a2d64efb2c102a4f4",
+        "neutral_growth": "016ff6add5553fdaac83f511028d07b57a9710eb29ea241291efae038dedf5b9"
+      }
+    },
+    "candidate_manifest.json": {
+      "differs_across_candidates": true,
+      "hashes_by_family": {
+        "density_dependent_growth": "b951bf699b71847b71436ae5360efb0858d2ecc5284f004447418dba95b63216",
+        "fixed_state_fitness": "e681da72d33b79719f81f398f9539a335a38a9b5973ce1fd15d25409f0578cda",
+        "neutral_growth": "4f95e04a8b0c955aa3f9e7c49e7d04b36044906e92962d7d0ce044d490d69111"
+      }
+    },
+    "config/PhysiCell_settings.xml": {
+      "differs_across_candidates": true,
+      "hashes_by_family": {
+        "density_dependent_growth": "26b03c085934d4581981fb6d23d56bb3ef050ee118eb5ba1df965dbc9206be8b",
+        "fixed_state_fitness": "f6fa2924133fd75f30820d28ae8a9fcf66fb7a10c8e7515cb61a41b84f143f26",
+        "neutral_growth": "c71524b08a5204490c9837e1feae8f51a5a65525de7c35c2672716e6c636cc70"
+      }
+    },
+    "evaluation_plan.json": {
+      "differs_across_candidates": true,
+      "hashes_by_family": {
+        "density_dependent_growth": "dc7cf6d86435ab442861089c2ed537587a29a7b820d5e369b9da74fcb853ea94",
+        "fixed_state_fitness": "b4ddcd294a722130e1881450880b26b82af8507204a8740a8c9d6e01ba21e99c",
+        "neutral_growth": "3c992c76e7f6a153de7bc70affa01a68bfe9fed41a38b71480128c8d9fe406b0"
+      }
+    },
+    "parameter_placeholders.json": {
+      "differs_across_candidates": true,
+      "hashes_by_family": {
+        "density_dependent_growth": "19a7f540ad3c002fdc3700d1ca65add2c23149756651009d45767bb2379eac20",
+        "fixed_state_fitness": "b07237d83737021ca86a88aaf7cdecb8d9fb7afad532573847e0a3fc81803f1d",
+        "neutral_growth": "e5dab904d1656a3573d513cdf8c1156b6d785311b93100589fbd8f2162464d45"
+      }
+    },
+    "schedule_mapping.json": {
+      "differs_across_candidates": false,
+      "hashes_by_family": {
+        "density_dependent_growth": "5ad481b60cb06822112888c1cce181605eda28b51740783f3901d5c0e5336901",
+        "fixed_state_fitness": "5ad481b60cb06822112888c1cce181605eda28b51740783f3901d5c0e5336901",
+        "neutral_growth": "5ad481b60cb06822112888c1cce181605eda28b51740783f3901d5c0e5336901"
+      }
+    }
+  },
+  "files_present_per_candidate": {
+    "density_dependent_growth": [
+      "config/PhysiCell_settings.xml",
+      "candidate_manifest.json",
+      "README.md",
+      "schedule_mapping.json",
+      "evaluation_plan.json",
+      "parameter_placeholders.json"
+    ],
+    "fixed_state_fitness": [
+      "config/PhysiCell_settings.xml",
+      "candidate_manifest.json",
+      "README.md",
+      "schedule_mapping.json",
+      "evaluation_plan.json",
+      "parameter_placeholders.json"
+    ],
+    "neutral_growth": [
+      "config/PhysiCell_settings.xml",
+      "candidate_manifest.json",
+      "README.md",
+      "schedule_mapping.json",
+      "evaluation_plan.json",
+      "parameter_placeholders.json"
+    ]
+  },
+  "not_yet_fitted": true,
+  "parameters_by_family": {
+    "density_dependent_growth": [
+      "area_proxy_mode",
+      "density_response_slope",
+      "density_response_threshold",
+      "shared_baseline_proliferation_rate",
+      "shared_death_rate"
+    ],
+    "fixed_state_fitness": [
+      "death_rate_2N",
+      "death_rate_4N",
+      "proliferation_rate_2N",
+      "proliferation_rate_4N",
+      "shared_initial_cell_area"
+    ],
+    "neutral_growth": [
+      "shared_death_rate",
+      "shared_initial_cell_area",
+      "shared_proliferation_rate"
+    ]
+  },
+  "perspective_size_used_for_fitting": false,
+  "placeholder_parameters_by_family": {
+    "density_dependent_growth": [
+      "area_proxy_mode",
+      "density_response_slope",
+      "density_response_threshold",
+      "shared_baseline_proliferation_rate",
+      "shared_death_rate"
+    ],
+    "fixed_state_fitness": [
+      "death_rate_2N",
+      "death_rate_4N",
+      "proliferation_rate_2N",
+      "proliferation_rate_4N",
+      "shared_initial_cell_area"
+    ],
+    "neutral_growth": [
+      "shared_death_rate",
+      "shared_initial_cell_area",
+      "shared_proliferation_rate"
+    ]
+  },
+  "rules_by_family": {
+    "density_dependent_growth": [
+      "Use density/confluence-linked growth modulation informed by areaOccupied_um2.",
+      "Avoid branch-specific density parameters initially.",
+      "Apply observed transfer-event bottlenecks externally between episodes."
+    ],
+    "fixed_state_fitness": [
+      "Use branch-specific proliferation/death placeholders for 2N and 4N.",
+      "Do not introduce density dependence as the main mechanism.",
+      "Apply observed transfer-event bottlenecks externally between episodes."
+    ],
+    "neutral_growth": [
+      "Use identical proliferation/death rule structure for 2N and 4N branches.",
+      "Apply observed transfer-event bottlenecks externally between episodes."
+    ]
+  },
+  "runnable": true,
+  "shared_evaluation_objective": {
+    "endpoint_validation": {
+      "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+      "fitting_targets": [],
+      "validation_targets": [
+        "Perspective.size"
+      ]
+    },
+    "primary_shared_objective": {
+      "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_targets": [
+        "Passaging.cellCount.seed_to_harvest_fold_change",
+        "Passaging.correctedCount.seed_to_harvest_fold_change"
+      ]
+    },
+    "secondary_objective": {
+      "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_targets": [
+        "Passaging.areaOccupied_um2.episode_end_value",
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+      ]
+    }
+  },
+  "what_remains_before_biological_interpretation_is_legitimate": [
+    "Implement family-specific XML/config/rules execution semantics beyond placeholders.",
+    "Add parameter search or fitting on the shared objective vector.",
+    "Run the candidates and compute matched-episode residuals.",
+    "Verify that terminal Perspective.size remains validation-only."
+  ]
+}

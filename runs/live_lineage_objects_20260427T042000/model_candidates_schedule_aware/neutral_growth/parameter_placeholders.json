@@ -1,0 +1,19 @@
+{
+  "family_id": "neutral_growth",
+  "family_rule_mode": "shared_growth_rules_across_branches",
+  "not_yet_fitted": true,
+  "placeholder_parameters": {
+    "shared_death_rate": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "shared_initial_cell_area": {
+      "units": "micron^2",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "shared_proliferation_rate": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    }
+  }
+}

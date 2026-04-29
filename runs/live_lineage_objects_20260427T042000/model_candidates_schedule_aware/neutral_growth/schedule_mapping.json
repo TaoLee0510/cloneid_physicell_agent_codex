@@ -1,0 +1,138 @@
+{
+  "branches": {
+    "anchor": {
+      "branch_id": "SUM159_4N_O2",
+      "branch_label": "4N",
+      "growth_episode_count": 8,
+      "initial_condition": {
+        "areaOccupied_um2": 1142246212.1212,
+        "branch_id": "SUM159_4N_O2",
+        "branch_label": "4N",
+        "cellCount": 1201324,
+        "correctedCount": 1201324,
+        "event_id": "SUM-159_NLS_4N_O2_A1_seed",
+        "event_provenance": {
+          "child_event": {
+            "date": "2024-11-15 15:54:15",
+            "event": "seeding",
+            "id": "SUM-159_NLS_4N_O2_A1_seed"
+          },
+          "lineage_object_id": "lineage_path::SUM159_NLS_4N_O2_A7K_harvest",
+          "parent_event": {
+            "date": "2024-11-15 14:44:33",
+            "event": "harvest",
+            "id": "SUM-159_NLS_4N_dp_seedT1"
+          },
+          "root_event_id": "SUM-159_4N_NLS_mCherry"
+        },
+        "flask": 2,
+        "media": 100,
+        "milestone_label": "O2_A1_seed",
+        "passage": 9
+      },
+      "terminal_endpoint": {
+        "event_id": "SUM159_NLS_4N_O2_A7K_harvest",
+        "event_provenance": {
+          "child_event": {
+            "date": "2025-03-05 15:49:12",
+            "event": "harvest",
+            "id": "SUM159_NLS_4N_O2_A7K_harvest"
+          },
+          "lineage_object_id": "lineage_path::SUM159_NLS_4N_O2_A7K_harvest",
+          "parent_event": {
+            "date": "2025-03-01 21:26:31",
+            "event": "seeding",
+            "id": "SUM-159_NLS_4N_O2_A7K_seed"
+          },
+          "root_event_id": "SUM-159_4N_NLS_mCherry"
+        },
+        "milestone_label": "O2_A7K_harvest",
+        "perspective_record_count_at_event": 19,
+        "perspective_size_support": {
+          "evidence_class": "perspective_molecular",
+          "role": "endpoint_validation"
+        },
+        "terminal_perspective_record_count": 19,
+        "terminal_perspective_supported_event_count": 1
+      },
+      "transfer_event_count": 7
+    },
+    "comparison": {
+      "branch_id": "SUM159_2N_O2",
+      "branch_label": "2N",
+      "growth_episode_count": 8,
+      "initial_condition": {
+        "areaOccupied_um2": 188491161.6162,
+        "branch_id": "SUM159_2N_O2",
+        "branch_label": "2N",
+        "cellCount": 580562,
+        "correctedCount": 580562,
+        "event_id": "SUM-159_NLS_2N_O2_A1_seed",
+        "event_provenance": {
+          "child_event": {
+            "date": "2024-11-15 15:45:36",
+            "event": "seeding",
+            "id": "SUM-159_NLS_2N_O2_A1_seed"
+          },
+          "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+          "parent_event": {
+            "date": "2024-11-15 14:38:21",
+            "event": "harvest",
+            "id": "SUM-159_NLS_2N_dp_seedT1"
+          },
+          "root_event_id": "SUM-159_NLS_mCherry"
+        },
+        "flask": 2,
+        "media": 100,
+        "milestone_label": "O2_A1_seed",
+        "passage": 6
+      },
+      "terminal_endpoint": {
+        "event_id": "SUM159_NLS_2N_O2_A7K_harvest",
+        "event_provenance": {
+          "child_event": {
+            "date": "2025-03-05 15:33:14",
+            "event": "harvest",
+            "id": "SUM159_NLS_2N_O2_A7K_harvest"
+          },
+          "lineage_object_id": "lineage_path::SUM159_NLS_2N_O2_A7K_harvest",
+          "parent_event": {
+            "date": "2025-03-01 19:43:00",
+            "event": "seeding",
+            "id": "SUM-159_NLS_2N_O2_A7K_seed"
+          },
+          "root_event_id": "SUM-159_NLS_mCherry"
+        },
+        "milestone_label": "O2_A7K_harvest",
+        "perspective_record_count_at_event": 16,
+        "perspective_size_support": {
+          "evidence_class": "perspective_molecular",
+          "role": "endpoint_validation"
+        },
+        "terminal_perspective_record_count": 16,
+        "terminal_perspective_supported_event_count": 1
+      },
+      "transfer_event_count": 7
+    }
+  },
+  "comparison_id": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "matched_growth_episode_labels": [
+    "O2_A1_seedT1",
+    "O2_A2_seedT2",
+    "O2_A3_seedT2",
+    "O2_A4_seedT2",
+    "O2_A5_seedT2",
+    "O2_A6_seedT2",
+    "O2_A7_seedT2",
+    "O2_A7K_harvest"
+  ],
+  "prehistory_context_policy": {
+    "excluded_from_primary_runtime": true,
+    "simulation_role": "context_only_not_simulated"
+  },
+  "transfer_event_policy": {
+    "simulated_duration_minutes": 0,
+    "simulation_role": "explicit_reset_or_bottleneck",
+    "use_observed_bottleneck_ratios_when_available": true
+  }
+}

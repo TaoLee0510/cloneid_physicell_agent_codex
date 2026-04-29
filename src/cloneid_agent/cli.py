@@ -53,6 +53,7 @@ from .phase_planning import (
 )
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .report import write_run_report
+from .schedule_aware_candidates import generate_schedule_aware_model_candidates_from_files
 from .simulation_schedule import (
     build_branch_simulation_schedule,
     build_matched_simulation_schedule,
@@ -605,6 +606,36 @@ def build_parser() -> argparse.ArgumentParser:
     family_spec_parser.add_argument("--output-json", required=True, help="Output json path")
     family_spec_parser.add_argument("--output-md", required=True, help="Output markdown path")
 
+    schedule_candidates_parser = subparsers.add_parser(
+        "generate-schedule-aware-model-candidates",
+        help="Generate family-specific schedule-aware PhysiCell candidate folders and a differentiation audit.",
+    )
+    schedule_candidates_parser.add_argument("--anchor-schedule", required=True, help="Path to anchor branch schedule json")
+    schedule_candidates_parser.add_argument(
+        "--comparison-schedule",
+        required=True,
+        help="Path to comparison branch schedule json",
+    )
+    schedule_candidates_parser.add_argument(
+        "--matched-schedule",
+        required=True,
+        help="Path to matched branch schedule json",
+    )
+    schedule_candidates_parser.add_argument(
+        "--specification",
+        required=True,
+        help="Path to schedule-aware model family specification json",
+    )
+    schedule_candidates_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Run directory under which model_candidates_schedule_aware will be created",
+    )
+    schedule_candidates_parser.add_argument(
+        "--physicell-root",
+        help="Optional path to the validated local PhysiCell install.",
+    )
+
     return parser
 
 
@@ -797,6 +828,16 @@ def main(argv: list[str] | None = None) -> int:
         )
         write_schedule_aware_model_family_specification_json(args.output_json, payload)
         write_schedule_aware_model_family_specification_markdown(args.output_md, payload)
+        return 0
+    if args.command == "generate-schedule-aware-model-candidates":
+        generate_schedule_aware_model_candidates_from_files(
+            anchor_schedule_path=args.anchor_schedule,
+            comparison_schedule_path=args.comparison_schedule,
+            matched_schedule_path=args.matched_schedule,
+            specification_path=args.specification,
+            output_dir=args.output_dir,
+            physicell_root=args.physicell_root if args.physicell_root else None,
+        )
         return 0
 
     parser.error(f"Unknown command: {args.command}")

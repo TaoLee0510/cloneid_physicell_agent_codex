@@ -1,0 +1,27 @@
+{
+  "family_id": "density_dependent_growth",
+  "family_rule_mode": "shared_density_dependent_growth",
+  "not_yet_fitted": true,
+  "placeholder_parameters": {
+    "area_proxy_mode": {
+      "units": "label",
+      "value": "areaOccupied_um2"
+    },
+    "density_response_slope": {
+      "units": "1/relative_area_proxy",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "density_response_threshold": {
+      "units": "relative_area_proxy",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "shared_baseline_proliferation_rate": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    },
+    "shared_death_rate": {
+      "units": "1/min",
+      "value": "UNFITTED_PLACEHOLDER"
+    }
+  }
+}

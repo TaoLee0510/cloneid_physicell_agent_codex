@@ -1,0 +1,156 @@
+{
+  "agent_count_guardrail": 5000,
+  "agent_count_initialization_mode": "episode_seed_counts_scaled_to_agents",
+  "agent_count_to_observed_count_rule": "observed_equivalent_cell_count = simulated_agents * cells_per_agent",
+  "approximate_or_lost_under_scaling": [
+    "one-agent-equals-one-cell interpretation",
+    "exact absolute single-cell neighborhood density",
+    "direct physical domain occupancy from raw areaOccupied_um2"
+  ],
+  "cells_per_agent": 2384,
+  "comparison_id": "SUM159_4N_O2_vs_SUM159_2N_O2",
+  "contract_version": "model_to_data_scaling_contract_v1",
+  "density_proxy_contract": {
+    "area_proxy_source": "Passaging.areaOccupied_um2",
+    "branch_normalization_denominators_um2": {
+      "2N": 7415659090.9091,
+      "4N": 7482790719.697
+    },
+    "flask_area_known": false,
+    "interpretation": "relative_or_normalized_within_branch_not_physical_domain_area",
+    "normalization_mode": "relative_branch_max_areaOccupied_um2",
+    "warning": "Raw areaOccupied_um2 is not treated as direct physical vessel area because flask area is unavailable in the current schedule artifacts."
+  },
+  "max_observed_harvest_cellCount": 11919753.0,
+  "max_observed_harvest_correctedCount": 11919753.0,
+  "max_observed_seed_cellCount": 1600052.0,
+  "max_observed_seed_correctedCount": 1600052.0,
+  "not_biologically_fitted": true,
+  "observed_count_to_agent_count_rule": "simulated_agents = ceil(observed_cell_count / cells_per_agent)",
+  "parameter_placeholder_presence": {
+    "density_dependent_growth": [
+      "area_proxy_mode",
+      "density_response_slope",
+      "density_response_threshold",
+      "shared_baseline_proliferation_rate",
+      "shared_death_rate"
+    ],
+    "fixed_state_fitness": [
+      "death_rate_2N",
+      "death_rate_4N",
+      "proliferation_rate_2N",
+      "proliferation_rate_4N",
+      "shared_initial_cell_area"
+    ],
+    "neutral_growth": [
+      "shared_death_rate",
+      "shared_initial_cell_area",
+      "shared_proliferation_rate"
+    ]
+  },
+  "preserved_under_scaling": [
+    "seed_to_harvest fold changes for cellCount",
+    "seed_to_harvest fold changes for correctedCount",
+    "relative branch comparison across matched growth episodes",
+    "back-scaled absolute count comparisons in observed-count units"
+  ],
+  "resulting_max_simulated_end_target_agent_count": 5000,
+  "resulting_max_simulated_initial_agent_count": 672,
+  "selection_basis": "conservative_max_observed_cellCount_across_seed_and_harvest_targets",
+  "shared_objective_reference": {
+    "density_dependent_growth": {
+      "endpoint_validation": {
+        "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+        "fitting_targets": [],
+        "validation_targets": [
+          "Perspective.size"
+        ]
+      },
+      "primary_shared_objective": {
+        "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+        "fit_target_weights": {
+          "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+          "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+        },
+        "fit_targets": [
+          "Passaging.cellCount.seed_to_harvest_fold_change",
+          "Passaging.correctedCount.seed_to_harvest_fold_change"
+        ]
+      },
+      "secondary_objective": {
+        "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+        "validation_target_weights": {
+          "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+        },
+        "validation_targets": [
+          "Passaging.areaOccupied_um2.episode_end_value",
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+        ]
+      }
+    },
+    "fixed_state_fitness": {
+      "endpoint_validation": {
+        "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+        "fitting_targets": [],
+        "validation_targets": [
+          "Perspective.size"
+        ]
+      },
+      "primary_shared_objective": {
+        "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+        "fit_target_weights": {
+          "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+          "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+        },
+        "fit_targets": [
+          "Passaging.cellCount.seed_to_harvest_fold_change",
+          "Passaging.correctedCount.seed_to_harvest_fold_change"
+        ]
+      },
+      "secondary_objective": {
+        "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+        "validation_target_weights": {
+          "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+        },
+        "validation_targets": [
+          "Passaging.areaOccupied_um2.episode_end_value",
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+        ]
+      }
+    },
+    "neutral_growth": {
+      "endpoint_validation": {
+        "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",
+        "fitting_targets": [],
+        "validation_targets": [
+          "Perspective.size"
+        ]
+      },
+      "primary_shared_objective": {
+        "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+        "fit_target_weights": {
+          "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+          "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+        },
+        "fit_targets": [
+          "Passaging.cellCount.seed_to_harvest_fold_change",
+          "Passaging.correctedCount.seed_to_harvest_fold_change"
+        ]
+      },
+      "secondary_objective": {
+        "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+        "validation_target_weights": {
+          "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+        },
+        "validation_targets": [
+          "Passaging.areaOccupied_um2.episode_end_value",
+          "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"
+        ]
+      }
+    }
+  },
+  "within_agent_count_guardrail": true
+}

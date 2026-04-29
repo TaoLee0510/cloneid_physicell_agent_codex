@@ -20,7 +20,7 @@ For each work block:
 
 ## Ready now
 
-1. After user review of the generated schedule-aware SUM159 model candidates and differentiation audit, decide whether the first execution branch should validate only XML/config plumbing or proceed to a first non-fitted schedule-aware dry-run/smoke execution.
+1. After user review of the scaling contract and execution-readiness report, decide whether to run only a schedule-aware syntax/dry-run check for one family or continue holding execution.
 2. If approved, add generated-model smoke coverage for one schedule-aware family without parameter fitting.
 3. After that, implement first-pass quantitative evaluation of schedule-aware simulation outputs against the shared objective vector.
 
@@ -35,7 +35,7 @@ _None yet._
 ## Waiting for user
 
 1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
-2. Review the generated SUM159 schedule-aware model candidates and differentiation audit before I run or extend any family-specific PhysiCell behavior.
+2. Review the generated SUM159 scaling contract and execution-readiness report before I run or extend any family-specific PhysiCell behavior.
 
 ---
 

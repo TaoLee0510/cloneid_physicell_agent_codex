@@ -24,6 +24,10 @@
     },
     "primary_shared_objective": {
       "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
       "fit_targets": [
         "Passaging.cellCount.seed_to_harvest_fold_change",
         "Passaging.correctedCount.seed_to_harvest_fold_change"
@@ -31,6 +35,10 @@
     },
     "secondary_objective": {
       "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
       "validation_targets": [
         "Passaging.areaOccupied_um2.episode_end_value",
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"

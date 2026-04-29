@@ -12,9 +12,9 @@
     "candidate_manifest.json": {
       "differs_across_candidates": true,
       "hashes_by_family": {
-        "density_dependent_growth": "b951bf699b71847b71436ae5360efb0858d2ecc5284f004447418dba95b63216",
-        "fixed_state_fitness": "e681da72d33b79719f81f398f9539a335a38a9b5973ce1fd15d25409f0578cda",
-        "neutral_growth": "4f95e04a8b0c955aa3f9e7c49e7d04b36044906e92962d7d0ce044d490d69111"
+        "density_dependent_growth": "2b3b235bfc9e2dfc1a01d406afe1fa3a003b83265343c0cbafd56593cc9a1f9c",
+        "fixed_state_fitness": "ddc1ed70851f416a8a28032eb7cf22167a372390ca15ceab941dd172b05a5587",
+        "neutral_growth": "46e4c1a4fa3e0d652cde767b6641a4fa4188ffd1ffbbbf9d922df786a39c2795"
       }
     },
     "config/PhysiCell_settings.xml": {
@@ -28,9 +28,9 @@
     "evaluation_plan.json": {
       "differs_across_candidates": true,
       "hashes_by_family": {
-        "density_dependent_growth": "dc7cf6d86435ab442861089c2ed537587a29a7b820d5e369b9da74fcb853ea94",
-        "fixed_state_fitness": "b4ddcd294a722130e1881450880b26b82af8507204a8740a8c9d6e01ba21e99c",
-        "neutral_growth": "3c992c76e7f6a153de7bc70affa01a68bfe9fed41a38b71480128c8d9fe406b0"
+        "density_dependent_growth": "b6b05788633e2815bd9d1b3613061cc3afd7cab81bdf60885b4aea966ac53f6e",
+        "fixed_state_fitness": "c17992f089efd4804df058fe23bd3729a3d8d3d1fc28964e96168c6cafd68d2b",
+        "neutral_growth": "a2fdb6da352336df12ea58f3aae28a2866e19c2040bef6dce3b3b4956ee6dd01"
       }
     },
     "parameter_placeholders.json": {
@@ -147,6 +147,10 @@
     },
     "primary_shared_objective": {
       "description": "Passaging.cellCount and Passaging.correctedCount seed-to-harvest fold changes across all matched growth episodes in both 2N and 4N branches.",
+      "fit_target_weights": {
+        "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+        "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0
+      },
       "fit_targets": [
         "Passaging.cellCount.seed_to_harvest_fold_change",
         "Passaging.correctedCount.seed_to_harvest_fold_change"
@@ -154,6 +158,10 @@
     },
     "secondary_objective": {
       "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
+      "validation_target_weights": {
+        "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+        "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0
+      },
       "validation_targets": [
         "Passaging.areaOccupied_um2.episode_end_value",
         "Passaging.areaOccupied_um2.seed_to_harvest_fold_change"

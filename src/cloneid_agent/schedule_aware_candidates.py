@@ -21,6 +21,10 @@ SHARED_EVALUATION_OBJECTIVE = {
             "Passaging.cellCount.seed_to_harvest_fold_change",
             "Passaging.correctedCount.seed_to_harvest_fold_change",
         ],
+        "fit_target_weights": {
+            "Passaging.cellCount.seed_to_harvest_fold_change": 1.0,
+            "Passaging.correctedCount.seed_to_harvest_fold_change": 1.0,
+        },
     },
     "secondary_objective": {
         "description": "Passaging.areaOccupied_um2 / confluence-like trajectory agreement across matched growth episodes.",
@@ -28,6 +32,10 @@ SHARED_EVALUATION_OBJECTIVE = {
             "Passaging.areaOccupied_um2.episode_end_value",
             "Passaging.areaOccupied_um2.seed_to_harvest_fold_change",
         ],
+        "validation_target_weights": {
+            "Passaging.areaOccupied_um2.episode_end_value": 1.0,
+            "Passaging.areaOccupied_um2.seed_to_harvest_fold_change": 1.0,
+        },
     },
     "endpoint_validation": {
         "description": "Perspective.size at O2_A7K_harvest only; validation only, not fitting.",

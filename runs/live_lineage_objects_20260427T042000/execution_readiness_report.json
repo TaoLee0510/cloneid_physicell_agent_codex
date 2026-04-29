@@ -1,0 +1,75 @@
+{
+  "candidate_root": "runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware",
+  "family_readiness": {
+    "density_dependent_growth": {
+      "config_files_present": true,
+      "config_xml_parse_ok": true,
+      "density_proxy_handling_specified": true,
+      "family_specific_parameters_present": true,
+      "parameter_placeholders_present": true,
+      "ready_for_biological_simulation": false,
+      "ready_for_syntax_dry_run": true,
+      "scaling_contract_available": true,
+      "schedule_mapping_available": true,
+      "shared_objective_present": true,
+      "transfer_event_handling_specified": true
+    },
+    "fixed_state_fitness": {
+      "config_files_present": true,
+      "config_xml_parse_ok": true,
+      "density_proxy_handling_specified": false,
+      "family_specific_parameters_present": true,
+      "parameter_placeholders_present": true,
+      "ready_for_biological_simulation": false,
+      "ready_for_syntax_dry_run": true,
+      "scaling_contract_available": true,
+      "schedule_mapping_available": true,
+      "shared_objective_present": true,
+      "transfer_event_handling_specified": true
+    },
+    "neutral_growth": {
+      "config_files_present": true,
+      "config_xml_parse_ok": true,
+      "density_proxy_handling_specified": false,
+      "family_specific_parameters_present": true,
+      "parameter_placeholders_present": true,
+      "ready_for_biological_simulation": false,
+      "ready_for_syntax_dry_run": true,
+      "scaling_contract_available": true,
+      "schedule_mapping_available": true,
+      "shared_objective_present": true,
+      "transfer_event_handling_specified": true
+    }
+  },
+  "ready_for_biological_simulation": false,
+  "report_version": "execution_readiness_report_v1",
+  "scaling_summary": {
+    "approximate_or_lost_under_scaling": [
+      "one-agent-equals-one-cell interpretation",
+      "exact absolute single-cell neighborhood density",
+      "direct physical domain occupancy from raw areaOccupied_um2"
+    ],
+    "max_observed_harvest_cellCount": 11919753.0,
+    "max_observed_seed_cellCount": 1600052.0,
+    "preserved_under_scaling": [
+      "seed_to_harvest fold changes for cellCount",
+      "seed_to_harvest fold changes for correctedCount",
+      "relative branch comparison across matched growth episodes",
+      "back-scaled absolute count comparisons in observed-count units"
+    ],
+    "proposed_cells_per_agent": 2384,
+    "resulting_max_simulated_end_target_agent_count": 5000,
+    "resulting_max_simulated_initial_agent_count": 672,
+    "within_agent_count_guardrail": true
+  },
+  "shared_objective_invariants": {
+    "density_dependent_growth_uses_same_primary_objective": true,
+    "endpoint_perspective_size_not_used_for_fitting": true,
+    "prehistory_context_non_executable": true,
+    "primary_fit_target_weights_identical_across_families": true,
+    "primary_fit_targets_identical_across_families": true,
+    "schedule_mapping_identical_across_candidates": true,
+    "transfer_events_have_non_positive_simulated_duration": true
+  },
+  "static_validation_only": true
+}

@@ -9,6 +9,7 @@ from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
 from .evaluation import evaluate_generated_model_candidates_from_file, write_evaluation
+from .execution_readiness import generate_execution_readiness_artifacts
 from .inventory import run_inventory
 from .lineage_object_pipeline import discover_rank_and_select_lineage_objects
 from .lineage_object_ranking import rank_lineage_objects_from_file, write_ranked_lineage_objects
@@ -636,6 +637,37 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional path to the validated local PhysiCell install.",
     )
 
+    readiness_parser = subparsers.add_parser(
+        "write-execution-readiness-artifacts",
+        help="Generate a model-to-data scaling contract and execution-readiness report for schedule-aware candidates.",
+    )
+    readiness_parser.add_argument("--anchor-schedule", required=True, help="Path to anchor branch schedule json")
+    readiness_parser.add_argument(
+        "--comparison-schedule",
+        required=True,
+        help="Path to comparison branch schedule json",
+    )
+    readiness_parser.add_argument(
+        "--matched-schedule",
+        required=True,
+        help="Path to matched schedule json",
+    )
+    readiness_parser.add_argument(
+        "--candidate-root",
+        required=True,
+        help="Path to model_candidates_schedule_aware",
+    )
+    readiness_parser.add_argument(
+        "--scaling-contract-json",
+        required=True,
+        help="Output path for model_to_data_scaling_contract.json",
+    )
+    readiness_parser.add_argument(
+        "--execution-readiness-json",
+        required=True,
+        help="Output path for execution_readiness_report.json",
+    )
+
     return parser
 
 
@@ -837,6 +869,16 @@ def main(argv: list[str] | None = None) -> int:
             specification_path=args.specification,
             output_dir=args.output_dir,
             physicell_root=args.physicell_root if args.physicell_root else None,
+        )
+        return 0
+    if args.command == "write-execution-readiness-artifacts":
+        generate_execution_readiness_artifacts(
+            anchor_schedule_path=args.anchor_schedule,
+            comparison_schedule_path=args.comparison_schedule,
+            matched_schedule_path=args.matched_schedule,
+            candidate_root=args.candidate_root,
+            scaling_contract_json_path=args.scaling_contract_json,
+            execution_readiness_json_path=args.execution_readiness_json,
         )
         return 0
 

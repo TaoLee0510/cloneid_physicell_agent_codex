@@ -15,6 +15,13 @@ The agent is **not** an unconstrained chatbot. It should behave as a bounded wor
 
 The database is the source of truth. Exports, CSVs, JSON files, and snapshots may be used only as optional caches, fixtures, or debugging artifacts.
 
+The simulation backend should be pinned to official PhysiCell core `v1.14.2`:
+
+- release source: <https://github.com/MathCancer/PhysiCell/releases/tag/1.14.2>
+- use command-line PhysiCell runs generated from templates for automated workflow execution
+- do not depend on PhysiCell Studio for automation
+- if containers are used, build a project-owned Docker image from the official `v1.14.2` release and reuse that pinned environment for optional Apptainer/Singularity HPC execution
+
 ## Read first
 
 Codex should start with these files, in order:

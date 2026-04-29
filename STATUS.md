@@ -6,6 +6,318 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What changed since last checkpoint
 
+- Latest completed work unit:
+  - `e96b855` `feat(runtime): add schedule-aware real smoke harness`
+- Corrected the dry-run mock semantics so mock outputs no longer imply family ranking:
+  - mock predictions are now identical across families
+  - residuals are explicitly marked as schema-validation-only
+  - refreshed:
+    - `runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/*`
+    - `runs/live_lineage_objects_20260427T042000/dry_run_mock_evaluation_report.json`
+    - `runs/live_lineage_objects_20260427T042000/dry_run_mock_evaluation_report.md`
+- Fixed schedule-aware candidate generation to preserve backend-required base PhysiCell `user_parameters` while overlaying schedule-aware placeholders.
+- Regenerated the schedule-aware candidate configs and refreshed readiness artifacts:
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/*/config/PhysiCell_settings.xml`
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/candidate_differentiation_report.json`
+  - `runs/live_lineage_objects_20260427T042000/execution_readiness_report.json`
+  - `runs/live_lineage_objects_20260427T042000/execution_readiness_report.md`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_static_report.json`
+- Added a real one-episode schedule-aware smoke harness in:
+  - `src/cloneid_agent/schedule_aware_smoke.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_schedule_aware_smoke.py`
+- Verified a real single-episode PhysiCell smoke run for:
+  - family: `neutral_growth`
+  - branch: `SUM159_4N_O2`
+  - episode: `O2_A1_seed -> O2_A1_seedT1`
+  - result: success, return code `0`, expected core files present, XML outputs parseable
+- Verified additional real one-episode smoke runs for the same `SUM159_4N_O2` episode on:
+  - `fixed_state_fitness`
+  - `density_dependent_growth`
+- Verified matched-branch one-episode smoke runs for `SUM159_2N_O2`, same episode window, on:
+  - `neutral_growth`
+  - `fixed_state_fitness`
+  - `density_dependent_growth`
+- Generated per-family smoke artifacts under:
+  - `runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_v2/`
+  - `runs/live_lineage_objects_20260427T042000/schedule_aware_smoke_runs_2N/`
+- Each smoke artifact set now includes:
+  - `smoke_test_plan.json`
+  - `smoke_test_plan.md`
+  - `smoke_test_report.json`
+  - `smoke_test_report.md`
+  - `parsed_output_summary.json`
+  - `parsed_output_summary.md`
+- Verified smoke-output parsing behavior:
+  - structural output parsing only; no biological interpretation
+  - `Perspective.size` remains endpoint validation metadata only
+  - `prehistory_context` remains excluded from runtime
+  - transfer events remain non-growth, zero-duration semantics
+  - all six completed smoke runs produced the expected core files with parseable XML
+- Tests and checks run in this work block:
+  - `PYTHONPATH=src python3 -m unittest tests/test_schedule_aware_candidates.py tests/test_schedule_aware_smoke.py tests/test_execution_harness.py tests/test_execution_readiness.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_execution_harness.py tests/test_schedule_aware_smoke.py tests/test_schedule_aware_candidates.py tests/test_simulation_schedule.py`
+  - `PYTHONPATH=src python3 -m cloneid_agent generate-schedule-aware-model-candidates ...`
+  - `PYTHONPATH=src python3 -m cloneid_agent write-execution-readiness-artifacts ...`
+  - `PYTHONPATH=src python3 -m cloneid_agent write-execution-harness-artifacts ...`
+  - `PYTHONPATH=src python3 -m cloneid_agent run-schedule-aware-smoke ...` for:
+    - `SUM159_4N_O2` / `neutral_growth`
+    - `SUM159_4N_O2` / `fixed_state_fitness`
+    - `SUM159_4N_O2` / `density_dependent_growth`
+    - `SUM159_2N_O2` / `neutral_growth`
+    - `SUM159_2N_O2` / `fixed_state_fitness`
+    - `SUM159_2N_O2` / `density_dependent_growth`
+- Current branch: `main`
+- Current last commit: `e96b855`
+- Current uncommitted files intentionally left outside this work unit:
+  - modified: `README.md`
+  - modified: `RUNTIME_AND_HPC.md`
+  - modified: `SUPERVISED_AUTONOMY.md`
+  - modified: `docs/derived/milestone0_plan.md`
+  - modified: `docs/derived/repository_map.md`
+  - untracked: `ALL_CITATIONS.txt`
+  - untracked: `GIT_WORKFLOW.md`
+  - untracked: `docs/CLONEID_paper.pdf`
+- Stop-check summary:
+  - completed: dry-run mock correction, backend-compatibility fix, real one-episode smoke harness, structural parser scaffolding, and six one-episode smoke runs across the requested SUM159 4N/2N branch windows
+  - safe next task identified: deepen real-output parsing from structural smoke artifacts into a richer shared-evaluation placeholder schema
+  - why it is not being done now: this work unit has already advanced past the requested smoke scope into repeated-family and repeated-branch execution; stopping here preserves a clean review checkpoint before moving into the next output-schema layer
+  - blocker classification for the next branch: completion of all safe queued tasks in the current user-directed smoke-testing block
+
+- Latest completed work unit:
+  - `75e2da3` `feat(runtime): add dry-run execution harness`
+- Added deterministic dry-run harness generation in:
+  - `src/cloneid_agent/execution_harness.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_execution_harness.py`
+- Generated the new harness artifacts:
+  - `runs/live_lineage_objects_20260427T042000/execution_harness_plan.json`
+  - `runs/live_lineage_objects_20260427T042000/execution_harness_plan.md`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_static_report.json`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_static_report.md`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_mock_outputs/`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_mock_evaluation_report.json`
+  - `runs/live_lineage_objects_20260427T042000/dry_run_mock_evaluation_report.md`
+- Verified the new dry-run harness state:
+  - `dry_run_static`: `passed`
+  - `dry_run_mock`: `passed`
+  - `dry_run_physicell`: `available_not_executed_by_policy`
+  - matched growth episodes covered in mock outputs: `8`
+  - mock output families: `neutral_growth`, `fixed_state_fitness`, `density_dependent_growth`
+- Verified static invariants:
+  - malformed XML would fail static validation
+  - primary shared objectives and weights are identical across all candidate families
+  - `Perspective.size` remains endpoint validation only and is not used as a fitting target
+  - `prehistory_context` remains excluded from runtime
+  - transfer events remain zero-duration bottleneck/reset events
+- Verified deterministic mock evaluation behavior:
+  - every matched growth episode is represented for both `2N` and `4N` branches across all families
+  - outputs back-scale simulated agent counts into observed-count units using the current scaling contract
+  - residuals are reported against the same shared evaluation objective vector for all families
+  - outputs are explicitly marked as mock, deterministic, not fitted, and not biologically interpretable
+
+- Latest completed work unit:
+  - `966c416` `feat(runtime): add scaling and execution readiness`
+- Added deterministic scaling/readiness generation in:
+  - `src/cloneid_agent/execution_readiness.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_execution_readiness.py`
+- Generated the new readiness artifacts:
+  - `runs/live_lineage_objects_20260427T042000/model_to_data_scaling_contract.json`
+  - `runs/live_lineage_objects_20260427T042000/model_to_data_scaling_contract.md`
+  - `runs/live_lineage_objects_20260427T042000/execution_readiness_report.json`
+  - `runs/live_lineage_objects_20260427T042000/execution_readiness_report.md`
+- Regenerated the schedule-aware candidates so their evaluation plans now include explicit shared target weights.
+- Verified the scaling contract:
+  - `cells_per_agent`: `2384`
+  - `max observed seed cellCount`: `1600052`
+  - `max observed harvest cellCount`: `11919753`
+  - `max simulated initial agent count`: `672`
+  - `max simulated end target agent count`: `5000`
+  - `within agent-count guardrail`: `true`
+  - density proxy mode: `relative_branch_max_areaOccupied_um2`
+- Verified shared-objective comparability across all three families:
+  - identical primary fit targets
+  - identical primary fit-target weights
+  - `Perspective.size` not used for fitting
+  - `density_dependent_growth` uses the same primary objective as the other families
+  - `schedule_mapping.json` identical across candidates as expected
+  - `prehistory_context` remains non-executable
+  - transfer events retain non-positive simulated duration
+- Verified current family readiness state:
+  - all three candidates are `ready_for_syntax_dry_run: true`
+  - all three candidates are `ready_for_biological_simulation: false`
+  - static validation only; no PhysiCell simulation run was performed
+
+- Latest completed work unit:
+  - `88c771f` `feat(phase): add schedule-aware model candidates`
+- Added deterministic schedule-aware candidate generation in:
+  - `src/cloneid_agent/schedule_aware_candidates.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_schedule_aware_candidates.py`
+- Corrected the family-spec evaluation policy so all three families now share the same primary and secondary objective vector:
+  - primary shared objective: `Passaging.cellCount` and `Passaging.correctedCount` seed-to-harvest fold changes across all matched growth episodes
+  - secondary objective: `Passaging.areaOccupied_um2` / confluence-like trajectory agreement
+  - endpoint validation only: `Perspective.size` at `O2_A7K_harvest`
+- Generated family-specific candidate folders under:
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/neutral_growth`
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/fixed_state_fitness`
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/density_dependent_growth`
+- Each candidate now contains:
+  - `config/PhysiCell_settings.xml`
+  - `candidate_manifest.json`
+  - `README.md`
+  - `schedule_mapping.json`
+  - `evaluation_plan.json`
+  - `parameter_placeholders.json`
+- Generated the differentiation audit:
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/candidate_differentiation_report.json`
+  - `runs/live_lineage_objects_20260427T042000/model_candidates_schedule_aware/candidate_differentiation_report.md`
+- Verified the candidate distinctions:
+  - `neutral_growth` has only shared growth placeholders and no branch-specific growth parameters
+  - `fixed_state_fitness` has branch-specific `2N` / `4N` proliferation and death placeholders
+  - `density_dependent_growth` has density / confluence-linked placeholders and no initial branch-specific density split
+  - transfer events remain explicit reset/bottleneck operations, not growth time
+  - `prehistory_context` remains non-executable context only
+  - `Perspective.size` is not used as a fitting target
+  - candidates are runnable config artifacts but still clearly `not yet fitted`
+
+- Latest completed work unit:
+  - `507e010` `docs(phase): add schedule-aware model family spec`
+- Hardened `prehistory_context` in the saved simulation schedules so it cannot be misread as executable runtime:
+  - `simulated_duration_minutes = null`
+  - `simulation_role = context_only_not_simulated`
+  - `excluded_from_primary_runtime = true`
+- Added deterministic schedule-aware family-spec generation in:
+  - `src/cloneid_agent/model_family_specification.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_model_family_specification.py`
+- Regenerated the simulation schedules after the prehistory cleanup:
+  - `runs/live_lineage_objects_20260427T042000/simulation_schedule_SUM159_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/simulation_schedule_SUM159_2N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/matched_simulation_schedule_SUM159_2N_vs_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/matched_simulation_schedule_SUM159_2N_vs_4N_O2.md`
+- Generated the new family-spec artifacts:
+  - `runs/live_lineage_objects_20260427T042000/schedule_aware_model_family_specification.json`
+  - `runs/live_lineage_objects_20260427T042000/schedule_aware_model_family_specification.md`
+- Verified the family-spec outputs:
+  - `neutral_growth` primary calibration target: `Passaging.cellCount`
+  - `fixed_state_fitness` primary calibration target: `Passaging.correctedCount`
+  - `density_dependent_growth` primary calibration target: `Passaging.areaOccupied_um2`
+  - terminal `Perspective.size` remains endpoint support / validation only
+  - candidate-differentiation checklist enumerates required config/rules differences across all three families
+
+- Latest completed work unit:
+  - `0e97758` `feat(phase): add SUM159 simulation schedules`
+- Added deterministic schedule extraction in:
+  - `src/cloneid_agent/simulation_schedule.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_simulation_schedule.py`
+- Generated and validated the new simulation-schedule artifacts:
+  - `runs/live_lineage_objects_20260427T042000/simulation_schedule_SUM159_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/simulation_schedule_SUM159_2N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/matched_simulation_schedule_SUM159_2N_vs_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/matched_simulation_schedule_SUM159_2N_vs_4N_O2.md`
+- Verified the schedule extraction rules:
+  - `O2_A1_seed` is used as initial condition, not as a growth endpoint
+  - seed-to-harvest / seed-to-seedT intervals are labeled `growth_episode`
+  - harvest/seedT-to-seed intervals are labeled `transfer_event`
+  - transfer events carry `0` simulated growth minutes
+  - pre-O2 phases remain provenance/context only
+  - terminal Perspective support is retained as endpoint validation
+  - total simulated growth duration remains within the proof-of-principle guardrail
+- Verified the current SUM159 schedule summaries:
+  - `SUM159_4N_O2`: `8` growth episodes, `7` transfer events, `11520` total simulated growth minutes
+  - `SUM159_2N_O2`: `8` growth episodes, `7` transfer events, `11520` total simulated growth minutes
+  - matched growth episodes: `8`
+  - terminal `O2_A7K_harvest` endpoints remain aligned with Perspective support on both branches
+
+- Latest completed work unit:
+  - `6c5c3ea` `feat(phase): add milestone matched SUM159 plan`
+- Added deterministic milestone-based phase matching in:
+  - `src/cloneid_agent/phase_planning.py`
+  - `src/cloneid_agent/cli.py`
+  - `tests/test_phase_planning.py`
+- Generated and validated the new milestone-matched artifacts:
+  - `runs/live_lineage_objects_20260427T042000/milestone_matched_phase_plan_SUM159_2N_vs_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/milestone_matched_phase_plan_SUM159_2N_vs_4N_O2.md`
+- Verified the biological alignment correction:
+  - terminal `O2_A7K_harvest` aligns to terminal `O2_A7K_harvest`
+  - terminal Perspective-supported endpoints align as endpoints rather than by raw phase index
+  - pre-O2 / dp history is preserved as unmatched prehistory rather than forced into direct phase alignment
+  - recommended comparison window is `O2_A1_seed -> O2_A7K_harvest`
+  - terminal supported-event count remains separate from terminal Perspective record count on both branches
+- Verified the milestone-matched plan summaries:
+  - matched milestone phases: `16`
+  - unmatched pre-O2 phases: anchor `6`, comparison `8`
+  - unmatched extra branch history: anchor `0`, comparison `0`
+  - unmatched post-comparison tail: anchor `0`, comparison `0`
+  - both branches contain `A7K_harvest`: `true`
+  - both `A7K_harvest` endpoints have Perspective support: `true`
+
+- Latest committed work unit:
+  - `445023f` `feat(phase): add SUM159 interval phase plans`
+- Added deterministic phase-planning code:
+  - `src/cloneid_agent/phase_planning.py`
+  - CLI support in `src/cloneid_agent/cli.py`
+  - tests in `tests/test_phase_planning.py`
+- Generated and validated the approved SUM159 phase-plan artifacts:
+  - `runs/live_lineage_objects_20260427T042000/phase_plan_SUM159_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/phase_plan_SUM159_2N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/matched_phase_plan_SUM159_2N_vs_4N_O2.json`
+  - `runs/live_lineage_objects_20260427T042000/phase_plan_SUM159_2N_vs_4N_O2.md`
+- Verified the requested phase-plan validations:
+  - phases follow `passaged_from_id1` order
+  - simulated duration is fixed at `1440` minutes per interval
+  - real elapsed time is retained but not used as runtime
+  - `correctedCount` and `areaOccupied_um2` are labeled `derived_event_linked_phenotype`
+  - `Perspective.size` is labeled endpoint molecular support
+  - terminal Perspective supported-event count is separate from terminal Perspective record count
+  - total simulated duration remains below the proof-of-principle guardrail
+
+- Latest committed work unit:
+  - `daf8052` `docs(phase): add biological proof abstraction memo`
+- Added saved design artifacts for the selected biological proof-of-principle candidate:
+  - `runs/live_lineage_objects_20260427T042000/phase_abstraction_design_memo.md`
+  - `runs/live_lineage_objects_20260427T042000/phase_abstraction_design_memo.json`
+- The memo is design-only and does not implement any new PhysiCell family behavior.
+- The memo compares three candidate phase-abstraction strategies:
+  - primary-lineage interval phases
+  - seed-to-harvest episode phases
+  - regime-bounded phases
+- The memo recommends `primary_lineage_interval_phases` as the default first manuscript strategy and `seed_to_harvest_episode_phases` as the backup.
+
+- Latest committed work unit:
+  - `c5e08eb` `feat(selection): add biological proof lineage tier`
+- Added a distinct biological proof-of-principle selection tier alongside the existing smoke/raw-time tier.
+- Revised selection logic so long-term lineage paths are no longer treated as biologically unsuitable solely because raw elapsed clock time is large.
+- Added explicit lineage-object interpretation fields:
+  - `raw_time_simulation_eligible`
+  - `phase_abstracted_modeling_eligible`
+  - `biologically_interpretable`
+- Added phase-abstraction planning that preserves event order and provenance while normalizing primary lineage intervals to simulated phases.
+- Added biological proof-of-principle artifacts:
+  - `biological_proof_of_principle_candidates.json`
+  - `biological_proof_of_principle_candidates.md`
+  - `selected_biological_proof_of_principle_candidate.json`
+  - `selected_biological_proof_of_principle_candidate.md`
+- Refreshed the saved live run with the new biological-proof artifacts under:
+  - `runs/live_lineage_objects_20260427T042000/`
+- Added a saved shortlist comparison artifact for the requested candidates:
+  - `runs/live_lineage_objects_20260427T042000/biological_shortlist_comparison.json`
+  - `runs/live_lineage_objects_20260427T042000/biological_shortlist_comparison.md`
+- Added saved biological-proof downstream artifacts for the selected phase-abstracted candidate:
+  - `runs/live_lineage_objects_20260427T042000/selected_biological_observables.json`
+  - `runs/live_lineage_objects_20260427T042000/selected_biological_observables.md`
+  - `runs/live_lineage_objects_20260427T042000/biological_proof_physicell_mapping.json`
+  - `runs/live_lineage_objects_20260427T042000/biological_proof_physicell_mapping.md`
+- Verified that the technical smoke object remains separate:
+  - selected smoke object: `rooted_trajectory_bundle::2586-4`
+  - selected biological proof-of-principle candidate: `lineage_path::SUM159_NLS_4N_O2_A7K_harvest`
+
+- Latest committed work units:
+  - `41edbbf` `feat(selection): add bounded modeling lineage selection`
+  - `954b7ed` `feat(selection): add smoke-eligible lineage tier`
 - Added smoke-eligible modeling-lineage-object selection as a third tier on top of broader bounded modeling candidates:
   - `smoke_eligible_modeling_lineage_objects.json`
   - `smoke_eligible_modeling_lineage_objects.md`
@@ -324,6 +636,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 - Family-specific PhysiCell parameterization is still shallow; the generated model candidates currently share a common runtime scaffold and provenance structure, but they are not yet differentiated by family-specific calibrated assumptions.
 - Quantitative comparison between simulation outputs and CLONEID observables is not implemented yet; the current evaluation layer only records runtime readiness and smoke-output presence.
 - Broader bounded modeling objects that exceed smoke/runtime guardrails are intentionally excluded from default candidate generation until an explicit override policy is added.
+- The next remaining branch is family-specific PhysiCell model differentiation. That branch is not blocked by permissions or credentials, but it does require scientific judgment about which biological assumptions should distinguish `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` for the first real proof of principle.
 
 ---
 
@@ -397,37 +710,40 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
 ## Stop checklist
 
 1. What did I complete?
-   - Implemented global lineage-object discovery over the full primary lineage graph rather than seeding discovery from CandidateSegments.
-   - Added global lineage-object ranking and selection with validity checks that prevent multi-root objects from being treated as `RootedTrajectoryBundle` or selected.
-   - Verified a live global lineage-object run and confirmed that the current selected object comes from global graph discovery rather than CandidateSegment seeding.
-   - Reworked TrajectoryBundle discovery so the lineage graph is built from explicit `passaged_from_id1` parent-child structure rather than context-bucket adjacency or mixed parent traversal.
-   - Added explicit primary and secondary lineage-edge artifact fields, rooted-subtree fields, endpoint path recovery, traversal-policy metadata, and candidate-segment-as-annotation behavior.
-   - Updated selected-bundle and first-pass mapping layers to preserve the corrected lineage-object fields.
-   - Added and passed deterministic tests covering the corrected lineage semantics and downstream artifact preservation.
+   - Implemented a deterministic primary-lineage interval phase planner for the approved SUM159 4N/O2 versus 2N/O2 comparison.
+   - Generated individual branch phase plans and a matched 2N-vs-4N O2 phase-alignment plan.
+   - Validated the fixed-duration, lineage-order, evidence-label, Perspective-count, and guardrail checks requested by the user.
 2. What safe next task did I identify?
-   - Adapt observable extraction to consume `selected_lineage_object.json`, then refresh downstream live observable-selection and CLONEID-to-PhysiCell mapping artifacts from the globally selected lineage object.
+   - After user review, translate the approved phase plans into a phase-aware biological-proof mapping artifact and joint-calibration observable bundle.
 3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
-   - Yes. It is deterministic and reversible, and the selected lineage object now passes the required global-discovery validity checks.
+   - No. It is reversible and deterministic, but the user explicitly asked me to stop after generating and validating the phase plans and before proceeding further.
 4. If yes, why am I not doing it now?
-   - I am not stopping here; this checkpoint is being refreshed before moving into the now-unblocked downstream observable-extraction branch.
+   - Not applicable.
 5. Am I blocked by:
    - missing credentials? no
-   - missing permissions? not for the completed branch; future Docker or live DB work may still require them
+   - missing permissions? no for this completed branch
    - risk of modifying the real database? no
-   - scientific judgment requiring user input? no
-   - Level 2 or Level 3 ambiguity? no
+   - scientific judgment requiring user input? yes for the next branch, because phase-aware implementation would start constraining how model families are interpreted for the first manuscript proof-of-principle
+   - Level 2 or Level 3 ambiguity? no for the completed memo branch
 6. If I am not blocked, continue working instead of stopping.
-   - I am stopping here only because the user requested confirmation at this checkpoint.
+   - I completed the requested safe planning branch end-to-end and stopped before phase-aware implementation, as requested by the user.
 
 ## Git state
 
 - Current branch: `main`
 - Last committed work unit hashes:
+  - `445023f` `feat(phase): add SUM159 interval phase plans`
+  - `daf8052` `docs(phase): add biological proof abstraction memo`
+  - `c5e08eb` `feat(selection): add biological proof lineage tier`
   - `eb90315` `feat(trajectory): add live bundle extraction branch`
   - `faf35bc` `feat(trajectory): add bundle ranking stage`
   - `7d25bbb` `feat(trajectory): add bundle discovery scaffold`
   - `b1c5721` `feat(runtime): add persistent install and smoke test wrappers`
 - Tests run this session:
+  - `PYTHONPATH=src python3 -m unittest tests/test_phase_planning.py tests/test_modeling_lineage_selection.py tests/test_observable_selection.py`
+  - `python3 -m py_compile src/cloneid_agent/phase_planning.py src/cloneid_agent/cli.py`
+  - `PYTHONPATH=src python3 -m unittest tests/test_modeling_lineage_selection.py tests/test_observable_selection.py tests/test_model_candidate.py tests/test_physicell_mapping.py`
+  - `python3 -m py_compile src/cloneid_agent/modeling_lineage_selection.py src/cloneid_agent/lineage_object_pipeline.py src/cloneid_agent/cli.py`
   - `bash -n scripts/check_physicell_runtime.sh`
   - `scripts/check_physicell_runtime.sh`
   - `bash -n scripts/build_physicell_local.sh`
@@ -448,11 +764,12 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
   - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_observable_selection.py tests/test_physicell_mapping.py tests/test_toy_workflow.py`
 - Work committed yet for the latest unit: yes
 - Uncommitted / user-side files currently present:
-  - modified: `CODEX_INSTRUCTIONS.md`
-  - modified: `ONBOARDING_AND_SCOPE.md`
   - modified: `README.md`
   - modified: `RUNTIME_AND_HPC.md`
+  - modified: `STATUS.md`
   - modified: `SUPERVISED_AUTONOMY.md`
+  - modified: `docs/derived/milestone0_plan.md`
+  - modified: `docs/derived/repository_map.md`
+  - untracked: `ALL_CITATIONS.txt`
   - untracked: `GIT_WORKFLOW.md`
-  - untracked: `ONTOLOGY_FOR_DATASET_RANKING.md`
   - untracked: `docs/CLONEID_paper.pdf`

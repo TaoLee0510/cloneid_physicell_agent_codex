@@ -10,6 +10,25 @@ The CLONEID–PhysiCell proof-of-principle should be developed in three executio
 
 The database-first design does not change the runtime strategy. The database is used for discovery, selection, and provenance. PhysiCell runtime only becomes substantial after candidate models are instantiated and executed.
 
+## Pinned backend recommendation
+
+Use official PhysiCell core `v1.14.2` as the pinned simulation backend:
+
+- release source: <https://github.com/MathCancer/PhysiCell/releases/tag/1.14.2>
+- use the official source release as the canonical backend for local builds, Docker builds, and HPC containers
+- do not depend on PhysiCell Studio for automated execution
+
+PhysiCell Studio may still be used for:
+
+- human inspection of generated models
+- manual XML editing during development
+
+But the CLONEID-PhysiCell workflow itself should run command-line PhysiCell jobs generated from repository-managed templates.
+
+If Docker is used, build a project-owned image from the official PhysiCell `v1.14.2` release rather than relying on an unpinned community Studio image.
+
+If HPC execution is used, prefer Apptainer or Singularity images derived from that same pinned Docker or source environment so that local, Docker, and HPC runs stay aligned.
+
 ---
 
 ## Tier 1 — dry-run mode
@@ -71,11 +90,19 @@ Example:
 python -m cloneid_agent run \
   --db-url "$CLONEID_DB_READONLY_URL" \
   --templates model_templates/physicell \
-  --physicell-bin /path/to/PhysiCell \
+  --physicell-bin /path/to/PhysiCell_v1.14.2/project \
   --output runs/local_test \
   --mode local-test \
   --threads 4
 ```
+
+Recommended local-test backend:
+
+- build official PhysiCell core `v1.14.2` from source on the workstation
+- keep the checked-out or extracted source tree in a user-controlled path
+- point the workflow at the project-owned executable or wrapper built from that tree
+
+Local execution should not require PhysiCell Studio.
 
 ---
 
@@ -117,6 +144,12 @@ python -m cloneid_agent prepare-hpc \
   --replicates 10
 ```
 
+Recommended container strategy:
+
+- Docker: build a project-owned image from official PhysiCell core `v1.14.2`
+- HPC: derive an Apptainer/Singularity image from the same pinned Docker image or equivalent pinned source build
+- use the same PhysiCell version, compiler/runtime stack, and template layout across local, Docker, and HPC execution
+
 ---
 
 ## OpenMP thread management
@@ -134,6 +167,8 @@ The generated run metadata should record:
 - `OMP_NUM_THREADS`,
 - command used,
 - PhysiCell binary path,
+- PhysiCell version tag,
+- source or container provenance,
 - model folder,
 - random seed,
 - parameter set,

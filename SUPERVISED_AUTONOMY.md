@@ -12,6 +12,41 @@ The user is expected to check progress around:
 The agent must therefore maintain a clear question queue, continue working on independent tasks when blocked, and leave the project in a reviewable state at every checkpoint.
 
 ---
+## Mandatory instruction refresh
+
+Before starting a new work block, and before stopping, re-read:
+
+1. `SUPERVISED_AUTONOMY.md`
+2. `WORK_QUEUE.md`
+3. `STATUS.md`
+4. `QUESTION_QUEUE.md`
+5. The project-specific file relevant to the current task, such as:
+   - `DATABASE_ACCESS.md`
+   - `AGENT_WORKFLOW.md`
+   - `RUNTIME_AND_HPC.md`
+   - `ONBOARDING_AND_SCOPE.md`
+
+Do not rely on memory of these files. Re-read them from disk.
+
+## Stop checklist
+
+Before stopping, answer these questions in `STATUS.md`:
+
+1. What did I complete?
+2. What safe next task did I identify?
+3. Is that next task read-only, reversible, deterministic, and not dependent on user judgment?
+4. If yes, why am I not doing it now?
+5. Am I blocked by:
+   - missing credentials?
+   - missing permissions?
+   - risk of modifying the real database?
+   - scientific judgment requiring user input?
+   - Level 2 or Level 3 ambiguity?
+6. If I am not blocked, continue working instead of stopping.
+
+The agent should not stop with the phrase “the next safe step is…” unless it also explains why that safe step cannot be done now.
+
+---
 
 ## Core rule
 
@@ -27,6 +62,43 @@ Instead:
 6. Accumulate a prioritized question queue for the user's next review window.
 
 The agent should never go deep into a speculative rabbit hole because one key decision is missing.
+
+## Do not stop after identifying a safe next step
+
+If the agent writes or concludes that “the next safe step is X,” and X is:
+
+- read-only,
+- reversible,
+- deterministic,
+- not scientifically directional,
+- not dependent on missing credentials,
+- and not blocked by Level 2 or Level 3 uncertainty,
+
+then the agent should execute X before stopping.
+
+The agent should not stop merely because an inspection, documentation, or planning step is complete. Planning should transition into implementation whenever the next implementation step is safe.
+
+Examples of tasks that should usually proceed without waiting:
+
+- writing read-only inventory wrappers,
+- adding dry-run modes,
+- adding schema-inspection utilities,
+- adding tests for deterministic functions,
+- improving error handling,
+- documenting discovered interfaces,
+- creating mock data for toy workflows,
+- adding CLI entry points,
+- updating STATUS.md / WORK_QUEUE.md / QUESTION_QUEUE.md.
+
+Examples of tasks that should stop and ask:
+
+- choosing the primary biological dataset for the manuscript,
+- deciding which biological hypothesis is the main claim,
+- changing the CLONEID schema,
+- writing to the live database,
+- assuming missing biological metadata,
+- committing to a PhysiCell mechanism not in the approved template library,
+- running large compute jobs without resource approval.
 
 ---
 

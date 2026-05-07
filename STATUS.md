@@ -7,7 +7,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 ## What changed since last checkpoint
 
 - Latest completed work unit:
-  - uncommitted implementation on branch `update_5.4`
+  - `c0aa0e3` `Add SNU668 density history application framework`
 - Added a focused SNU-668 density-history proof-of-principle framework for the requested Nature Methods resubmission/appeal application.
 - Added the three-regime comparison contract:
   - `snu668_full_history`
@@ -111,7 +111,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
     - `SUM159_2N_O2` / `fixed_state_fitness`
     - `SUM159_2N_O2` / `density_dependent_growth`
 - Current branch: `update_5.4`
-- Current last commit: `e96b855`
+- Current last commit: `c0aa0e3`
 - Current uncommitted files intentionally left outside this work unit:
   - modified: `README.md`
   - modified: `RUNTIME_AND_HPC.md`
@@ -776,6 +776,7 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
 
 - Current branch: `update_5.4`
 - Last committed work unit hashes:
+  - `c0aa0e3` `Add SNU668 density history application framework`
   - `445023f` `feat(phase): add SUM159 interval phase plans`
   - `daf8052` `docs(phase): add biological proof abstraction memo`
   - `c5e08eb` `feat(selection): add biological proof lineage tier`
@@ -809,29 +810,6 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
   - `PYTHONPATH=src python3 -m unittest tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_physicell_mapping.py tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_observable_selection.py tests/test_physicell_mapping.py tests/test_toy_workflow.py`
-- Work committed yet for the latest unit: no
+- Work committed yet for the latest unit: yes
 - Uncommitted / user-side files currently present:
-  - modified: `README.md`
-  - modified: `STATUS.md`
-  - modified: `WORK_QUEUE.md`
-  - modified: `QUESTION_QUEUE.md`
-  - modified: `src/cloneid_agent/cli.py`
-  - untracked: `configs/`
-  - untracked: `data/external/`
-  - untracked: `docs/applications/`
-  - untracked: `docs/standards/`
-  - untracked: `src/cloneid_agent/application_runner.py`
-  - untracked: `src/cloneid_agent/comparative_identifiability.py`
-  - untracked: `src/cloneid_agent/compressed_view.py`
-  - untracked: `src/cloneid_agent/external_curated_adapter.py`
-  - untracked: `src/cloneid_agent/family_comparison.py`
-  - untracked: `src/cloneid_agent/history_ablation.py`
-  - untracked: `src/cloneid_agent/history_covariates.py`
-  - untracked: `src/cloneid_agent/observability_profile.py`
-  - untracked: `src/cloneid_agent/rejection_logging.py`
-  - untracked: `tests/test_comparative_identifiability.py`
-  - untracked: `tests/test_external_curated_adapter.py`
-  - untracked: `tests/test_history_ablation.py`
-  - untracked: `tests/test_history_covariates.py`
-  - untracked: `tests/test_observability_profile.py`
-  - untracked: `tests/test_pipeline_run.py`
+  - none

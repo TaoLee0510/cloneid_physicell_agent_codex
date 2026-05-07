@@ -20,9 +20,10 @@ For each work block:
 
 ## Ready now
 
-1. Extend the current structural smoke-output parser so it can extract episode-end simulation metadata into a more explicit shared-evaluation placeholder schema without fitting parameters.
-2. Decide whether to keep expanding one-episode smoke coverage or stop at the current `4N` and `2N` branch smoke matrix before moving to richer real-output parsing.
-3. After that, add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector, still without parameter fitting.
+1. Replace the SNU-668 dry-run schema fixture in `python -m cloneid_agent run ...` with a live read-only CLONEID extraction or approved snapshot once the exact application-specific extraction path is selected.
+2. Add live/snapshot tests for `snu668_full_history` once a sanctioned SNU-668 bundle is available.
+3. Extend the current structural smoke-output parser so it can extract episode-end simulation metadata into a more explicit shared-evaluation placeholder schema without fitting parameters.
+4. Add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector, still without parameter fitting.
 
 ---
 
@@ -214,6 +215,40 @@ _None yet._
    - `Perspective.size` as endpoint validation only
    - non-executable `prehistory_context`
    - zero-duration transfer-event semantics
+89. Added the focused SNU-668 density-history application config and documentation:
+   - `configs/applications/snu668_density_history.yaml`
+   - `docs/applications/snu668_density_history.md`
+90. Added the curated NWAA124 external comparator files and config:
+   - `configs/comparators/nwaa124_curated.yaml`
+   - `data/external/nwaa124_curated/manifest.json`
+   - `data/external/nwaa124_curated/source_index.md`
+   - `data/external/nwaa124_curated/extraction_notes.md`
+   - `data/external/nwaa124_curated/competition_over_time.csv`
+   - `data/external/nwaa124_curated/growth_capacity_summary.csv`
+   - `data/external/nwaa124_curated/phenotype_support.csv`
+   - `data/external/nwaa124_curated/observational_evidence.csv`
+91. Added deterministic application modules for:
+   - external curated loading
+   - history covariates
+   - published-like compression
+   - history ablation
+   - observability profiling
+   - family comparison
+   - rejection logging
+   - comparative identifiability
+   - one-command application orchestration
+92. Added `python -m cloneid_agent run --config configs/applications/snu668_density_history.yaml --output runs/update_5_4 --mode dry-run --strict-provenance`.
+93. Generated the dry-run application artifact tree under `runs/update_5_4/`.
+94. Added the minimum low-cost longitudinal evolution record standard:
+   - `docs/standards/minimum_longitudinal_evolution_record.md`
+95. Added tests for the new application contract:
+   - `tests/test_history_covariates.py`
+   - `tests/test_history_ablation.py`
+   - `tests/test_external_curated_adapter.py`
+   - `tests/test_observability_profile.py`
+   - `tests/test_comparative_identifiability.py`
+   - `tests/test_pipeline_run.py`
+96. Verified the full test suite with `PYTHONPATH=src python3 -m unittest discover -s tests`.
 
 ---
 

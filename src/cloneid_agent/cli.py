@@ -12,6 +12,7 @@ from .evaluation import evaluate_generated_model_candidates_from_file, write_eva
 from .execution_harness import generate_execution_harness_artifacts
 from .execution_readiness import generate_execution_readiness_artifacts
 from .inventory import run_inventory
+from .application_runner import run_application
 from .lineage_object_pipeline import discover_rank_and_select_lineage_objects
 from .lineage_object_ranking import rank_lineage_objects_from_file, write_ranked_lineage_objects
 from .lineage_object_selection import (
@@ -80,6 +81,27 @@ from .trajectory_bundles import discover_trajectory_bundle_from_file, write_traj
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="cloneid_agent")
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    run_parser = subparsers.add_parser(
+        "run",
+        help="Run a configured CLONEID application workflow.",
+    )
+    run_parser.add_argument("--config", required=True, help="Application config path")
+    run_parser.add_argument("--output", required=True, help="Output run directory")
+    run_parser.add_argument(
+        "--mode",
+        choices=("dry-run", "mock", "live"),
+        default="dry-run",
+        help="Execution mode. dry-run/mock do not require live DB access.",
+    )
+    run_parser.add_argument("--resume-from", help="Stage name to resume from intentionally")
+    run_parser.add_argument("--stop-after", help="Stop after writing the named stage")
+    run_parser.add_argument("--use-snapshot", help="Approved snapshot path for future live-like runs")
+    run_parser.add_argument(
+        "--strict-provenance",
+        action="store_true",
+        help="Require strict provenance checks where implemented.",
+    )
 
     inventory_parser = subparsers.add_parser(
         "inventory",
@@ -754,6 +776,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
 
+    if args.command == "run":
+        run_application(
+            config_path=args.config,
+            output=args.output,
+            mode=args.mode,
+            resume_from=args.resume_from,
+            stop_after=args.stop_after,
+            use_snapshot=args.use_snapshot,
+            strict_provenance=args.strict_provenance,
+        )
+        return 0
     if args.command == "inventory":
         return run_inventory(output=args.output, run_id=args.run_id, mode=args.mode)
     if args.command == "toy-roundtrip":

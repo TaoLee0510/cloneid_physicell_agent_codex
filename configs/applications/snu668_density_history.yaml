@@ -1,0 +1,70 @@
+{
+  "application_id": "snu668_density_history",
+  "display_name": "SNU-668 density-history model discrimination proof of principle",
+  "scientific_question": "During long-term r/K density selection, can late-passaged growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required? When the data are compressed to a published sparse view, does mechanistic discrimination become weaker or partially unresolved?",
+  "comparison_regimes": [
+    "snu668_full_history",
+    "snu668_published_like_compressed",
+    "nwaa124_curated_external"
+  ],
+  "model_families": [
+    "neutral_growth",
+    "fixed_state_fitness",
+    "density_dependent_growth"
+  ],
+  "observable_priorities": [
+    "Passaging.cellCount",
+    "Passaging.correctedCount",
+    "Passaging.areaOccupied_um2",
+    "event/episode duration",
+    "transfer timing",
+    "passage index",
+    "terminal Perspective support summary",
+    "ploidy surrogate or late karyotype summary if present"
+  ],
+  "optional_spatial_features": [
+    "compactness",
+    "local packing proxy",
+    "nearest-neighbor proxy",
+    "edge expansion proxy"
+  ],
+  "history_ablation_settings": {
+    "paired_conditions": [
+      "full_history",
+      "historyless_or_passage_only"
+    ],
+    "compressed_regime": "snu668_published_like_compressed",
+    "remove_or_collapse": [
+      "explicit event-order context beyond coarse passage index",
+      "cumulative confluence / crowding history",
+      "transfer-event semantics as explanatory inputs",
+      "continuous pre-assay history"
+    ]
+  },
+  "external_comparator": {
+    "comparator_id": "nwaa124_curated_external",
+    "config_path": "configs/comparators/nwaa124_curated.yaml",
+    "data_root": "data/external/nwaa124_curated",
+    "comparison_role": "observability_identifiability_comparator"
+  },
+  "report_expectations": [
+    "separate selected dataset / lineage object",
+    "separate model families",
+    "separate data regimes",
+    "state what is supported under tested assumptions",
+    "state what is rejected under tested assumptions",
+    "state what remains unresolved in sparse views",
+    "state what CLONEID uniquely preserves",
+    "state low-cost fields that would rescue identifiability"
+  ],
+  "guardrails": [
+    "read-only CLONEID access only",
+    "no database writes",
+    "Perspective is endpoint or assay-specific support only",
+    "Identity is inferred secondary support only",
+    "do not claim HeLa biology is equivalent to SNU-668 biology",
+    "do not challenge the external paper",
+    "do not benchmark against the external paper simulator as ground truth",
+    "use restrained interpretation language"
+  ]
+}

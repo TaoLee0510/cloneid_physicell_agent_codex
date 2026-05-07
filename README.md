@@ -67,6 +67,40 @@ runs/<run_id>/model_selection_report.md
 runs/<run_id>/figures/
 ```
 
+## SNU-668 density-history proof-of-principle workflow
+
+This branch also contains a focused manuscript-facing framework for the density-history question:
+
+```text
+During long-term r/K density selection, can late-passaged growth advantage be explained by fixed fitness alone,
+or is continuous event-linked crowding/confluence history required?
+```
+
+Shortest dry-run command:
+
+```bash
+python -m cloneid_agent run \
+  --config configs/applications/snu668_density_history.yaml \
+  --output runs/update_5_4 \
+  --mode dry-run \
+  --strict-provenance
+```
+
+Dry-run/mock mode does not require live CLONEID access. It uses a clearly labeled SNU-668-shaped schema fixture for internal workflow validation and the curated local NSR supplement files for the external observability comparator. Do not use dry-run fixture values for biological claims; replace them with a live read-only CLONEID extraction or approved snapshot before manuscript numerical interpretation.
+
+The run writes the main manuscript-facing artifacts:
+
+```text
+runs/update_5_4/model_selection_report.md
+runs/update_5_4/manuscript_facing_summary.md
+runs/update_5_4/family_discrimination_summary.md
+runs/update_5_4/comparative_identifiability_report.md
+runs/update_5_4/rejection_report.md
+runs/update_5_4/observability_matrix.csv
+runs/update_5_4/family_comparison.csv
+runs/update_5_4/figure_data/
+```
+
 ## Optional database snapshots
 
 The workflow may support snapshots for testing and reproducibility:

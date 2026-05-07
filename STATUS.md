@@ -7,6 +7,49 @@ This file is maintained by the agent. It should be updated at the end of each wo
 ## What changed since last checkpoint
 
 - Latest completed work unit:
+  - uncommitted implementation on branch `update_5.4`
+- Added a focused SNU-668 density-history proof-of-principle framework for the requested Nature Methods resubmission/appeal application.
+- Added the three-regime comparison contract:
+  - `snu668_full_history`
+  - `snu668_published_like_compressed`
+  - `nwaa124_curated_external`
+- Curated the local NWAA124 supplement into provenance-aware external comparator artifacts under:
+  - `data/external/nwaa124_curated/`
+- Added dependency-free loading and missingness reporting for the curated external comparator:
+  - `src/cloneid_agent/external_curated_adapter.py`
+- Added internal history, compression, ablation, observability, model-family comparison, rejection, and identifiability modules:
+  - `src/cloneid_agent/history_covariates.py`
+  - `src/cloneid_agent/compressed_view.py`
+  - `src/cloneid_agent/history_ablation.py`
+  - `src/cloneid_agent/observability_profile.py`
+  - `src/cloneid_agent/family_comparison.py`
+  - `src/cloneid_agent/rejection_logging.py`
+  - `src/cloneid_agent/comparative_identifiability.py`
+- Added one-command orchestration through the existing CLI:
+  - `python -m cloneid_agent run --config configs/applications/snu668_density_history.yaml --output runs/update_5_4 --mode dry-run --strict-provenance`
+- Generated the complete dry-run artifact tree under:
+  - `runs/update_5_4/`
+- Added manuscript-facing documentation and the minimum low-cost longitudinal evolution record standard:
+  - `docs/applications/snu668_density_history.md`
+  - `docs/standards/minimum_longitudinal_evolution_record.md`
+- Added tests:
+  - `tests/test_history_covariates.py`
+  - `tests/test_history_ablation.py`
+  - `tests/test_external_curated_adapter.py`
+  - `tests/test_observability_profile.py`
+  - `tests/test_comparative_identifiability.py`
+  - `tests/test_pipeline_run.py`
+- Verified:
+  - `PYTHONPATH=src python3 -m unittest tests/test_history_covariates.py tests/test_history_ablation.py tests/test_external_curated_adapter.py tests/test_observability_profile.py tests/test_comparative_identifiability.py tests/test_pipeline_run.py`
+  - `PYTHONPATH=src python3 -m cloneid_agent run --config configs/applications/snu668_density_history.yaml --output runs/update_5_4 --mode dry-run --strict-provenance`
+  - `PYTHONPATH=src python3 -m unittest discover -s tests`
+- Important interpretation note:
+  - dry-run/mock mode uses a clearly labeled SNU-668-shaped schema fixture for internal workflow validation
+  - it does not support SNU-668 biological numerical claims until replaced by live read-only CLONEID records or an approved snapshot
+  - the external supplement path was accessible
+  - live SNU-668 mode was not attempted
+
+- Latest completed work unit:
   - `e96b855` `feat(runtime): add schedule-aware real smoke harness`
 - Corrected the dry-run mock semantics so mock outputs no longer imply family ranking:
   - mock predictions are now identical across families
@@ -67,7 +110,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
     - `SUM159_2N_O2` / `neutral_growth`
     - `SUM159_2N_O2` / `fixed_state_fitness`
     - `SUM159_2N_O2` / `density_dependent_growth`
-- Current branch: `main`
+- Current branch: `update_5.4`
 - Current last commit: `e96b855`
 - Current uncommitted files intentionally left outside this work unit:
   - modified: `README.md`
@@ -631,6 +674,7 @@ This file is maintained by the agent. It should be updated at the end of each wo
 
 ## What is blocked
 
+- Manuscript numerical interpretation of the SNU-668 full-history arm is blocked until the dry-run fixture is replaced by live read-only CLONEID records or an approved SNU-668 snapshot.
 - Docker-based execution remains blocked until the Docker daemon is reachable from the current context.
 - Apptainer/Singularity execution remains blocked until one of those runtimes is installed.
 - Family-specific PhysiCell parameterization is still shallow; the generated model candidates currently share a common runtime scaffold and provenance structure, but they are not yet differentiated by family-specific calibrated assumptions.
@@ -730,7 +774,7 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
 
 ## Git state
 
-- Current branch: `main`
+- Current branch: `update_5.4`
 - Last committed work unit hashes:
   - `445023f` `feat(phase): add SUM159 interval phase plans`
   - `daf8052` `docs(phase): add biological proof abstraction memo`
@@ -740,6 +784,9 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
   - `7d25bbb` `feat(trajectory): add bundle discovery scaffold`
   - `b1c5721` `feat(runtime): add persistent install and smoke test wrappers`
 - Tests run this session:
+  - `PYTHONPATH=src python3 -m unittest tests/test_history_covariates.py tests/test_history_ablation.py tests/test_external_curated_adapter.py tests/test_observability_profile.py tests/test_comparative_identifiability.py tests/test_pipeline_run.py`
+  - `PYTHONPATH=src python3 -m cloneid_agent run --config configs/applications/snu668_density_history.yaml --output runs/update_5_4 --mode dry-run --strict-provenance`
+  - `PYTHONPATH=src python3 -m unittest discover -s tests`
   - `PYTHONPATH=src python3 -m unittest tests/test_phase_planning.py tests/test_modeling_lineage_selection.py tests/test_observable_selection.py`
   - `python3 -m py_compile src/cloneid_agent/phase_planning.py src/cloneid_agent/cli.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_modeling_lineage_selection.py tests/test_observable_selection.py tests/test_model_candidate.py tests/test_physicell_mapping.py`
@@ -762,14 +809,29 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
   - `PYTHONPATH=src python3 -m unittest tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_physicell_mapping.py tests/test_observable_selection.py tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_toy_workflow.py`
   - `PYTHONPATH=src python3 -m unittest tests/test_trajectory_bundles.py tests/test_trajectory_bundle_ranking.py tests/test_trajectory_bundle_pipeline.py tests/test_trajectory_bundle_selection.py tests/test_observable_selection.py tests/test_physicell_mapping.py tests/test_toy_workflow.py`
-- Work committed yet for the latest unit: yes
+- Work committed yet for the latest unit: no
 - Uncommitted / user-side files currently present:
   - modified: `README.md`
-  - modified: `RUNTIME_AND_HPC.md`
   - modified: `STATUS.md`
-  - modified: `SUPERVISED_AUTONOMY.md`
-  - modified: `docs/derived/milestone0_plan.md`
-  - modified: `docs/derived/repository_map.md`
-  - untracked: `ALL_CITATIONS.txt`
-  - untracked: `GIT_WORKFLOW.md`
-  - untracked: `docs/CLONEID_paper.pdf`
+  - modified: `WORK_QUEUE.md`
+  - modified: `QUESTION_QUEUE.md`
+  - modified: `src/cloneid_agent/cli.py`
+  - untracked: `configs/`
+  - untracked: `data/external/`
+  - untracked: `docs/applications/`
+  - untracked: `docs/standards/`
+  - untracked: `src/cloneid_agent/application_runner.py`
+  - untracked: `src/cloneid_agent/comparative_identifiability.py`
+  - untracked: `src/cloneid_agent/compressed_view.py`
+  - untracked: `src/cloneid_agent/external_curated_adapter.py`
+  - untracked: `src/cloneid_agent/family_comparison.py`
+  - untracked: `src/cloneid_agent/history_ablation.py`
+  - untracked: `src/cloneid_agent/history_covariates.py`
+  - untracked: `src/cloneid_agent/observability_profile.py`
+  - untracked: `src/cloneid_agent/rejection_logging.py`
+  - untracked: `tests/test_comparative_identifiability.py`
+  - untracked: `tests/test_external_curated_adapter.py`
+  - untracked: `tests/test_history_ablation.py`
+  - untracked: `tests/test_history_covariates.py`
+  - untracked: `tests/test_observability_profile.py`
+  - untracked: `tests/test_pipeline_run.py`

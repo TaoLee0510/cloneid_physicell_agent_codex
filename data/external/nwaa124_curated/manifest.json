@@ -1,0 +1,51 @@
+{
+  "comparator_id": "nwaa124_curated_external",
+  "schema_version": "nwaa124_curated_v1",
+  "created_for": "SNU-668 density-history proof-of-principle comparator",
+  "source_root": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
+  "source_root_accessible_during_curation": true,
+  "curation_policy": {
+    "no_ocr": true,
+    "no_image_digitization": true,
+    "docx_text_and_table_extraction_only": true,
+    "summary_level_evidence_allowed_when_exact_points_unavailable": true
+  },
+  "source_files": [
+    {
+      "file_name": "Supplementary data- Materials and Methods.docx",
+      "role": "methods, model descriptions, selection protocols, assay descriptions"
+    },
+    {
+      "file_name": "Supplementary Figures and Tables revision_2nd.docx",
+      "role": "figure legends and supplementary table text"
+    },
+    {
+      "file_name": "Supplementary_Data_1.txt",
+      "role": "gene-expression table, not curated for density-history model discrimination"
+    },
+    {
+      "file_name": "Supplementary_Data_2.txt",
+      "role": "gene-expression table, not curated for density-history model discrimination"
+    },
+    {
+      "file_name": "Supplementary_Data_3.txt",
+      "role": "gene-expression table, not curated for density-history model discrimination"
+    },
+    {
+      "file_name": "Supplementary_Data_4.vcf",
+      "role": "variant table, not curated for density-history model discrimination"
+    }
+  ],
+  "curated_tables": [
+    "competition_over_time.csv",
+    "growth_capacity_summary.csv",
+    "phenotype_support.csv",
+    "observational_evidence.csv"
+  ],
+  "unsupported_assumptions": [
+    "Do not treat this external supplement as fully event-linked longitudinal CLONEID data.",
+    "Do not benchmark SNU-668 biology against HeLa r/K biology.",
+    "Do not treat figure-only trajectories as exact numeric time-series without digitization.",
+    "Do not use transcriptomic or genomic endpoint tables as direct longitudinal density phenotype."
+  ]
+}

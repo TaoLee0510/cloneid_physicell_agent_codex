@@ -1,0 +1,43 @@
+{
+  "comparator_id": "nwaa124_curated_external",
+  "display_name": "NSR r/K density-selection curated external comparator",
+  "dataset_role": "observability_identifiability_comparator",
+  "data_root": "data/external/nwaa124_curated",
+  "source_root_preferred": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
+  "source_root_fallbacks": [
+    "data/nwaa124_supplement_file"
+  ],
+  "curation_policy": {
+    "no_ocr": true,
+    "no_image_digitization": true,
+    "use_docx_text_and_tables": true,
+    "store_summary_level_evidence_when_exact_points_absent": true,
+    "compare_inferential_resolution_not_cross_cell_line_truth": true
+  },
+  "required_tables": [
+    "competition_over_time.csv",
+    "growth_capacity_summary.csv",
+    "phenotype_support.csv"
+  ],
+  "optional_tables": [
+    "observational_evidence.csv"
+  ],
+  "provenance_columns": [
+    "source_file",
+    "source_location",
+    "assay_or_context",
+    "selection_regime",
+    "metric",
+    "value",
+    "units",
+    "time_or_passage",
+    "replicate_scope",
+    "confidence",
+    "notes"
+  ],
+  "known_limitations": [
+    "The supplement text gives methods-level and legend-level evidence but does not provide an event-linked ledger comparable to CLONEID.",
+    "Several exact numeric density and seeding values in the methods document appear as equations or embedded objects and are not available as plain text.",
+    "Competition time-series points are figure-level summaries; no OCR or digitization is used in this branch."
+  ]
+}

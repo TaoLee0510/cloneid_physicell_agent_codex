@@ -36,6 +36,29 @@ Questions should not block all work unless they are high-risk. When possible, th
 
 ## Important but not blocking today
 
+## Q006 — Sanctioned SNU-668 application input for manuscript numerical claims
+
+**Priority:** Important  
+**Risk level:** 2  
+**Question:** Should the new `snu668_density_history` one-command workflow consume live read-only CLONEID records directly, or should it consume an approved SNU-668 snapshot artifact for the manuscript-facing run?
+
+**Why it matters:** The dry-run framework is complete, but its internal SNU-668 values are explicitly schema fixtures. Manuscript numerical claims require live CLONEID records or an approved frozen snapshot with provenance.
+
+**Options:**
+1. Use the installed `cloneid` R package to export the required SNU-668 lineage object live in read-only mode.
+2. Provide or approve a frozen SNU-668 snapshot for this application branch.
+3. Keep dry-run/mock mode as the only current supported mode until the extraction target is reviewed.
+
+**Current default assumption:** Keep dry-run/mock mode as the supported path and do not make SNU-668 biological claims from fixture values.
+
+**Blocked work:** Manuscript numerical interpretation of the SNU-668 full-history arm and live/snapshot regression tests.
+
+**Work continuing meanwhile:** Framework hardening, report schema review, external comparator curation checks, and adapter support for future live/snapshot payloads.
+
+**Agent recommendation:** Option 2 if the manuscript branch needs reproducible review artifacts; option 1 if the priority is current database state.
+
+**Status:** Open
+
 ## Q002 — PhysiCell runtime source for the first smoke test
 
 **Priority:** Important  

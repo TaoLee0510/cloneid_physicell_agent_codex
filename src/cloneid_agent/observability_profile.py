@@ -1,4 +1,4 @@
-"""Observability profile across NSR, CLONEID full, and CLONEID downsampled regimes."""
+"""Observability profile across the manuscript-facing r/K regimes."""
 
 from __future__ import annotations
 
@@ -27,9 +27,9 @@ OBSERVABILITY_DIMENSIONS = (
 )
 
 REGIMES = (
-    "NSR_publication_level_reconstructed_record",
-    "CLONEID_full_native_record",
-    "CLONEID_publication_level_downsampled_record",
+    "snu668_full_history",
+    "snu668_published_like_compressed",
+    "nwaa124_curated_external",
 )
 
 
@@ -59,25 +59,7 @@ def build_observability_profile(
 
     rows = [
         {
-            "dataset_regime": "NSR_publication_level_reconstructed_record",
-            "event_linked_history": "not_event_linked",
-            "parent_child_event_graph": "not_available_in_archive",
-            "seed_harvest_transfer_classification": "not_event_linked",
-            "continuous_density_history": "not_agent_ready_without_manual_reconstruction",
-            "image_derived_phenotype": "embedded_plot_or_representative_image",
-            "confluence_proxy": "not_agent_ready_without_manual_reconstruction",
-            "endpoint_perspective_support": "structured_numeric_table" if nsr_has_table5 else "method_text_only",
-            "molecular_assay_event_linkage": "not_event_linked",
-            "exact_time_series_points": "embedded_plot_or_representative_image" if nsr_has_fig_records else "not_available_in_archive",
-            "raw_image_or_segmentation_provenance": "not_available_in_archive",
-            "agent_ready_schedule": "not_agent_ready_without_manual_reconstruction",
-            "physiCell_mapping_possible": "not_agent_ready_without_manual_reconstruction",
-            "missing_data_warnings": "no native event ledger; plot-only mixed trajectories require deterministic digitization",
-            "unsupported_assumptions": "do not infer event-level density history from captions or embedded plots",
-            "low_cost_fields_that_would_rescue_identifiability": "event ledger; seed/harvest counts; transfer ratios; event-linked confluence; image provenance",
-        },
-        {
-            "dataset_regime": "CLONEID_full_native_record",
+            "dataset_regime": "snu668_full_history",
             "event_linked_history": "available",
             "parent_child_event_graph": "available",
             "seed_harvest_transfer_classification": "available",
@@ -97,7 +79,7 @@ def build_observability_profile(
             "low_cost_fields_that_would_rescue_identifiability": "",
         },
         {
-            "dataset_regime": "CLONEID_publication_level_downsampled_record",
+            "dataset_regime": "snu668_published_like_compressed",
             "event_linked_history": "not_event_linked",
             "parent_child_event_graph": "not_available_in_archive",
             "seed_harvest_transfer_classification": "not_event_linked",
@@ -114,6 +96,24 @@ def build_observability_profile(
             "unsupported_assumptions": "cannot test continuous density/confluence terms after event graph removal",
             "low_cost_fields_that_would_rescue_identifiability": "retain event IDs; preserve seed/harvest/transfer rows; keep event-linked confluence and Perspective linkage",
         },
+        {
+            "dataset_regime": "nwaa124_curated_external",
+            "event_linked_history": "not_event_linked",
+            "parent_child_event_graph": "not_available_in_archive",
+            "seed_harvest_transfer_classification": "not_event_linked",
+            "continuous_density_history": "not_agent_ready_without_manual_reconstruction",
+            "image_derived_phenotype": "embedded_plot_or_representative_image",
+            "confluence_proxy": "not_agent_ready_without_manual_reconstruction",
+            "endpoint_perspective_support": "structured_numeric_table" if nsr_has_table5 else "method_text_only",
+            "molecular_assay_event_linkage": "not_event_linked",
+            "exact_time_series_points": "embedded_plot_or_representative_image" if nsr_has_fig_records else "not_available_in_archive",
+            "raw_image_or_segmentation_provenance": "not_available_in_archive",
+            "agent_ready_schedule": "not_agent_ready_without_manual_reconstruction",
+            "physiCell_mapping_possible": "not_agent_ready_without_manual_reconstruction",
+            "missing_data_warnings": "no native event ledger; plot-only mixed trajectories require deterministic digitization",
+            "unsupported_assumptions": "do not infer event-level density history from captions or embedded plots",
+            "low_cost_fields_that_would_rescue_identifiability": "event ledger; seed/harvest counts; transfer ratios; event-linked confluence; image provenance",
+        },
     ]
     for row in rows:
         row["auditability_grade"], row["identifiability_grade"] = _grade(row)
@@ -122,7 +122,7 @@ def build_observability_profile(
         "regimes_compared": list(REGIMES),
         "dimensions": list(OBSERVABILITY_DIMENSIONS),
         "observability_matrix": rows,
-        "interpretation": "CLONEID full native history preserves the low-cost fields needed to audit density-history models; publication-level records support reconstruction but lose agent-ready linkage.",
+        "interpretation": "The full SNU-668 CLONEID history preserves the low-cost fields needed to audit density-history models; the compressed internal view and the external publication-level comparator support reconstruction but lose agent-ready linkage.",
     }
 
 
@@ -148,8 +148,33 @@ def write_observability_profile(output_dir: str | Path, payload: dict[str, Any])
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         writer.writerows(rows)
+    json_path = write_json(output / "observability_profile.json", payload)
+    md_path = write_markdown(output / "observability_profile.md", render_observability_markdown(payload))
+    matrix_json_path = write_json(output / "observability_matrix.json", payload)
+    matrix_csv_path = output / "observability_matrix.csv"
+    matrix_csv_path.write_text(csv_path.read_text())
+    missingness_path = write_markdown(output / "dataset_missingness.md", render_dataset_missingness_markdown(payload))
     return {
-        "json": write_json(output / "observability_profile.json", payload),
+        "json": json_path,
         "csv": csv_path,
-        "md": write_markdown(output / "observability_profile.md", render_observability_markdown(payload)),
+        "md": md_path,
+        "matrix_json": matrix_json_path,
+        "matrix_csv": matrix_csv_path,
+        "dataset_missingness": missingness_path,
     }
+
+
+def render_dataset_missingness_markdown(payload: dict[str, Any]) -> str:
+    lines = [
+        "# Dataset Missingness",
+        "",
+        "Missingness is recorded as observability and identifiability structure, not as a criticism of any comparator.",
+        "",
+    ]
+    for row in payload["observability_matrix"]:
+        lines.append(f"## {row['dataset_regime']}")
+        lines.append(f"- Missing data warnings: {row['missing_data_warnings'] or 'none'}")
+        lines.append(f"- Unsupported assumptions: {row['unsupported_assumptions'] or 'none'}")
+        lines.append(f"- Low-cost rescue fields: {row['low_cost_fields_that_would_rescue_identifiability'] or 'none'}")
+        lines.append("")
+    return "\n".join(lines)

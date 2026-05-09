@@ -7,6 +7,7 @@ import re
 from typing import Any
 
 from .run_io import write_markdown
+from .rk_density_models import INTERNAL_TO_MANUSCRIPT_FAMILY
 
 
 FORBIDDEN_OVERCLAIM_TERMS = (
@@ -20,7 +21,8 @@ FORBIDDEN_OVERCLAIM_TERMS = (
 
 
 def _best_full_family(cloneid_full_fits: dict[str, Any]) -> str:
-    return cloneid_full_fits.get("best_supported_family") or "not selected"
+    selected = cloneid_full_fits.get("best_supported_family")
+    return INTERNAL_TO_MANUSCRIPT_FAMILY.get(selected, selected) if selected else "not selected"
 
 
 def build_model_selection_report(
@@ -35,21 +37,17 @@ def build_model_selection_report(
     comparative_identifiability: dict[str, Any] | None = None,
     config: dict[str, Any] | None = None,
 ) -> str:
-    density_rows = [
-        row
-        for row in comparison_rows
-        if row["family_id"] in {"density_dependent_growth", "density_plus_branch_optional"}
-    ]
-    density_lines = [
-        f"- `{row['family_id']}`: NSR `{row['NSR_publication_level_reconstructed_record_fit_status']}`, "
-        f"CLONEID full `{row['CLONEID_full_native_record_fit_status']}`, "
-        f"CLONEID coarse `{row['CLONEID_publication_level_downsampled_record_fit_status']}`"
-        for row in density_rows
-    ]
+    family_order = {"neutral_growth": 0, "fixed_state_fitness": 1, "density_dependent_growth": 2}
+    regime_order = {
+        "snu668_full_history": 0,
+        "snu668_published_like_compressed": 1,
+        "nwaa124_curated_external": 2,
+    }
     family_lines = []
-    for row in (family_comparison or {}).get("comparison_rows", []):
-        if row["family_id"] not in {"branch_specific_fitness", "density_dependent_growth", "density_plus_branch_optional"}:
-            continue
+    for row in sorted(
+        (family_comparison or {}).get("comparison_rows", []),
+        key=lambda item: (regime_order.get(item["dataset_regime"], 99), family_order.get(item["family_id"], 99)),
+    ):
         if row["selected_under_tested_assumptions"]:
             status = "selected under tested assumptions"
         elif row["rejected_under_tested_assumptions"]:
@@ -79,13 +77,14 @@ def build_model_selection_report(
     low_cost_lines = [f"- {item}" for item in low_cost_fields] or ["- event-linked minimum metadata fields"]
     return "\n".join(
         [
-            "# CLONEID-LTE r/K Benchmark Model Selection Report",
+            "# SNU-668 Density-History Model Selection Report",
             "",
-            "NSR is a strong biological comparator, not a weak dataset.",
-            "The NSR supplement contains publication-level experimental records sufficient for coarse model reconstruction.",
-            "CLONEID improves agent readiness by preserving event linkage, image-derived phenotype, confluence proxies, transfer/bottleneck events, and endpoint Perspective provenance.",
-            "The benchmark asks what becomes identifiable automatically, not whether the original paper was correct.",
-            "CLONEID-LTE is a low-cost standard for making future long-term evolution experiments modelable.",
+            "The primary application is `snu668_full_history`; the main controlled ablation is `snu668_published_like_compressed`; the supporting external comparator is `nwaa124_curated_external`.",
+            "NSR is a strong publication-level biological comparator, not a weak dataset.",
+            "The NSR supplement contains publication-level experimental records sufficient for coarse ecological reconstruction.",
+            "CLONEID improves modelability by preserving event linkage, image-derived phenotype, confluence proxies, transfer/bottleneck events, and endpoint Perspective provenance.",
+            "The application asks what becomes identifiable automatically, not whether the original paper was correct.",
+            "The minimum longitudinal evolution record is a low-cost standard for making future long-term evolution experiments modelable.",
             "",
             "## Central Question",
             "",
@@ -96,19 +95,15 @@ def build_model_selection_report(
             "",
             "## Record-Level Outcome",
             "",
-            "- NSR reconstructed record: supports coarse summaries from Supplementary Table 5, Fig. 9, Fig. 10, and model captions/methods.",
-            "- CLONEID full native record: supports event-aware fitting of proliferation, branch-specific, and density/confluence models.",
-            "- CLONEID publication-level downsampled record: preserves group summaries but loses event graph and density identifiability.",
+            "- `snu668_full_history`: supports event-aware comparison of `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` under mock workflow validation.",
+            "- `snu668_published_like_compressed`: preserves group summaries but loses event graph, transfer/reset semantics, and density-history identifiability.",
+            "- `nwaa124_curated_external`: supports coarse reconstruction from Supplementary Table 5, Fig. 9, Fig. 10, and model captions/methods, while remaining publication-level rather than event-linked.",
             "",
             "## Observability Profile",
             "",
             *observability_lines,
             "",
-            f"History ablation delta from full native record to publication-level downsampled record: `{ablation_delta}`.",
-            "",
-            "## Density Model Identifiability",
-            "",
-            *density_lines,
+            f"History ablation delta from `snu668_full_history` to `snu668_published_like_compressed`: `{ablation_delta}`.",
             "",
             "## Family Comparison",
             "",
@@ -138,10 +133,124 @@ def build_model_selection_report(
             "",
             "## Interpretation",
             "",
-            "The application distinguishes biological support from automatic modelability. Publication-level records support reconstruction and interpretation; event-linked CLONEID records make density/confluence terms directly queryable and auditable as benchmark objects.",
+            "The application distinguishes biological support from automatic modelability. Publication-level records support reconstruction and interpretation; event-linked CLONEID records make density/confluence history directly queryable and auditable for the tested model families.",
             "",
         ]
     )
+
+
+def build_manuscript_facing_summary(
+    *,
+    observability_profile: dict[str, Any] | None,
+    history_ablation: dict[str, Any] | None,
+    family_comparison: dict[str, Any] | None,
+    comparative_identifiability: dict[str, Any] | None,
+    config: dict[str, Any] | None,
+) -> str:
+    observation_lines = [
+        f"- `{row['dataset_regime']}`: auditability `{row['auditability_grade']}`, identifiability `{row['identifiability_grade']}`"
+        for row in (observability_profile or {}).get("observability_matrix", [])
+    ] or ["- Observability matrix was not generated."]
+    family_lines = []
+    for row in (family_comparison or {}).get("comparison_rows", []):
+        if row["dataset_regime"] != "snu668_full_history" and row["family_id"] == "density_dependent_growth":
+            family_lines.append(
+                f"- `{row['dataset_regime']}` / `density_dependent_growth`: {row['fit_status']}; "
+                f"missing `{row['required_inputs_missing'] or 'none'}`"
+            )
+    if not family_lines:
+        family_lines = ["- Density-history loss was not computed."]
+    low_cost = (comparative_identifiability or {}).get("low_cost_fields_that_rescue_identifiability", [])
+    return "\n".join(
+        [
+            "# Manuscript-Facing Summary",
+            "",
+            "## Scientific Question",
+            "",
+            (config or {}).get(
+                "scientific_question",
+                "In long-term r/K density selection, can late growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required?",
+            ),
+            "",
+            "## Datasets / Regimes Compared",
+            "",
+            "- `snu668_full_history`: primary CLONEID event-linked record.",
+            "- `snu668_published_like_compressed`: controlled publication-like compression of the same internal record.",
+            "- `nwaa124_curated_external`: supporting publication-level NSR comparator.",
+            "",
+            "## Compared Model Families",
+            "",
+            "- `neutral_growth`",
+            "- `fixed_state_fitness`",
+            "- `density_dependent_growth`",
+            "",
+            "## What Full CLONEID History Supports",
+            "",
+            "Full history preserves event order, parent-child graph structure, seed/harvest episodes, transfer/reset semantics, event-linked phenotype, confluence proxies, and terminal Perspective support.",
+            "",
+            "## What Compressed CLONEID History Loses",
+            "",
+            f"History ablation delta: `{(history_ablation or {}).get('history_ablation_delta', 'not computed')}`.",
+            *family_lines,
+            "",
+            "## What The External Sparse Dataset Can And Cannot Distinguish",
+            "",
+            "The NSR supplement supports coarse ecological reconstruction and biological interpretation from publication-level records. It does not provide a native event ledger or event-linked confluence history for automatic density-history model fitting without manual reconstruction or deterministic plot digitization.",
+            "",
+            "## Low-Cost Fields That Rescue Identifiability",
+            "",
+            *[f"- {item}" for item in (low_cost or ["event ledger", "event-linked confluence proxy", "terminal Perspective anchor"])],
+            "",
+            "## Non-Claims / Limitations",
+            "",
+            "- No mechanism proof is claimed.",
+            "- HeLa and SNU-668 biology are not treated as biologically equivalent.",
+            "- The NSR paper is not criticized.",
+            "- Plot-only evidence is not treated as raw numeric data.",
+            "- Endpoint Perspective is validation/support only.",
+            "- Identity is inferred secondary support only.",
+            "- Transfer/passaging events are not treated as growth intervals.",
+            "- Mock numerical values require live read-only CLONEID extraction or an approved frozen SNU-668 snapshot before manuscript interpretation.",
+            "",
+            "## Observability Matrix",
+            "",
+            *observation_lines,
+            "",
+        ]
+    )
+
+
+def build_family_discrimination_summary(family_comparison: dict[str, Any] | None) -> str:
+    lines = [
+        "# Family Discrimination Summary",
+        "",
+        "The manuscript-facing comparison asks whether `fixed_state_fitness` can be separated from `density_dependent_growth` only when event-linked history is present.",
+        "",
+    ]
+    by_regime: dict[str, list[dict[str, Any]]] = {}
+    for row in (family_comparison or {}).get("comparison_rows", []):
+        by_regime.setdefault(row["dataset_regime"], []).append(row)
+    for regime in ("snu668_full_history", "snu668_published_like_compressed", "nwaa124_curated_external"):
+        lines.append(f"## {regime}")
+        rows = {row["family_id"]: row for row in by_regime.get(regime, [])}
+        for family_id in ("neutral_growth", "fixed_state_fitness", "density_dependent_growth"):
+            row = rows.get(family_id, {})
+            if not row:
+                lines.append(f"- `{family_id}`: not evaluated.")
+                continue
+            if row.get("selected_under_tested_assumptions"):
+                status = "selected under tested assumptions"
+            elif row.get("rejected_under_tested_assumptions"):
+                status = "rejected under tested assumptions"
+            elif row.get("unresolved_under_available_records"):
+                status = "unresolved under available records"
+            else:
+                status = row.get("fit_status", "not evaluated")
+            lines.append(
+                f"- `{family_id}`: {status}; missing inputs `{row.get('required_inputs_missing') or 'none'}`."
+            )
+        lines.append("")
+    return "\n".join(lines)
 
 
 def build_manuscript_insert() -> str:
@@ -151,9 +260,9 @@ def build_manuscript_insert() -> str:
             "",
             "## Results: Benchmarking CLONEID against publication-level r/K-selection records",
             "",
-            "We benchmarked CLONEID-LTE against the publication-level r/K-selection record from Li et al. NSR 2021. The external supplement provided structured growth-rate samples, growth-model fit statistics, carrying-capacity formulas, mixed-population captions and plots, spatial-model methods, migration evidence, and molecular endpoint records. These records supported coarse ecological reconstruction while retaining clear limits around plot-only evidence and absent event linkage.",
+            "We evaluated the SNU-668 density-history proof-of-principle against a publication-level r/K-selection record from Li et al. NSR 2021. The external supplement provided structured growth-rate samples, growth-model fit statistics, carrying-capacity formulas, mixed-population captions and plots, spatial-model methods, migration evidence, and molecular endpoint records. These records supported coarse ecological reconstruction while retaining clear limits around plot-only evidence and absent event linkage.",
             "",
-            "In the CLONEID native SNU-668 record, seed, harvest, transfer, image-derived phenotype, confluence proxy, and endpoint Perspective records were preserved as linked events. This event graph allowed the same model families to be evaluated with explicit separation of biological growth episodes from passaging resets. Downsampling the native record to publication-level summaries removed the parent-child graph, per-event density, image provenance, and Perspective-event linkage, making density/confluence model families not identifiable from the coarse record.",
+            "In the CLONEID native SNU-668 record, seed, harvest, transfer, image-derived phenotype, confluence proxy, and endpoint Perspective records were preserved as linked events. This event graph allowed neutral growth, fixed-state fitness, and density-dependent growth families to be evaluated with explicit separation of biological growth episodes from passaging resets. Downsampling the native record to publication-level summaries removed the parent-child graph, per-event density, image provenance, and Perspective-event linkage, making density/confluence model families not identifiable from the coarse record.",
             "",
             "## Methods",
             "",
@@ -163,19 +272,19 @@ def build_manuscript_insert() -> str:
             "",
             "CLONEID native modeling used seed-to-harvest growth episodes, transfer/bottleneck schedule events, image-derived occupied area and cell size, confluence proxy, and endpoint Perspective provenance. CLONEID downsampling removed event IDs, parent-child event graph, individual seed/harvest/transfer records, per-event image provenance, per-event confluence, and Perspective-event linkage.",
             "",
-            "The modelability audit assigned controlled record-status labels across NSR reconstructed records, CLONEID full native records, and CLONEID publication-level downsampled records. Model families were evaluated as identifiable, summary-only identifiable, publication-level reconstruction only, or not identifiable due to missing event-level density or event graph.",
+            "The modelability audit assigned controlled record-status labels across `snu668_full_history`, `snu668_published_like_compressed`, and `nwaa124_curated_external`. Model families were evaluated as identifiable, summary-only identifiable, publication-level reconstruction only, or not identifiable due to missing event-level density or event graph.",
             "",
             "## Figure Caption",
             "",
-            "Figure X. CLONEID-LTE r/K benchmark from publication-level records to event-linked model inputs. The external NSR supplement supports coarse reconstruction through structured tables, captions, model formulas, and methods text. CLONEID native records preserve seed-harvest-transfer event linkage, image-derived phenotype, confluence proxy, and endpoint Perspective provenance, enabling density/confluence model families to be evaluated automatically. Downsampling CLONEID to publication-level summaries shows which modeling claims remain identifiable after event linkage is removed.",
+            "Figure X. SNU-668 density-history proof-of-principle. The full CLONEID regime preserves seed-harvest-transfer event linkage, image-derived phenotype, confluence proxy, and endpoint Perspective provenance. The compressed SNU-668 regime removes those links to mimic a publication-like sparse view. The external NSR supplement supports coarse reconstruction through structured tables, captions, model formulas, and methods text, and acts as a supporting observability comparator.",
             "",
             "## Nature Methods Significance",
             "",
-            "This benchmark reframes long-term evolution datasets as agent-ready model inputs. Rather than judging a prior publication, it asks which biological hypotheses become automatically testable when routine passaging, imaging, and endpoint assay records are linked by event identifiers. CLONEID-LTE provides a practical minimum standard for transforming low-cost culture records into auditable schedules for mechanistic modeling.",
+            "This application reframes long-term evolution datasets as agent-ready model inputs. Rather than judging a prior publication, it asks which biological hypotheses become automatically testable when routine passaging, imaging, and endpoint assay records are linked by event identifiers. CLONEID-LTE provides a practical minimum standard for transforming low-cost culture records into auditable schedules for mechanistic modeling.",
             "",
             "## Limitations",
             "",
-            "The NSR reconstruction is limited by publication-level granularity and by plot-only mixed-population trajectories unless deterministic digitization is added. The CLONEID mock run demonstrates the benchmark workflow without live database access; manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot. HeLa biology is not equated with SNU-668 biology, and endpoint Perspective records remain validation/support rather than growth-fitting targets.",
+            "The NSR reconstruction is limited by publication-level granularity and by plot-only mixed-population trajectories unless deterministic digitization is added. The CLONEID mock run demonstrates the workflow without live database access; manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot. HeLa biology is not equated with SNU-668 biology, and endpoint Perspective records remain validation/support rather than growth-fitting targets.",
             "",
         ]
     )
@@ -218,4 +327,18 @@ def write_rk_benchmark_reports(
     return {
         "model_selection_report": write_markdown(output / "model_selection_report.md", report),
         "manuscript_insert": write_markdown(output / "MANUSCRIPT_INSERT.md", manuscript),
+        "manuscript_facing_summary": write_markdown(
+            output / "manuscript_facing_summary.md",
+            build_manuscript_facing_summary(
+                observability_profile=observability_profile,
+                history_ablation=history_ablation,
+                family_comparison=family_comparison,
+                comparative_identifiability=comparative_identifiability,
+                config=config,
+            ),
+        ),
+        "family_discrimination_summary": write_markdown(
+            output / "family_discrimination_summary.md",
+            build_family_discrimination_summary(family_comparison),
+        ),
     }

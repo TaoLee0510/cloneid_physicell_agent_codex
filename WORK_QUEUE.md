@@ -2,250 +2,50 @@
 
 This file is maintained by the agent. It should make unattended progress visible and reviewable.
 
-## Work-loop protocol
-
-For each work block:
-
-1. Re-read coordination files.
-2. Pick the highest-priority unblocked task.
-3. Execute the task.
-4. Run tests or validation if available.
-5. Update `STATUS.md`.
-6. Update `QUESTION_QUEUE.md`.
-7. Re-read `WORK_QUEUE.md`.
-8. Continue to the next unblocked safe task unless the stop checklist says to stop.
-
-
----
-
 ## Ready now
 
-1. Extend the current structural smoke-output parser so it can extract episode-end simulation metadata into a more explicit shared-evaluation placeholder schema without fitting parameters.
-2. Decide whether to keep expanding one-episode smoke coverage or stop at the current `4N` and `2N` branch smoke matrix before moving to richer real-output parsing.
-3. After that, add a first-pass quantitative evaluation harness for real schedule-aware simulation outputs against the shared objective vector, still without parameter fitting.
-
----
-
-## In progress
-
-_None yet._
-
----
-
-## Waiting for user
-
-1. Confirm the completed persistent-install plus minimal PhysiCell smoke-test branch before I proceed to a repository-coupled PhysiCell smoke test or back to the CLONEID extraction branch.
-2. Review the generated SUM159 scaling contract and execution-readiness report before I run or extend any family-specific PhysiCell behavior.
-3. Review the new execution-harness artifacts before I attempt any non-biological PhysiCell syntax/smoke execution for the schedule-aware candidates.
-4. Review the completed one-episode schedule-aware smoke reports before I extend real-output parsing beyond the current structural scaffold.
-
----
-
-## Done
-
-1. Read the required onboarding, workflow, database, runtime, and schema guidance files.
-2. Inspected the repository scaffold, placeholders, and operationally empty folders.
-3. Created `docs/derived/repository_map.md`.
-4. Created `docs/derived/milestone0_plan.md`.
-5. Recorded blocked high-risk branches in `QUESTION_QUEUE.md`.
-6. Completed Milestone 0 repository orientation and safe first-work planning.
-7. Incorporated the user's answer that CLONEID database access should go through the installed `cloneid` R package.
-8. Incorporated the user's answer that first real-data selection should remain score-driven until reviewed.
-9. Inspected the installed `cloneid` R package interface and documented a safe read-only inventory approach in `docs/derived/cloneid_package_interface.md`.
-10. Added package metadata and a deterministic Python CLI skeleton.
-11. Implemented the read-only CLONEID inventory wrapper through `cloneid::connect2DB()` plus explicit `DBI` queries.
-12. Added mock/auto/live inventory modes with graceful fallback on live-access failure.
-13. Added tests for inventory JSON structure, graceful failure, and mock inventory behavior.
-14. Verified the wrapper in mock mode, fallback mode, and live mode.
-15. Drafted `docs/derived/cloneid_schema_map.md` from documented notes plus the observed live table/field surface.
-16. Added strict schema objects for database inventory artifacts in `src/cloneid_agent/schemas.py`.
-17. Added schema validation tests in `tests/test_schemas.py`.
-18. Added generic run-folder creation and artifact-writer utilities in `src/cloneid_agent/run_io.py`.
-19. Added run-I/O tests in `tests/test_run_io.py`.
-20. Added a synthetic CLONEID-like toy fixture and toy round-trip workflow in `src/cloneid_agent/toy_workflow.py`.
-21. Added a `toy-roundtrip` CLI entry point and test coverage for emitted artifacts.
-22. Implemented the documented 0-to-5 dataset-scoring rule in `src/cloneid_agent/dataset_scoring.py`.
-23. Added dataset-scoring tests in `tests/test_dataset_scoring.py`.
-24. Implemented higher-level live/mock/auto candidate-dataset inventory in `scripts/cloneid_candidate_inventory.R` and Python CLI wrappers.
-25. Added ontology-aware candidate ranking and deterministic top-candidate selection.
-26. Added tests for candidate inventory, ranking, and selection behavior.
-27. Verified candidate inventory, ranking, and selection in live and offline paths.
-28. Replaced the coarse candidate ranker with a fine-grained `0-100` ranking model that favors repeated phenotype trajectories over raw molecular row volume.
-29. Added the `fine-rank-candidates` CLI alias and updated `rank-candidates` to use the fine-grained model by default.
-30. Re-ranked the saved live candidate inventory and refreshed the selected-candidate artifact under `runs/live_candidate_ranking_20260426T022200/`.
-31. Added a concrete PhysiCell runtime plan for the pinned `v1.14.2` backend.
-32. Added a local runtime environment check script plus project-owned Docker and Apptainer build definitions for the same pinned backend.
-33. Verified the runtime-check script locally; Homebrew `g++-15` is present, Docker CLI is present but the daemon is not reachable from the current context, and Apptainer/Singularity are not installed.
-34. Downloaded the official PhysiCell `v1.14.2` release tarball into `/tmp` and unpacked it as `/tmp/PhysiCell-1.14.2-src`.
-35. Verified that the default `make` path fails on macOS `clang++` with the expected OpenMP error.
-36. Successfully built PhysiCell `v1.14.2` locally with `PHYSICELL_CPP=/opt/homebrew/bin/g++-15`, producing the `heterogeneity` executable.
-37. Added a reusable local build wrapper in `scripts/build_physicell_local.sh` and documented the successful build check in `docs/derived/physicell_local_build_check.md`.
-38. Promoted the successful PhysiCell build to the persistent location `/Users/4470246/Downloads/PhysiCell-1.14.2`.
-39. Ran the first minimal PhysiCell smoke test from the persistent install with a temporary short-run config and 1 OpenMP thread.
-40. Confirmed smoke-test output artifacts and documented the result in `docs/derived/physicell_smoke_test_check.md`.
-41. Added deterministic TrajectoryBundle discovery scaffolding, mock tests, and a CLI entry point seeded from ranked CandidateSegments.
-42. Updated the workflow plan so CandidateSegment ranking remains stage 1 and selected-TrajectoryBundle bundling becomes the modeling-unit branch.
-43. Added a deterministic TrajectoryBundle ranking stage with auditable component scores and CLI/test coverage.
-44. Added a live TrajectoryBundle discovery pipeline seeded from current ranked CandidateSegments through the approved `cloneid` R interface.
-45. Fixed a live candidate-inventory bug that had been corrupting `NULL` context fields to `0` during merge-time NA filling.
-46. Verified a live top-seed TrajectoryBundle export, ranking, selection, and first-pass observable selection under `runs/live_trajectory_bundles_20260427T000100/`.
-47. Added first-pass CLONEID-to-PhysiCell mapping artifacts from the selected live TrajectoryBundle and selected observables.
-48. Corrected TrajectoryBundle connectivity representation to use explicit lineage edges and segment-to-segment transitions rather than timestamp adjacency.
-49. Reworked TrajectoryBundle discovery to follow cloneidR-style lineage semantics:
-   - `passaged_from_id1` is now the primary traversal backbone
-   - `passaged_from_id2` is recorded as secondary support, not traversed by default
-   - bundle artifacts now include explicit rooted-subtree and lineage-path fields
-   - CandidateSegments are attached as annotations on the lineage graph, not used as graph connectivity
-50. Updated selection and mapping layers to preserve the new lineage-object fields.
-51. Added and passed deterministic tests for primary-lineage traversal, secondary-edge recording, rooted subtree fields, endpoint path recovery, and selected-bundle field preservation.
-52. Added global lineage-object discovery over the full `passaged_from_id1` graph, with explicit `LineagePath`, `RootedTrajectoryBundle`, and `LineageForest` classification.
-53. Added global lineage-object ranking and selection artifacts:
-   - `global_lineage_object_inventory.json`
-   - `ranked_lineage_objects.json`
-   - `selected_lineage_object.json`
-54. Verified live global lineage-object discovery and selection under `runs/live_lineage_objects_20260427T042000/`.
-55. Verified that the live selected lineage object no longer starts from a `CandidateSegment` seed:
-   - selected object type: `RootedTrajectoryBundle`
-   - selected object id: `rooted_trajectory_bundle::SNU-668_0`
-   - root count: `1`
-   - subtree depth: `161`
-56. Confirmed that the earlier short-path / multi-root problem was a discovery-semantics issue, not an edge-semantics issue, and corrected discovery to start from the full primary lineage graph.
-57. Adapted observable selection to consume `selected_lineage_object.json` rather than `selected_trajectory_bundle.json`, while preserving backward compatibility for the older artifact shape.
-58. Adapted the first-pass CLONEID-to-PhysiCell mapping layer to consume selected lineage objects and preserve lineage traversal policy plus primary/secondary context transitions.
-59. Refreshed live downstream artifacts from the globally selected lineage object under `runs/live_lineage_objects_20260427T042000/`:
-   - `selected_observables.json`
-   - `physicell_mapping.json`
-60. Added deterministic repository-owned PhysiCell model-candidate generation from:
-   - `selected_lineage_object.json`
-   - `selected_observables.json`
-   - `physicell_mapping.json`
-61. Added a repository-coupled generated-model smoke-test wrapper that runs the validated local PhysiCell binary against a generated candidate config without mutating the installed PhysiCell tree.
-62. Verified the generated-model smoke path live on:
-   - candidate family: `neutral_growth`
-   - selected lineage object: `rooted_trajectory_bundle::SNU-668_0`
-   - output folder: `runs/live_lineage_objects_20260427T042000/model_candidates/neutral_growth/simulation_output_smoke_20260428T013536Z`
-63. Added first-pass deterministic evaluation artifacts for generated model candidates:
-   - `evaluation.json`
-   - `evaluation.md`
-64. Added a concise lineage-object run report:
-   - `report.md`
-65. Verified the current live evaluation state under `runs/live_lineage_objects_20260427T042000/`:
-   - `neutral_growth`: `smoke_verified`
-   - `fixed_state_fitness`: `generated_only`
-   - `density_dependent_growth`: `generated_only`
-66. Added bounded modeling-candidate lineage-object selection on top of global lineage-object discovery:
-   - `modeling_candidate_lineage_objects.json`
-   - `excluded_lineage_objects.json`
-   - `selected_modeling_lineage_object.json`
-67. Verified that `rooted_trajectory_bundle::SNU-668_0` is excluded from first proof-of-principle modeling with:
-   - `too_many_events`
-   - `excessive_depth`
-   - `excessive_time_span`
-   - `too_many_context_regimes`
-   - `whole_cell_line_supertree`
-68. Updated observable classification so `Passaging.correctedCount` is treated as a derived event-linked phenotype, not a direct observation.
-69. Updated runtime mapping so planned simulation duration is derived from the selected bounded lineage object and validated against a proof-of-principle runtime guardrail.
-70. Verified the current bounded live selection under `runs/live_lineage_objects_20260427T042000/`:
-   - selected bounded object: `rooted_trajectory_bundle::P20100614`
-   - event count: `5`
-   - graph depth: `2`
-   - time span: `116.0` days
-   - terminal Perspective support: `2`
-71. Verified that downstream candidate generation is now blocked when the selected bounded object exceeds the runtime guardrail:
-   - planned max time: `167040` minutes
-   - proof-of-principle threshold: `86400` minutes
-   - result: validation failure until a smaller bounded object is selected or the user explicitly overrides.
-72. Added smoke-eligible modeling-lineage-object filtering as a third selection tier on top of bounded modeling candidates:
-   - `smoke_eligible_modeling_lineage_objects.json`
-   - `selected_smoke_lineage_object.json`
-73. Verified the current live smoke-selection state under `runs/live_lineage_objects_20260427T042000/`:
-   - bounded modeling candidates: `3`
-   - smoke-eligible modeling candidates: `2`
-   - selected broader bounded object: `rooted_trajectory_bundle::P20100614`
-   - selected smoke object: `rooted_trajectory_bundle::2586-4`
-74. Verified that the current selected smoke lineage object is candidate-generation ready:
-   - event count: `4`
-   - graph depth: `2`
-   - phenotype time span: `0.003` days
-   - planned max time: `60` minutes
-   - terminal Perspective support: `2`
-   - selected calibration observable: `Passaging.cellCount`
-75. Refreshed downstream artifacts from `selected_smoke_lineage_object.json` and verified default candidate generation is unblocked on the smoke-selected path.
-76. Added a schedule-aware execution harness with three modes:
-   - `dry_run_static`
-   - `dry_run_mock`
-   - `dry_run_physicell` availability reporting without execution
-77. Generated execution-harness artifacts under `runs/live_lineage_objects_20260427T042000/`:
-   - `execution_harness_plan.json`
-   - `execution_harness_plan.md`
-   - `dry_run_static_report.json`
-   - `dry_run_static_report.md`
-   - `dry_run_mock_outputs/`
-   - `dry_run_mock_evaluation_report.json`
-   - `dry_run_mock_evaluation_report.md`
-78. Verified static dry-run invariants:
-   - malformed XML would fail validation
-   - primary shared objectives and weights are identical across families
-   - `Perspective.size` remains endpoint validation only
-   - `prehistory_context` remains non-executable
-   - transfer events retain zero growth duration
-79. Verified deterministic mock outputs cover all `8` matched growth episodes for all three families and map back into the shared evaluation schema without using `Perspective.size` as a fitting target.
-80. Verified that the local PhysiCell install is present and candidate configs appear syntax-ready, but deliberately did not execute the backend in this work unit.
-81. Corrected the dry-run mock semantics so mock residuals are explicitly schema-validation-only and no longer imply any family ranking; mock predictions are now identical across families.
-82. Fixed schedule-aware candidate generation to preserve backend-required base PhysiCell `user_parameters` while overlaying schedule-aware placeholders, resolving the startup failure from missing `number_of_cells`.
-83. Added a real one-episode schedule-aware smoke harness with:
-   - isolated per-family staging directories
-   - captured command, return code, stdout, and stderr
-   - explicit smoke-test plan and report artifacts
-   - structural output-parser summaries
-84. Added and passed deterministic tests for:
-   - mock family parity
-   - one-episode smoke success with a fake backend
-   - one-episode smoke failure capture
-85. Verified a real single-episode PhysiCell smoke run for `neutral_growth`, branch `SUM159_4N_O2`, episode `O2_A1_seed -> O2_A1_seedT1`.
-86. Verified additional real one-episode smoke runs on the same `SUM159_4N_O2` episode for:
-   - `fixed_state_fitness`
-   - `density_dependent_growth`
-87. Verified matched-branch real one-episode smoke runs for `SUM159_2N_O2`, episode `O2_A1_seed -> O2_A1_seedT1`, across:
-   - `neutral_growth`
-   - `fixed_state_fitness`
-   - `density_dependent_growth`
-88. Verified that all completed one-episode smoke runs produced parseable structural outputs with the expected core files present, while preserving:
-   - `Perspective.size` as endpoint validation only
-   - non-executable `prehistory_context`
-   - zero-duration transfer-event semantics
-
----
-
-## Abandoned / superseded
-
-_None yet._
-
----
-
-## Migration note
-
-Superseded terminology: `selected dataset` / `candidate dataset bundle`.
-
-Current terminology: `CandidateSegment` for local context buckets; `LineagePath` or `RootedTrajectoryBundle` for connected modeling units.
-
----
-
-## update_5.5 next work: CLONEID-LTE r/K benchmark
-
 1. Replace the deterministic mock SNU-668 fixture with live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
-   - Target artifacts to replace: `cloneid_full/subtree_records.json`, `event_graph.json`, `event_schedule.json`, `growth_episode_table.csv`, `spatial_phenotype_table.csv`, `perspective_endpoint_table.csv`, and `history_covariates.csv`.
-   - Preserve the same no-write database policy and Perspective/Identity guardrails.
+   - Required user input: approved data source and exact SNU-668 root/subtree target.
+   - Preserve the same output contract under `cloneid_full/`, `cloneid_downsampled/`, and `modeling/`.
 
 2. Strengthen model fitting after live/snapshot data are available.
    - Add deterministic train/test split or leave-one-episode-out cross-validation.
-   - Keep family comparison output structured as selected/rejected/unresolved under tested assumptions.
-   - Continue reporting required inputs available/missing separately from numeric fit metrics.
+   - Keep reports structured as supported, rejected under tested assumptions, or unresolved under available records.
+   - Keep required inputs available/missing separate from numeric fit metrics.
 
-3. Optional PhysiCell candidate mapping after the modelability benchmark is stable.
-   - Use `modeling/family_comparison.json` and `modeling/comparative_identifiability_report.json` to decide which families deserve executable PhysiCell candidates.
+3. Restore real NSR supplement extraction in an environment where the archive or directory is mounted.
+   - Preferred source: `/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file`
+   - Fallback source: `/mnt/data/nwaa124_supplement_file.zip`
+   - Current runtime only had access to the deterministic minimal fixture.
+
+4. Optional PhysiCell candidate mapping after the modelability benchmark is stable.
+   - Use `modeling/family_comparison.json` and `modeling/comparative_identifiability_report.json` to decide whether executable candidates are warranted.
    - Preserve transfer/passaging events as schedule resets rather than growth intervals.
 
-4. Restore real NSR supplement input in environments where `/mnt/data/nwaa124_supplement_file.zip` is mounted.
-   - The current mock-mode fallback validates extraction mechanics only when the archive is absent.
-   - Manuscript comparator interpretation should use the real NSR supplement archive or directory.
+## In progress
+
+None.
+
+## Waiting for user
+
+1. Decide whether manuscript numerical results should use live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
+2. Provide the exact SNU-668 root ID or subtree target for live extraction.
+3. Provide or remount the real NSR nwaa124 supplement path/archive if the manuscript comparator run should use real files in this environment.
+4. Decide whether the curated NSR CSV fallback should remain as a validation artifact after automatic docx extraction is stable.
+
+## Done in this pass
+
+1. Reframed the repo top level around the SNU-668 density-history proof-of-principle.
+2. Replaced benchmark-oriented public names in config/docs/reports with:
+   - `snu668_full_history`
+   - `snu668_published_like_compressed`
+   - `nwaa124_curated_external`
+3. Foregrounded the manuscript-facing model families:
+   - `neutral_growth`
+   - `fixed_state_fitness`
+   - `density_dependent_growth`
+4. Kept `run-rk-benchmark` working while documenting `python3 -m cloneid_agent run --config ...` as the manuscript command.
+5. Added root-level manuscript artifact aliases and `figure_data/`.
+6. Updated the minimum longitudinal evolution record standard.
+7. Generated `runs/update_5_5/`.
+8. Passed `PYTHONPATH=src:tests python3 -m unittest discover -s tests`.

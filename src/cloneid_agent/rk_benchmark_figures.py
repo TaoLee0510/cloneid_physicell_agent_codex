@@ -86,9 +86,9 @@ def plot_record_granularity(audit_rows: list[dict[str, Any]], path: str | Path) 
     labels = list(STATUS_COLORS)
     label_to_index = {label: idx for idx, label in enumerate(labels)}
     columns = [
-        "NSR_publication_level_reconstructed_record",
-        "CLONEID_full_native_record",
-        "CLONEID_publication_level_downsampled_record",
+        "snu668_full_history",
+        "snu668_published_like_compressed",
+        "nwaa124_curated_external",
     ]
 
     def draw(plt):
@@ -103,7 +103,7 @@ def plot_record_granularity(audit_rows: list[dict[str, Any]], path: str | Path) 
         ax.set_yticks(range(len(audit_rows)))
         ax.set_yticklabels([row["dimension"] for row in audit_rows], fontsize=7)
         ax.set_xticks(range(len(columns)))
-        ax.set_xticklabels(["NSR", "CLONEID full", "CLONEID coarse"], rotation=25, ha="right")
+        ax.set_xticklabels(["SNU-668 full", "SNU-668 compressed", "NSR external"], rotation=25, ha="right")
         ax.set_title("Record granularity and modelability status")
         for spine in ax.spines.values():
             spine.set_visible(False)
@@ -201,7 +201,7 @@ def plot_model_comparison(comparison_rows: list[dict[str, Any]], path: str | Pat
     target = Path(path)
 
     def draw(plt):
-        sources = ["NSR", "CLONEID full", "CLONEID coarse"]
+        sources = ["SNU-668 full", "SNU-668 compressed", "NSR external"]
         status_score = {
             "identifiable": 3,
             "summary_only_identifiable": 2,
@@ -213,9 +213,9 @@ def plot_model_comparison(comparison_rows: list[dict[str, Any]], path: str | Pat
         for row in comparison_rows:
             matrix.append(
                 [
-                    status_score.get(row["NSR_publication_level_reconstructed_record_fit_status"], 0),
-                    status_score.get(row["CLONEID_full_native_record_fit_status"], 0),
-                    status_score.get(row["CLONEID_publication_level_downsampled_record_fit_status"], 0),
+                    status_score.get(row["snu668_full_history_fit_status"], 0),
+                    status_score.get(row["snu668_published_like_compressed_fit_status"], 0),
+                    status_score.get(row["nwaa124_curated_external_fit_status"], 0),
                 ]
             )
         fig, ax = plt.subplots(figsize=(8, 4.6))

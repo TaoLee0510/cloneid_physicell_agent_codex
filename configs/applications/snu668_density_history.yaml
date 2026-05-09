@@ -1,19 +1,23 @@
 {
   "application_id": "snu668_density_history",
-  "display_name": "SNU-668 density-history r/K benchmark",
+  "display_name": "SNU-668 density-history model discrimination proof of principle",
   "cloneid_root_id": "auto",
   "external_zip": "/mnt/data/nwaa124_supplement_file.zip",
-  "scientific_question": "During long-term r/K density selection, can r/K density adaptation be explained by proliferation-rate differences alone, or are density/confluence/spatial interaction terms required? When the data are compressed to a publication-level sparse view, which model families become weaker or unresolved?",
+  "scientific_question": "In long-term r/K density selection, can late growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required? When the same experiment is compressed to a publication-like sparse view, does mechanistic discrimination weaken or remain partially unresolved?",
   "comparison_regimes": [
-    "NSR_publication_level_reconstructed_record",
-    "CLONEID_full_native_record",
-    "CLONEID_publication_level_downsampled_record"
+    "snu668_full_history",
+    "snu668_published_like_compressed",
+    "nwaa124_curated_external"
   ],
   "model_families": [
+    "neutral_growth",
+    "fixed_state_fitness",
+    "density_dependent_growth"
+  ],
+  "extended_internal_families": [
     "context_blind_null",
     "proliferation_only",
     "branch_specific_fitness",
-    "density_dependent_growth",
     "density_plus_branch_optional"
   ],
   "observable_priorities": [
@@ -27,14 +31,18 @@
     "terminal Perspective support summary"
   ],
   "external_comparator": {
-    "comparator_id": "nwaa124_publication_level_reconstructed_record",
+    "comparator_id": "nwaa124_curated_external",
     "source_root_preferred": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
-    "comparison_role": "strong_publication_level_rk_biological_comparator"
+    "source_root_fallbacks": [
+      "data/nwaa124_supplement_file",
+      "/mnt/data/nwaa124_supplement_file.zip"
+    ],
+    "comparison_role": "supporting_observability_identifiability_comparator"
   },
   "history_ablation_settings": {
     "paired_conditions": [
-      "CLONEID_full_native_record",
-      "CLONEID_publication_level_downsampled_record"
+      "snu668_full_history",
+      "snu668_published_like_compressed"
     ],
     "remove_or_collapse": [
       "event IDs",
@@ -42,7 +50,8 @@
       "seed/harvest/transfer structure",
       "per-event confluence",
       "image provenance",
-      "Perspective-to-event linkage"
+      "Perspective-to-event linkage",
+      "cumulative confluence / crowding history"
     ]
   },
   "guardrails": [

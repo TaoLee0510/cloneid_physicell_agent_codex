@@ -27,13 +27,13 @@ class ObservabilityProfileTests(unittest.TestCase):
                 compressed_view=compressed,
             )
             rows = {row["dataset_regime"]: row for row in payload["observability_matrix"]}
-            self.assertEqual(rows["CLONEID_full_native_record"]["auditability_grade"], "A")
-            self.assertEqual(rows["CLONEID_full_native_record"]["continuous_density_history"], "available")
+            self.assertEqual(rows["snu668_full_history"]["auditability_grade"], "A")
+            self.assertEqual(rows["snu668_full_history"]["continuous_density_history"], "available")
             self.assertEqual(
-                rows["CLONEID_publication_level_downsampled_record"]["continuous_density_history"],
+                rows["snu668_published_like_compressed"]["continuous_density_history"],
                 "not_available_in_archive",
             )
-            self.assertEqual(rows["NSR_publication_level_reconstructed_record"]["event_linked_history"], "not_event_linked")
+            self.assertEqual(rows["nwaa124_curated_external"]["event_linked_history"], "not_event_linked")
             self.assertTrue(set(OBSERVABILITY_DIMENSIONS).issubset(set(payload["dimensions"])))
 
     def test_write_observability_profile_outputs_required_files(self) -> None:
@@ -51,6 +51,9 @@ class ObservabilityProfileTests(unittest.TestCase):
             paths = write_observability_profile(tmp / "out", payload)
             self.assertTrue(paths["json"].exists())
             self.assertTrue(paths["csv"].exists())
+            self.assertTrue(paths["matrix_json"].exists())
+            self.assertTrue(paths["matrix_csv"].exists())
+            self.assertTrue(paths["dataset_missingness"].exists())
             self.assertIn("identifiability_grade", paths["csv"].read_text())
 
 

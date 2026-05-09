@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from .rk_density_models import MODEL_FAMILIES, NOT_IDENTIFIABLE_DENSITY
+from .rk_density_models import MANUSCRIPT_MODEL_FAMILIES, NOT_IDENTIFIABLE_DENSITY, project_fits_to_manuscript_families
 from .run_io import write_json, write_markdown
 
 
@@ -25,14 +25,12 @@ def build_history_ablation(
     compressed_score = 1 if compressed_view.get("terminal_perspective_summary", {}).get("perspective_record_count") else 0
     delta = full_score - compressed_score
 
-    full_by_family = {
-        row["family_id"]: row for row in (cloneid_full_fits or {}).get("models", [])
-    }
-    coarse_by_family = {
-        row["family_id"]: row for row in (cloneid_coarse_fits or {}).get("models", [])
-    }
+    full_projected = project_fits_to_manuscript_families(cloneid_full_fits or {"models": []})
+    coarse_projected = project_fits_to_manuscript_families(cloneid_coarse_fits or {"models": []})
+    full_by_family = {row["family_id"]: row for row in full_projected.get("models", [])}
+    coarse_by_family = {row["family_id"]: row for row in coarse_projected.get("models", [])}
     model_family_effects = []
-    for family in MODEL_FAMILIES:
+    for family in MANUSCRIPT_MODEL_FAMILIES:
         full_fit = full_by_family.get(family, {})
         coarse_fit = coarse_by_family.get(family, {})
         model_family_effects.append(
@@ -46,12 +44,12 @@ def build_history_ablation(
 
     return {
         "ablation_schema_version": "cloneid_lte_history_ablation_v2",
-        "source_regime": "CLONEID_full_native_record",
-        "ablated_regime": "CLONEID_publication_level_downsampled_record",
+        "source_regime": "snu668_full_history",
+        "ablated_regime": "snu668_published_like_compressed",
         "paired_conditions": [
             {
-                "condition_id": "full_native_record",
-                "dataset_regime": "CLONEID_full_native_record",
+                "condition_id": "snu668_full_history",
+                "dataset_regime": "snu668_full_history",
                 "retained_inputs": [
                     "event_id",
                     "parent_event_id",
@@ -67,8 +65,8 @@ def build_history_ablation(
                 "history_signal_score": full_score,
             },
             {
-                "condition_id": "publication_level_downsampled_record",
-                "dataset_regime": "CLONEID_publication_level_downsampled_record",
+                "condition_id": "snu668_published_like_compressed",
+                "dataset_regime": "snu668_published_like_compressed",
                 "retained_inputs": compressed_view.get("retained_information", []),
                 "removed_inputs": compressed_view.get("removed_or_collapsed_information", []),
                 "history_signal_score": compressed_score,
@@ -95,7 +93,7 @@ def build_history_ablation(
 def _effect_of_downsampling(family_id: str, coarse_status: str | None) -> str:
     if coarse_status == NOT_IDENTIFIABLE_DENSITY:
         return "not identifiable from coarse records because event-level density/history was removed"
-    if family_id in {"context_blind_null", "proliferation_only", "branch_specific_fitness"}:
+    if family_id in {"neutral_growth", "fixed_state_fitness"}:
         return "reduced to summary-identifiable coarse growth comparison"
     return "unresolved under available records"
 

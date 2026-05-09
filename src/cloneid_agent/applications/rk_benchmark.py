@@ -51,6 +51,7 @@ RK_BENCHMARK_SUBDIRS = (
     "modeling",
     "standards",
     "figures",
+    "figure_data",
 )
 
 
@@ -149,6 +150,61 @@ def _write_modeling_artifacts(
     }
 
 
+def _copy_text_file(source: Path, target: Path) -> Path:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(source.read_text())
+    return target
+
+
+def _write_paper_facing_aliases(
+    output_dir: Path,
+    *,
+    subdirs: dict[str, Path],
+    paths: dict[str, Any],
+) -> dict[str, Path]:
+    """Write root-level aliases for the manuscript-facing artifact contract."""
+
+    aliases: dict[str, Path] = {}
+    root_aliases = {
+        "observability_matrix_json": (subdirs["modeling"] / "observability_matrix.json", output_dir / "observability_matrix.json"),
+        "observability_matrix_csv": (subdirs["modeling"] / "observability_matrix.csv", output_dir / "observability_matrix.csv"),
+        "dataset_missingness_md": (subdirs["modeling"] / "dataset_missingness.md", output_dir / "dataset_missingness.md"),
+        "family_comparison_json": (subdirs["modeling"] / "family_comparison.json", output_dir / "family_comparison.json"),
+        "family_comparison_csv": (subdirs["modeling"] / "family_comparison.csv", output_dir / "family_comparison.csv"),
+        "comparative_identifiability_report_md": (
+            subdirs["modeling"] / "comparative_identifiability_report.md",
+            output_dir / "comparative_identifiability_report.md",
+        ),
+        "rejection_report_md": (subdirs["modeling"] / "rejection_report.md", output_dir / "rejection_report.md"),
+        "history_covariates_json": (subdirs["cloneid_full"] / "history_covariates.json", output_dir / "history_covariates.json"),
+        "history_covariates_md": (subdirs["cloneid_full"] / "history_covariates.md", output_dir / "history_covariates.md"),
+        "history_ablation_json": (subdirs["cloneid_downsampled"] / "history_ablation.json", output_dir / "history_ablation.json"),
+        "history_ablation_md": (subdirs["cloneid_downsampled"] / "history_ablation.md", output_dir / "history_ablation.md"),
+        "minimum_longitudinal_evolution_record": (
+            Path(__file__).resolve().parents[3] / "docs/standards/minimum_longitudinal_evolution_record.md",
+            output_dir / "minimum_longitudinal_evolution_record.md",
+        ),
+    }
+    for key, (source, target) in root_aliases.items():
+        if source.exists():
+            aliases[key] = _copy_text_file(source, target)
+
+    figure_data_sources = {
+        "observability_matrix_csv": subdirs["modeling"] / "observability_matrix.csv",
+        "family_comparison_csv": subdirs["modeling"] / "family_comparison.csv",
+        "model_comparison_publication_vs_cloneid_csv": subdirs["modeling"] / "model_comparison_publication_vs_cloneid.csv",
+        "history_covariates_csv": subdirs["cloneid_full"] / "history_covariates.csv",
+        "coarse_growth_summary_csv": subdirs["cloneid_downsampled"] / "coarse_growth_summary.csv",
+        "history_ablation_json": subdirs["cloneid_downsampled"] / "history_ablation.json",
+    }
+    for key, source in figure_data_sources.items():
+        if source.exists():
+            target = subdirs["figure_data"] / source.name
+            aliases[f"figure_data_{key}"] = _copy_text_file(source, target)
+    aliases.update({key: value for key, value in paths.items() if isinstance(value, Path)})
+    return aliases
+
+
 def run_rk_benchmark(
     *,
     external_zip: str | None,
@@ -189,7 +245,7 @@ def run_rk_benchmark(
     if mode in {"auto", "live"}:
         live_status = "live_access_not_configured_fell_back_to_deterministic_mock"
     full_record = build_mock_cloneid_full_record(cloneid_root_id)
-    full_record["dataset_regime"] = "CLONEID_full_native_record"
+    full_record["dataset_regime"] = "snu668_full_history"
     full_record["dataset_id"] = "snu668_rk_density_history_mock_fixture"
     full_record["data_status"] = "deterministic_mock_schema_fixture_not_observed_cloneid_data"
     full_record["requested_mode"] = mode
@@ -261,6 +317,9 @@ def run_rk_benchmark(
         {
             "observability_profile_json": observability_paths["json"],
             "observability_profile_csv": observability_paths["csv"],
+            "observability_matrix_json": observability_paths["matrix_json"],
+            "observability_matrix_csv": observability_paths["matrix_csv"],
+            "dataset_missingness_md": observability_paths["dataset_missingness"],
             "history_ablation_json": history_ablation_modeling_paths["json"],
             "history_ablation_md": history_ablation_modeling_paths["md"],
             "family_comparison_json": family_comparison_paths["json"],
@@ -298,11 +357,31 @@ def run_rk_benchmark(
         config=config,
     )
 
+    paper_alias_paths = _write_paper_facing_aliases(
+        output_dir,
+        subdirs=subdirs,
+        paths={
+            "model_selection_report": reports["model_selection_report"],
+            "manuscript_facing_summary": reports["manuscript_facing_summary"],
+            "family_discrimination_summary": reports["family_discrimination_summary"],
+        },
+    )
+
     manifest = {
-        "application": "CLONEID-LTE r/K benchmark",
-        "scientific_objective": "from publication-level r/K records to event-linked, agent-ready model inputs",
-        "central_question": "Can r/K density adaptation be explained by proliferation-rate differences alone, or does it require density/confluence/spatial interaction terms?",
+        "application": "SNU-668 density-history proof-of-principle",
+        "scientific_objective": "event-linked density-history model discrimination with publication-level observability comparators",
+        "central_question": "In long-term r/K density selection, can late growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required?",
         "external_comparator": "Li et al. National Science Review 2021 nwaa124",
+        "comparison_regimes": [
+            "snu668_full_history",
+            "snu668_published_like_compressed",
+            "nwaa124_curated_external",
+        ],
+        "manuscript_model_families": [
+            "neutral_growth",
+            "fixed_state_fitness",
+            "density_dependent_growth",
+        ],
         "mode": mode,
         "live_access_status": live_status,
         "fit": fit,
@@ -318,6 +397,7 @@ def run_rk_benchmark(
         "standards_paths": {key: str(path) for key, path in standards_paths.items()},
         "figure_paths": {key: str(path) for key, path in figure_paths.items()},
         "report_paths": {key: str(path) for key, path in reports.items()},
+        "paper_facing_alias_paths": {key: str(path) for key, path in paper_alias_paths.items()},
         "overclaim_guardrails": [
             "NSR is treated as a strong biological comparator.",
             "Plot-only evidence is not fitted as raw data.",

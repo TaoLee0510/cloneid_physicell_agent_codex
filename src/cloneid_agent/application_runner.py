@@ -1,4 +1,4 @@
-"""Compatibility runner that delegates config-driven runs to the r/K benchmark."""
+"""Config-driven runner for the manuscript-facing SNU-668 density-history workflow."""
 
 from __future__ import annotations
 
@@ -30,7 +30,7 @@ def run_application(
     fit: bool = True,
     make_figures: bool = True,
 ) -> dict[str, Any]:
-    """Run the flagship CLONEID-LTE r/K benchmark from a config file."""
+    """Run the flagship SNU-668 density-history application from a config file."""
 
     config = load_application_config(config_path)
     resolved_external = external_zip or config.get("external_zip") or config.get("external_comparator", {}).get(
@@ -49,5 +49,5 @@ def run_application(
         "output_dir": str(output_dir),
         "mode": mode,
         "config_path": str(config_path),
-        "application": "run-rk-benchmark",
+        "application": "snu668_density_history",
     }

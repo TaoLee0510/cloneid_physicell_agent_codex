@@ -6,7 +6,7 @@ This compact standard defines the low-cost record needed for auditable mechanist
 
 - `event_id`
 - `parent_event_id`
-- `date_time`
+- `timestamp`
 - `event_type`
 
 The event ledger should make seeding, harvest, transfer, bottleneck, and endpoint events traversable without relying on figure legends or prose reconstruction.
@@ -44,7 +44,17 @@ Derived values should not be treated as raw observations without processing cont
 
 ## Terminal Perspective Anchor
 
-Terminal assay-specific Perspective records should point back to an upstream event. Perspective is endpoint or assay-specific validation/support, not longitudinal growth phenotype.
+Terminal assay-specific Perspective records should point back to an upstream Event:
+
+- assay event id
+- upstream culture event id
+- assay type
+- sample source
+- Perspective id or equivalent assay-specific identifier
+- raw data pointer or feature-matrix pointer
+- QC flag
+
+Perspective is endpoint or assay-specific validation/support, not longitudinal growth phenotype.
 
 ## Provenance
 
@@ -52,8 +62,10 @@ Every derived field should preserve:
 
 - source image or source record
 - processing script or software version
+- segmentation settings
 - QC filters and exclusions
 - date of processing
 - operator or pipeline identifier when available
+- derivation notes
 
 This minimal structure is enough to make mechanistic model comparison auditable without requiring exhaustive omics at every passage.

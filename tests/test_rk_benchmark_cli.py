@@ -44,6 +44,9 @@ class RkBenchmarkCliTests(unittest.TestCase):
                 "modeling/model_comparison_publication_vs_cloneid.csv",
                 "modeling/observability_profile.json",
                 "modeling/observability_profile.csv",
+                "modeling/observability_matrix.json",
+                "modeling/observability_matrix.csv",
+                "modeling/dataset_missingness.md",
                 "modeling/family_comparison.json",
                 "modeling/family_comparison.csv",
                 "modeling/rejection_report.md",
@@ -52,6 +55,13 @@ class RkBenchmarkCliTests(unittest.TestCase):
                 "standards/CLONEID_LTE_minimum_standard.md",
                 "figures/model_comparison_publication_vs_cloneid.png",
                 "model_selection_report.md",
+                "manuscript_facing_summary.md",
+                "family_discrimination_summary.md",
+                "observability_matrix.csv",
+                "family_comparison.csv",
+                "dataset_missingness.md",
+                "minimum_longitudinal_evolution_record.md",
+                "figure_data/family_comparison.csv",
                 "MANUSCRIPT_INSERT.md",
             ]
             for rel in required:
@@ -76,7 +86,7 @@ class RkBenchmarkCliTests(unittest.TestCase):
                 ]
             )
             report = (output / "model_selection_report.md").read_text()
-            self.assertIn("NSR is a strong biological comparator, not a weak dataset.", report)
+            self.assertIn("NSR is a strong publication-level biological comparator, not a weak dataset.", report)
             self.assertIn("not whether the original paper was correct", report)
             self.assertIn("Manuscript numerical interpretation requires live read-only CLONEID extraction", report)
             self.assertIn("HeLa biology is not equated with SNU-668 biology", report)

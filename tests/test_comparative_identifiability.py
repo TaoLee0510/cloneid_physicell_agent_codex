@@ -47,11 +47,11 @@ class ComparativeIdentifiabilityTests(unittest.TestCase):
             summaries = {item["dataset_regime"]: item for item in identifiability["summaries"]}
             self.assertIn(
                 "partially unresolved",
-                summaries["CLONEID_publication_level_downsampled_record"]["resolution_statement"],
+                summaries["snu668_published_like_compressed"]["resolution_statement"],
             )
             self.assertIn(
                 "unresolved",
-                summaries["NSR_publication_level_reconstructed_record"]["resolution_statement"],
+                summaries["nwaa124_curated_external"]["resolution_statement"],
             )
             self.assertIn(
                 "event_id and parent_event_id ledger",

@@ -1,7 +1,7 @@
 {
-  "comparator_id": "nwaa124_publication_level_reconstructed_record",
+  "comparator_id": "nwaa124_curated_external",
   "display_name": "Li et al. NSR 2021 nwaa124 r/K-selection publication-level comparator",
-  "dataset_role": "strong_publication_level_biological_comparator",
+  "dataset_role": "supporting_observability_identifiability_comparator",
   "source_root_preferred": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
   "source_root_fallbacks": [
     "data/nwaa124_supplement_file",
@@ -26,6 +26,7 @@
   "known_limitations": [
     "The supplement is not a native CLONEID-style event ledger.",
     "Mixed-population plot curves require deterministic digitization before numeric trajectory fitting.",
-    "Continuous event-linked density history cannot be inferred silently from captions or plots."
+    "Continuous event-linked density history cannot be inferred silently from captions or plots.",
+    "The comparator is not a biological head-to-head with SNU-668."
   ]
 }

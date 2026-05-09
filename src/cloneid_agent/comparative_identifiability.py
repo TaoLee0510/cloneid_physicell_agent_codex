@@ -38,9 +38,9 @@ def build_comparative_identifiability(
         selected = [row["family_id"] for row in rows if row.get("selected_under_tested_assumptions")]
         rejected = [row["family_id"] for row in rows if row.get("rejected_under_tested_assumptions")]
         unresolved = [row["family_id"] for row in rows if row.get("unresolved_under_available_records")]
-        if regime == "CLONEID_full_native_record":
-            resolution = "density/confluence and branch-specific alternatives are auditable under event-linked mock records"
-        elif regime == "CLONEID_publication_level_downsampled_record":
+        if regime == "snu668_full_history":
+            resolution = "fixed-state fitness and density/confluence alternatives are auditable under event-linked mock records"
+        elif regime == "snu668_published_like_compressed":
             resolution = "comparison becomes partially unresolved after event graph and density-history removal"
         else:
             resolution = "publication-level records support coarse reconstruction but leave event-aware density-history identifiability unresolved"

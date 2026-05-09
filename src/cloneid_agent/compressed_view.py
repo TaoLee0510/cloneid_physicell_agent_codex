@@ -53,8 +53,8 @@ def build_published_like_compressed_view(
         "transfer-event reset and bottleneck semantics as explanatory inputs",
     ]
     return {
-        "dataset_regime": "CLONEID_publication_level_downsampled_record",
-        "source_dataset_regime": "CLONEID_full_native_record",
+        "dataset_regime": "snu668_published_like_compressed",
+        "source_dataset_regime": "snu668_full_history",
         "compression_schema_version": "cloneid_publication_like_compressed_v2",
         "data_status": full_record.get("data_status", "deterministic_mock_schema_fixture_not_observed_cloneid_data"),
         "compressed_rows": compressed_rows,

@@ -14,9 +14,9 @@ class RkModelabilityAuditTests(unittest.TestCase):
         self.assertEqual([row["dimension"] for row in rows], list(AUDIT_DIMENSIONS))
         allowed = set(RECORD_STATUS_LABELS)
         status_columns = [
-            "NSR_publication_level_reconstructed_record",
-            "CLONEID_full_native_record",
-            "CLONEID_publication_level_downsampled_record",
+            "snu668_full_history",
+            "snu668_published_like_compressed",
+            "nwaa124_curated_external",
         ]
         for row in rows:
             for column in status_columns:

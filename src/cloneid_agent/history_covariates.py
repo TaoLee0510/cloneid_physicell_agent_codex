@@ -15,7 +15,7 @@ def build_dry_run_snu668_fixture() -> dict[str, Any]:
     """Return the deterministic 5.5 SNU-668 fixture with explicit mock status."""
 
     fixture = build_mock_cloneid_full_record("auto")
-    fixture["dataset_regime"] = "CLONEID_full_native_record"
+    fixture["dataset_regime"] = "snu668_full_history"
     fixture["dataset_id"] = "snu668_rk_density_history_mock_fixture"
     fixture["data_status"] = "deterministic_mock_schema_fixture_not_observed_cloneid_data"
     return fixture
@@ -116,7 +116,7 @@ def build_history_covariates(dataset: dict[str, Any]) -> dict[str, Any]:
             cumulative_count += count_relative
 
     return {
-        "dataset_regime": dataset.get("dataset_regime", "CLONEID_full_native_record"),
+        "dataset_regime": dataset.get("dataset_regime", "snu668_full_history"),
         "dataset_id": dataset.get("dataset_id", dataset.get("root_id")),
         "data_status": dataset.get("data_status", "deterministic_mock_schema_fixture_not_observed_cloneid_data"),
         "covariate_schema_version": "cloneid_lte_history_covariates_v2",

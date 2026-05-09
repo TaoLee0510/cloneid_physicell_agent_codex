@@ -17,6 +17,26 @@ MODEL_FAMILIES = (
     "density_plus_branch_optional",
 )
 
+MANUSCRIPT_MODEL_FAMILIES = (
+    "neutral_growth",
+    "fixed_state_fitness",
+    "density_dependent_growth",
+)
+
+MANUSCRIPT_TO_INTERNAL_FAMILY = {
+    "neutral_growth": "context_blind_null",
+    "fixed_state_fitness": "branch_specific_fitness",
+    "density_dependent_growth": "density_dependent_growth",
+}
+
+INTERNAL_TO_MANUSCRIPT_FAMILY = {
+    "context_blind_null": "neutral_growth",
+    "proliferation_only": "neutral_growth",
+    "branch_specific_fitness": "fixed_state_fitness",
+    "density_dependent_growth": "density_dependent_growth",
+    "density_plus_branch_optional": "density_dependent_growth",
+}
+
 NOT_IDENTIFIABLE_DENSITY = "not_identifiable_due_to_missing_event_level_density_or_event_graph"
 
 
@@ -269,40 +289,78 @@ def fit_nsr_reconstructed_models(publication_record: dict[str, Any]) -> dict[str
     }
 
 
+def project_fits_to_manuscript_families(fits: dict[str, Any]) -> dict[str, Any]:
+    """Map extended benchmark fit families onto the three paper-facing families."""
+
+    by_internal = {row["family_id"]: row for row in fits.get("models", [])}
+    models: list[dict[str, Any]] = []
+    for family_id in MANUSCRIPT_MODEL_FAMILIES:
+        internal_id = MANUSCRIPT_TO_INTERNAL_FAMILY[family_id]
+        source = dict(by_internal.get(internal_id, {"family_id": internal_id, "fit_status": "not_available_in_archive"}))
+        source["source_internal_family_id"] = source.get("family_id", internal_id)
+        source["family_id"] = family_id
+        if family_id == "density_dependent_growth" and "density_plus_branch_optional" in by_internal:
+            optional = by_internal["density_plus_branch_optional"]
+            if optional.get("fit_status") == "identifiable" and optional.get("aic", float("inf")) < source.get("aic", float("inf")):
+                source["source_internal_family_id"] = "density_plus_branch_optional"
+                source["aic"] = optional.get("aic", source.get("aic"))
+                source["rmse"] = optional.get("rmse", source.get("rmse"))
+                source["fit_status"] = optional.get("fit_status", source.get("fit_status"))
+                source["reason"] = (
+                    "best extended internal density model included an optional branch term; "
+                    "manuscript-facing interpretation remains density-dependent growth"
+                )
+        models.append(source)
+    best_internal = fits.get("best_supported_family")
+    best_manuscript = INTERNAL_TO_MANUSCRIPT_FAMILY.get(best_internal) if best_internal else None
+    payload = dict(fits)
+    payload["models"] = models
+    payload["best_supported_family"] = best_manuscript
+    payload["source_best_supported_family"] = best_internal
+    payload["family_projection"] = "extended benchmark families mapped to neutral_growth, fixed_state_fitness, and density_dependent_growth"
+    return payload
+
+
 def build_model_family_specification() -> dict[str, Any]:
     return {
-        "benchmark": "CLONEID-LTE r/K benchmark",
-        "central_question": "Can r/K density adaptation be explained by proliferation-rate differences alone, or does it require density/confluence/spatial interaction terms?",
+        "benchmark": "SNU-668 density-history proof-of-principle",
+        "central_question": "Can late growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required?",
         "families": [
             {
-                "family_id": "context_blind_null",
-                "meaning": "One shared coarse growth behavior, no branch or density terms.",
+                "family_id": "neutral_growth",
+                "meaning": "No lineage/regime advantage, no density feedback, and no cumulative history dependence.",
                 "requires_event_linkage": False,
                 "requires_density_proxy": False,
             },
             {
-                "family_id": "proliferation_only",
-                "meaning": "Shared proliferation-rate model without density or branch terms.",
-                "requires_event_linkage": True,
-                "requires_density_proxy": False,
-            },
-            {
-                "family_id": "branch_specific_fitness",
-                "meaning": "r and K branches may have distinct proliferation-rate parameters.",
+                "family_id": "fixed_state_fitness",
+                "meaning": "A constant branch/regime-specific growth advantage is allowed without continuous crowding-memory terms.",
                 "requires_event_linkage": True,
                 "requires_density_proxy": False,
             },
             {
                 "family_id": "density_dependent_growth",
-                "meaning": "Growth rate changes with confluence/density proxy.",
+                "meaning": "Growth rate depends on event-linked confluence/density proxy and transfer/reset semantics.",
                 "requires_event_linkage": True,
                 "requires_density_proxy": True,
             },
+        ],
+        "extended_internal_families": [
+            {
+                "family_id": "context_blind_null",
+                "manuscript_family": "neutral_growth",
+            },
+            {
+                "family_id": "proliferation_only",
+                "manuscript_family": "neutral_growth",
+            },
+            {
+                "family_id": "branch_specific_fitness",
+                "manuscript_family": "fixed_state_fitness",
+            },
             {
                 "family_id": "density_plus_branch_optional",
-                "meaning": "Density response with optional branch-specific term.",
-                "requires_event_linkage": True,
-                "requires_density_proxy": True,
+                "manuscript_family": "density_dependent_growth",
             },
         ],
         "non_growth_event_rule": "Transfer/passaging events are schedule resets, not biological growth episodes.",
@@ -350,9 +408,9 @@ def build_model_comparison_rows(
     cloneid_coarse_fits: dict[str, Any],
 ) -> list[dict[str, Any]]:
     by_source = {
-        "NSR_publication_level_reconstructed_record": nsr_fits["models"],
-        "CLONEID_full_native_record": cloneid_full_fits["models"],
-        "CLONEID_publication_level_downsampled_record": cloneid_coarse_fits["models"],
+        "snu668_full_history": cloneid_full_fits["models"],
+        "snu668_published_like_compressed": cloneid_coarse_fits["models"],
+        "nwaa124_curated_external": nsr_fits["models"],
     }
     rows: list[dict[str, Any]] = []
     for family in MODEL_FAMILIES:
@@ -377,7 +435,7 @@ def _interpret_fit_status(source: str, family: str, fit_status: str) -> str:
         return "supports coarse reconstruction; unresolved under available publication-level records"
     if fit_status == NOT_IDENTIFIABLE_DENSITY:
         return "not identifiable from coarse records because event-level density or event graph is missing"
-    if source == "NSR_publication_level_reconstructed_record":
+    if source == "nwaa124_curated_external":
         return "not available in publication-level archive"
     return "unresolved under available records"
 

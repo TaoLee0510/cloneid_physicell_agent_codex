@@ -1,4 +1,4 @@
-"""Modelability audit tables for the CLONEID-LTE r/K benchmark."""
+"""Modelability audit tables for the SNU-668 density-history application."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ def _validate_status(status: str) -> str:
 
 
 def build_modelability_audit_rows() -> list[dict[str, Any]]:
-    """Compare NSR publication-level, CLONEID full, and downsampled records."""
+    """Compare full SNU-668, compressed SNU-668, and NSR publication-level records."""
 
     status_by_dimension = {
         "branch_label": (
@@ -144,9 +144,9 @@ def build_modelability_audit_rows() -> list[dict[str, Any]]:
         rows.append(
             {
                 "dimension": dimension,
-                "NSR_publication_level_reconstructed_record": _validate_status(nsr),
-                "CLONEID_full_native_record": _validate_status(full),
-                "CLONEID_publication_level_downsampled_record": _validate_status(coarse),
+                "snu668_full_history": _validate_status(full),
+                "snu668_published_like_compressed": _validate_status(coarse),
+                "nwaa124_curated_external": _validate_status(nsr),
                 "audit_note": _audit_note_for_dimension(dimension),
             }
         )
@@ -170,9 +170,9 @@ def write_modelability_audit_csv(path: str | Path, rows: list[dict[str, Any]] | 
     payload = rows or build_modelability_audit_rows()
     fieldnames = [
         "dimension",
-        "NSR_publication_level_reconstructed_record",
-        "CLONEID_full_native_record",
-        "CLONEID_publication_level_downsampled_record",
+        "snu668_full_history",
+        "snu668_published_like_compressed",
+        "nwaa124_curated_external",
         "audit_note",
     ]
     with target.open("w", newline="") as handle:

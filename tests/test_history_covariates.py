@@ -15,7 +15,7 @@ class HistoryCovariatesTests(unittest.TestCase):
     def test_build_history_covariates_preserves_event_history_and_transfer_resets(self) -> None:
         dataset = build_dry_run_snu668_fixture()
         payload = build_history_covariates(dataset)
-        self.assertEqual(payload["dataset_regime"], "CLONEID_full_native_record")
+        self.assertEqual(payload["dataset_regime"], "snu668_full_history")
         self.assertGreaterEqual(payload["summary"]["event_count"], 8)
         self.assertGreaterEqual(payload["summary"]["transfer_reset_count"], 2)
         self.assertTrue(payload["summary"]["has_cumulative_density_history_proxy"])

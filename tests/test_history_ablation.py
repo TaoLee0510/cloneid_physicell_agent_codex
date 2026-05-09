@@ -23,7 +23,7 @@ class HistoryAblationTests(unittest.TestCase):
         )
         self.assertEqual(
             [item["condition_id"] for item in ablation["paired_conditions"]],
-            ["full_native_record", "publication_level_downsampled_record"],
+            ["snu668_full_history", "snu668_published_like_compressed"],
         )
         historyless = ablation["paired_conditions"][1]
         self.assertIn("per-event confluence", historyless["removed_inputs"])

@@ -11,7 +11,7 @@ class ExternalCuratedAdapterTests(unittest.TestCase):
     def test_missing_curated_root_returns_publication_level_stub(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             dataset = load_external_curated_dataset(Path(tmpdir) / "absent")
-            self.assertEqual(dataset["dataset_regime"], "NSR_publication_level_reconstructed_record")
+            self.assertEqual(dataset["dataset_regime"], "nwaa124_curated_external")
             self.assertFalse(dataset["observability_flags"]["event_linked_history"])
             self.assertIn(
                 "no CLONEID-style event_id / parent_event_id ledger",

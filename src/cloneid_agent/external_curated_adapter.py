@@ -74,7 +74,7 @@ def load_external_curated_dataset(root: str | Path) -> dict[str, Any]:
 
 def publication_level_external_stub(source_root: str | Path | None = None) -> dict[str, Any]:
     return {
-        "dataset_regime": "NSR_publication_level_reconstructed_record",
+        "dataset_regime": "nwaa124_curated_external",
         "dataset_type": "publication_level_external_comparator",
         "source_root": str(source_root) if source_root else "",
         "records": [],

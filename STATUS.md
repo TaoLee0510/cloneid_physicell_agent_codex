@@ -6,13 +6,21 @@ This file is maintained by the agent. It records the current reviewable state of
 
 - Current branch: `update_5.5`
 - Last committed baseline before this pass: `cc9569e`
-- Current work unit: connect `run-rk-benchmark --mode live` to read-only CLONEID extraction for the approved SNU-668 A9 r/K roots.
+- Current work unit: add question-specific required-data reporting for CLONEID-LTEE positioning.
 - Current work state: completed and tested.
 - Approved roots:
   - `SNU-668_r2_A9_seed` for r cells
   - `SNU-668_K3_A9_seed` for K cells
 
 ## What changed in this pass
+
+- Added `required_data_by_question.md` to the benchmark report outputs.
+- Added question-specific required-data sections to `model_selection_report.md` and `manuscript_facing_summary.md`.
+- Strengthened the manuscript language that NSR directly compares r and K populations at publication level, while CLONEID adds event-linked fields that make event-history questions automatically queryable and auditable.
+- Framed CLONEID-LTEE as a low-cost, gold-standard-style minimum record for long-term evolutionary experiments.
+- Updated `docs/standards/minimum_longitudinal_evolution_record.md` with a question-specific minimum-data table.
+
+## Previous live-extraction work retained
 
 - Added a read-only R extractor:
   - `scripts/cloneid_rk_benchmark_records.R`
@@ -59,13 +67,17 @@ Rscript scripts/cloneid_rk_benchmark_records.R --mode mock --root-id SNU-668_r2_
 Rscript scripts/cloneid_rk_benchmark_records.R --mode live --root-id SNU-668_r2_A9_seed --root-id SNU-668_K3_A9_seed --output /tmp/cloneid_rk_live_records.json
 PYTHONPATH=src:tests python3 -m unittest discover -s tests
 PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --config configs/applications/snu668_density_history.yaml --cloneid-root-id "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed" --mode mock --output runs/snu668_r2_K3_A9_mock_after_live_patch --fit --make-figures
+PYTHONPATH=src:tests python3 -m unittest tests/test_rk_benchmark_cli.py tests/test_pipeline_run.py
+PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --config configs/applications/snu668_density_history.yaml --cloneid-root-id "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed" --mode mock --output runs/snu668_question_required_data_mock --fit --make-figures
+PYTHONPATH=src:tests python3 -m unittest discover -s tests
 ```
 
 ## Test results
 
 - New live extraction tests: passed, `3` tests.
 - Full unittest suite: passed, `100` tests.
-- Mock benchmark smoke run after live patch: succeeded.
+- Question-specific report tests: passed.
+- Mock benchmark smoke run after required-data patch: succeeded.
 
 ## Current real-data command
 

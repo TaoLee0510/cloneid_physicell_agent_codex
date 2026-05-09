@@ -6,6 +6,8 @@ This branch is the manuscript-facing CLONEID application for one focused questio
 
 The practical claim is narrow: CLONEID is an event-linked data standard and executable retrieval layer that makes this comparison auditable. The branch keeps the NSR nwaa124 external comparator machinery, but uses it as supporting evidence for what publication-level records can and cannot resolve automatically.
 
+The manuscript-facing addition is a question-specific data standard: for each mechanistic question, CLONEID states which low-cost records are necessary. NSR directly compares r and K populations at publication level; CLONEID makes event-history questions easier to answer by preserving the event ledger, image-derived phenotype, transfer semantics, and endpoint Perspective anchor in one queryable object.
+
 ## Shortest Run
 
 Dry-run/mock execution does not require live CLONEID access:
@@ -73,6 +75,7 @@ The run writes the manuscript-facing artifact tree under the requested output di
 model_selection_report.md
 manuscript_facing_summary.md
 family_discrimination_summary.md
+required_data_by_question.md
 modeling/comparative_identifiability_report.md
 modeling/rejection_report.md
 modeling/observability_matrix.json

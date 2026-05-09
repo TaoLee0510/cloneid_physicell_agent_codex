@@ -383,6 +383,7 @@ def run_rk_benchmark(
         subdirs=subdirs,
         paths={
             "model_selection_report": reports["model_selection_report"],
+            "required_data_by_question": reports["required_data_by_question"],
             "manuscript_facing_summary": reports["manuscript_facing_summary"],
             "family_discrimination_summary": reports["family_discrimination_summary"],
         },

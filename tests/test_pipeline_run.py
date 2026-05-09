@@ -58,6 +58,7 @@ class PipelineRunTests(unittest.TestCase):
                 "modeling/comparative_identifiability_report.json",
                 "modeling/comparative_identifiability_report.md",
                 "model_selection_report.md",
+                "required_data_by_question.md",
                 "manuscript_facing_summary.md",
                 "family_discrimination_summary.md",
                 "observability_matrix.csv",

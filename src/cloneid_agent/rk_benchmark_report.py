@@ -75,6 +75,7 @@ def build_model_selection_report(
     ablation_delta = (history_ablation or {}).get("history_ablation_delta", "not computed")
     low_cost_fields = (comparative_identifiability or {}).get("low_cost_fields_that_rescue_identifiability", [])
     low_cost_lines = [f"- {item}" for item in low_cost_fields] or ["- event-linked minimum metadata fields"]
+    required_data_lines = _required_data_by_question_lines()
     return "\n".join(
         [
             "# SNU-668 Density-History Model Selection Report",
@@ -109,6 +110,12 @@ def build_model_selection_report(
             "",
             *family_lines,
             "",
+            "## Question-Specific Required Data",
+            "",
+            "The benchmark also asks which low-cost records are necessary for specific mechanistic questions. NSR directly compares r and K populations at publication level; CLONEID adds the native event ledger needed to answer event-history questions automatically and audibly.",
+            "",
+            *required_data_lines,
+            "",
             "## Current Mock Fit Selection",
             "",
             f"- Best CLONEID full mock family under the tested assumptions: `{_best_full_family(cloneid_full_fits)}`",
@@ -118,6 +125,8 @@ def build_model_selection_report(
             "- Manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.",
             "",
             "## CLONEID-LTE Low-Cost Fields",
+            "",
+            "These fields define a low-cost, gold-standard-style minimum record for long-term evolutionary experiments: enough structure to make model discrimination auditable without requiring exhaustive omics at every passage.",
             "",
             *low_cost_lines,
             "",
@@ -188,6 +197,8 @@ def build_manuscript_facing_summary(
             "",
             "Full history preserves event order, parent-child graph structure, seed/harvest episodes, transfer/reset semantics, event-linked phenotype, confluence proxies, and terminal Perspective support.",
             "",
+            "This converts question-specific data needs into a concrete standard: for density-history model discrimination, the necessary low-cost fields are event IDs, parent-child links, timestamps, event type, seeded/harvested counts, vessel area, confluence or areaOccupied proxy, transfer/bottleneck metadata, and endpoint Perspective anchor.",
+            "",
             "## What Compressed CLONEID History Loses",
             "",
             f"History ablation delta: `{(history_ablation or {}).get('history_ablation_delta', 'not computed')}`.",
@@ -198,6 +209,8 @@ def build_manuscript_facing_summary(
             "The NSR supplement supports coarse ecological reconstruction and biological interpretation from publication-level records. It does not provide a native event ledger or event-linked confluence history for automatic density-history model fitting without manual reconstruction or deterministic plot digitization.",
             "",
             "## Low-Cost Fields That Rescue Identifiability",
+            "",
+            "CLONEID-LTEE can therefore be framed as a low-cost gold-standard-style record for long-term evolutionary experiments: not more data for its own sake, but the minimum event-linked structure needed to answer mechanistic questions reproducibly.",
             "",
             *[f"- {item}" for item in (low_cost or ["event ledger", "event-linked confluence proxy", "terminal Perspective anchor"])],
             "",
@@ -253,6 +266,66 @@ def build_family_discrimination_summary(family_comparison: dict[str, Any] | None
     return "\n".join(lines)
 
 
+def _required_data_by_question_lines() -> list[str]:
+    rows = [
+        (
+            "Can fixed-state fitness be separated from density-dependent growth?",
+            "seed-harvest episodes; elapsed time; seeded/harvested counts; event-linked confluence or areaOccupied; branch labels",
+            "supports r/K coarse reconstruction, but event-linked density history is not native",
+            "directly auditable from `snu668_full_history` when fields are present",
+        ),
+        (
+            "Are transfer/passaging records growth intervals or schedule resets?",
+            "event_type; parent_event_id; seed/harvest/transfer classification",
+            "protocol-level reconstruction from methods/captions",
+            "explicit event schedule with transfer resets excluded from growth fitting",
+        ),
+        (
+            "Which density exposure preceded the terminal assay?",
+            "ordered event graph; cumulative confluence exposure; terminal Perspective origin",
+            "not native without manual reconstruction",
+            "queryable through Event -> Phenotype -> Perspective linkage",
+        ),
+        (
+            "What is lost when a full experiment is compressed to a paper-like summary?",
+            "paired full record and deliberately downsampled record",
+            "not applicable as a controlled internal ablation",
+            "directly measured by `snu668_full_history` -> `snu668_published_like_compressed`",
+        ),
+        (
+            "Can an agent create an auditable model schedule automatically?",
+            "event ledger; transfer semantics; image-derived phenotype provenance; endpoint assay anchor",
+            "requires manual reconstruction from publication-level records",
+            "agent-ready schedule can be generated from native records",
+        ),
+    ]
+    lines = [
+        "| Mechanistic question | Necessary data | NSR publication-level record | CLONEID event-linked record |",
+        "|---|---|---|---|",
+    ]
+    lines.extend(f"| {question} | {needed} | {nsr} | {cloneid} |" for question, needed, nsr, cloneid in rows)
+    return lines
+
+
+def build_required_data_by_question_report() -> str:
+    return "\n".join(
+        [
+            "# Required Data By Question",
+            "",
+            "This report states the benchmark's practical claim: the necessary data depend on the mechanistic question. NSR provides rich publication-level r/K evidence. CLONEID adds the low-cost event-linked fields that make event-history questions automatically queryable, auditable, and agent-ready.",
+            "",
+            *_required_data_by_question_lines(),
+            "",
+            "## Interpretation",
+            "",
+            "The distinction is not that NSR lacks r/K biology. The distinction is that CLONEID records the experiment as an event-linked object. That structure makes specific questions easier to answer: which observations are growth episodes, which records are transfer resets, which confluence exposure preceded each harvest, and which endpoint Perspective anchors to which upstream event.",
+            "",
+            "This is the basis for describing CLONEID-LTEE as a low-cost gold-standard-style data standard for long-term evolutionary experiments.",
+            "",
+        ]
+    )
+
+
 def build_manuscript_insert() -> str:
     return "\n".join(
         [
@@ -280,7 +353,7 @@ def build_manuscript_insert() -> str:
             "",
             "## Nature Methods Significance",
             "",
-            "This application reframes long-term evolution datasets as agent-ready model inputs. Rather than judging a prior publication, it asks which biological hypotheses become automatically testable when routine passaging, imaging, and endpoint assay records are linked by event identifiers. CLONEID-LTE provides a practical minimum standard for transforming low-cost culture records into auditable schedules for mechanistic modeling.",
+            "This application reframes long-term evolution datasets as agent-ready model inputs. Rather than judging a prior publication, it asks which biological hypotheses become automatically testable when routine passaging, imaging, and endpoint assay records are linked by event identifiers. CLONEID-LTEE provides a practical low-cost gold-standard-style minimum record for transforming culture records into auditable schedules for mechanistic modeling.",
             "",
             "## Limitations",
             "",
@@ -327,6 +400,10 @@ def write_rk_benchmark_reports(
     return {
         "model_selection_report": write_markdown(output / "model_selection_report.md", report),
         "manuscript_insert": write_markdown(output / "MANUSCRIPT_INSERT.md", manuscript),
+        "required_data_by_question": write_markdown(
+            output / "required_data_by_question.md",
+            build_required_data_by_question_report(),
+        ),
         "manuscript_facing_summary": write_markdown(
             output / "manuscript_facing_summary.md",
             build_manuscript_facing_summary(

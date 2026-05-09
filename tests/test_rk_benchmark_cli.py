@@ -55,6 +55,7 @@ class RkBenchmarkCliTests(unittest.TestCase):
                 "standards/CLONEID_LTE_minimum_standard.md",
                 "figures/model_comparison_publication_vs_cloneid.png",
                 "model_selection_report.md",
+                "required_data_by_question.md",
                 "manuscript_facing_summary.md",
                 "family_discrimination_summary.md",
                 "observability_matrix.csv",
@@ -88,6 +89,8 @@ class RkBenchmarkCliTests(unittest.TestCase):
             report = (output / "model_selection_report.md").read_text()
             self.assertIn("NSR is a strong publication-level biological comparator, not a weak dataset.", report)
             self.assertIn("not whether the original paper was correct", report)
+            self.assertIn("Question-Specific Required Data", report)
+            self.assertIn("low-cost, gold-standard-style minimum record", report)
             self.assertIn("Manuscript numerical interpretation requires live read-only CLONEID extraction", report)
             self.assertIn("HeLa biology is not equated with SNU-668 biology", report)
             lowered = report.lower()

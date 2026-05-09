@@ -2,6 +2,17 @@
 
 This compact standard defines the low-cost record needed for auditable mechanistic comparison in long-term evolution experiments. The point is not only collecting more data; it is preserving the relationships that make proliferation-only, branch-specific fitness, and density-history hypotheses distinguishable.
 
+The standard is question-specific. For density-history model discrimination, a low-cost gold-standard-style LTEE record must preserve enough structure to answer which observations are growth episodes, which records are transfer resets, which density/confluence exposure preceded each harvest, and which terminal Perspective anchors to which upstream event.
+
+## Question-Specific Minimum Data
+
+| Question | Minimum required data |
+|---|---|
+| Can fixed fitness be separated from density-history dependence? | branch labels; seed/harvest episodes; elapsed time; seeded and harvested counts; event-linked confluence or areaOccupied proxy |
+| Are passaging events growth intervals or schedule resets? | event type; parent event id; seed/harvest/transfer classification; split or bottleneck ratio |
+| Which density exposure preceded endpoint assay? | ordered event graph; cumulative confluence exposure; Perspective origin or upstream event id |
+| Can an agent create an auditable model schedule? | event ledger; vessel context; phenotype provenance; transfer semantics; endpoint assay anchor |
+
 ## Required Event Ledger
 
 - `event_id`

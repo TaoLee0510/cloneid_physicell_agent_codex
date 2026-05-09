@@ -228,3 +228,24 @@ _None yet._
 Superseded terminology: `selected dataset` / `candidate dataset bundle`.
 
 Current terminology: `CandidateSegment` for local context buckets; `LineagePath` or `RootedTrajectoryBundle` for connected modeling units.
+
+---
+
+## update_5.5 next work: CLONEID-LTE r/K benchmark
+
+1. Replace the deterministic mock SNU-668 fixture with live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
+   - Target artifacts to replace: `cloneid_full/subtree_records.json`, `event_graph.json`, `event_schedule.json`, `growth_episode_table.csv`, `spatial_phenotype_table.csv`, `perspective_endpoint_table.csv`, and `history_covariates.csv`.
+   - Preserve the same no-write database policy and Perspective/Identity guardrails.
+
+2. Strengthen model fitting after live/snapshot data are available.
+   - Add deterministic train/test split or leave-one-episode-out cross-validation.
+   - Keep family comparison output structured as selected/rejected/unresolved under tested assumptions.
+   - Continue reporting required inputs available/missing separately from numeric fit metrics.
+
+3. Optional PhysiCell candidate mapping after the modelability benchmark is stable.
+   - Use `modeling/family_comparison.json` and `modeling/comparative_identifiability_report.json` to decide which families deserve executable PhysiCell candidates.
+   - Preserve transfer/passaging events as schedule resets rather than growth intervals.
+
+4. Restore real NSR supplement input in environments where `/mnt/data/nwaa124_supplement_file.zip` is mounted.
+   - The current mock-mode fallback validates extraction mechanics only when the archive is absent.
+   - Manuscript comparator interpretation should use the real NSR supplement archive or directory.

@@ -2,10 +2,22 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
 from ..cloneid_lte_standard import write_cloneid_lte_standard
+from ..comparative_identifiability import (
+    build_comparative_identifiability,
+    write_comparative_identifiability,
+)
+from ..compressed_view import build_published_like_compressed_view, write_compressed_view
+from ..family_comparison import build_family_comparison, write_family_comparison
+from ..history_ablation import build_history_ablation, write_history_ablation
+from ..history_covariates import build_history_covariates, write_history_covariates
+from ..observability_profile import build_observability_profile, write_observability_profile
+from ..rejection_logging import write_rejection_report
+from ..external_comparators.nwaa124 import create_minimal_mock_supplement_fixture
 from ..rk_benchmark_figures import generate_rk_benchmark_figures
 from ..rk_benchmark_report import write_rk_benchmark_reports
 from ..rk_density_models import (
@@ -50,6 +62,21 @@ def _ensure_subdirs(output: Path) -> dict[str, Path]:
         subdir.mkdir(parents=True, exist_ok=True)
         subdirs[name] = subdir
     return subdirs
+
+
+def _load_optional_config(config_path: str | Path | None) -> dict[str, Any]:
+    if not config_path:
+        return {}
+    path = Path(config_path)
+    text = path.read_text()
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"{path} must be JSON-compatible YAML because PyYAML is not a project dependency"
+        ) from exc
+    payload["_config_path"] = str(path)
+    return payload
 
 
 def _write_cloneid_full_artifacts(full_record: dict[str, Any], output_dir: Path) -> dict[str, Any]:
@@ -130,13 +157,31 @@ def run_rk_benchmark(
     output: str | Path = "runs/rk_benchmark_v1",
     fit: bool = False,
     make_figures: bool = False,
+    config_path: str | Path | None = None,
 ) -> Path:
     """Run the benchmark and write all required artifacts."""
+
+    config = _load_optional_config(config_path)
+    if not external_zip:
+        external_zip = config.get("external_zip") or config.get("external_comparator", {}).get("source_root_preferred")
+    if cloneid_root_id in (None, "auto"):
+        cloneid_root_id = config.get("cloneid_root_id", cloneid_root_id)
 
     output_dir = Path(output)
     subdirs = _ensure_subdirs(output_dir)
 
-    external_record = extract_nwaa124_publication_record(external_zip, subdirs["external_comparator"])
+    external_fixture_warning = None
+    try:
+        external_record = extract_nwaa124_publication_record(external_zip, subdirs["external_comparator"])
+    except FileNotFoundError:
+        if mode != "mock":
+            raise
+        fallback_external = create_minimal_mock_supplement_fixture(subdirs["external_comparator"])
+        external_fixture_warning = (
+            f"Requested external archive was unavailable; mock mode used a minimal extraction fixture at {fallback_external}. "
+            "Manuscript comparator interpretation requires the real NSR supplement archive or directory."
+        )
+        external_record = extract_nwaa124_publication_record(fallback_external, subdirs["external_comparator"])
     audit_rows = build_modelability_audit_rows()
     write_modelability_audit_csv(subdirs["external_comparator"] / "nwaa124_modelability_audit.csv", audit_rows)
 
@@ -144,6 +189,9 @@ def run_rk_benchmark(
     if mode in {"auto", "live"}:
         live_status = "live_access_not_configured_fell_back_to_deterministic_mock"
     full_record = build_mock_cloneid_full_record(cloneid_root_id)
+    full_record["dataset_regime"] = "CLONEID_full_native_record"
+    full_record["dataset_id"] = "snu668_rk_density_history_mock_fixture"
+    full_record["data_status"] = "deterministic_mock_schema_fixture_not_observed_cloneid_data"
     full_record["requested_mode"] = mode
     full_record["live_access_status"] = live_status
     full_artifacts = _write_cloneid_full_artifacts(full_record, subdirs["cloneid_full"])
@@ -165,12 +213,62 @@ def run_rk_benchmark(
         cloneid_full_fits=cloneid_full_fits,
         cloneid_coarse_fits=cloneid_coarse_fits,
     )
+
+    history_covariates = build_history_covariates(full_record)
+    history_paths = write_history_covariates(subdirs["cloneid_full"], history_covariates)
+    compressed_view = build_published_like_compressed_view(full_record, history_covariates, coarse_record)
+    compressed_paths = write_compressed_view(subdirs["cloneid_downsampled"], compressed_view)
+    history_ablation = build_history_ablation(
+        history_covariates,
+        compressed_view,
+        cloneid_full_fits=cloneid_full_fits,
+        cloneid_coarse_fits=cloneid_coarse_fits,
+    )
+    history_ablation_downsampled_paths = write_history_ablation(subdirs["cloneid_downsampled"], history_ablation)
+    history_ablation_modeling_paths = write_history_ablation(subdirs["modeling"], history_ablation)
+    observability_profile = build_observability_profile(
+        nsr_record=external_record,
+        history_covariates=history_covariates,
+        compressed_view=compressed_view,
+    )
+    observability_paths = write_observability_profile(subdirs["modeling"], observability_profile)
+    family_comparison = build_family_comparison(
+        observability_profile=observability_profile,
+        nsr_fits=nsr_fits,
+        cloneid_full_fits=cloneid_full_fits,
+        cloneid_coarse_fits=cloneid_coarse_fits,
+    )
+    family_comparison_paths = write_family_comparison(subdirs["modeling"], family_comparison)
+    rejection_report_path = write_rejection_report(subdirs["modeling"], family_comparison)
+    comparative_identifiability = build_comparative_identifiability(
+        observability_profile=observability_profile,
+        family_comparison=family_comparison,
+        history_ablation=history_ablation,
+    )
+    comparative_identifiability_paths = write_comparative_identifiability(
+        subdirs["modeling"],
+        comparative_identifiability,
+    )
+
     modeling_paths = _write_modeling_artifacts(
         subdirs["modeling"],
         nsr_fits=nsr_fits,
         cloneid_full_fits=cloneid_full_fits,
         cloneid_coarse_fits=cloneid_coarse_fits,
         comparison_rows=comparison_rows,
+    )
+    modeling_paths.update(
+        {
+            "observability_profile_json": observability_paths["json"],
+            "observability_profile_csv": observability_paths["csv"],
+            "history_ablation_json": history_ablation_modeling_paths["json"],
+            "history_ablation_md": history_ablation_modeling_paths["md"],
+            "family_comparison_json": family_comparison_paths["json"],
+            "family_comparison_csv": family_comparison_paths["csv"],
+            "rejection_report_md": rejection_report_path,
+            "comparative_identifiability_report_json": comparative_identifiability_paths["json"],
+            "comparative_identifiability_report_md": comparative_identifiability_paths["md"],
+        }
     )
 
     standards_paths = write_cloneid_lte_standard(subdirs["standards"])
@@ -193,6 +291,11 @@ def run_rk_benchmark(
         cloneid_full_fits=cloneid_full_fits,
         cloneid_coarse_fits=cloneid_coarse_fits,
         comparison_rows=comparison_rows,
+        observability_profile=observability_profile,
+        history_ablation=history_ablation,
+        family_comparison=family_comparison,
+        comparative_identifiability=comparative_identifiability,
+        config=config,
     )
 
     manifest = {
@@ -204,8 +307,13 @@ def run_rk_benchmark(
         "live_access_status": live_status,
         "fit": fit,
         "make_figures": make_figures,
+        "config_path": config.get("_config_path"),
         "artifact_roots": {name: str(path) for name, path in subdirs.items()},
         "external_file_count": external_record["inventory"]["file_count"],
+        "external_fixture_warning": external_fixture_warning,
+        "history_covariate_paths": {key: str(path) for key, path in history_paths.items()},
+        "compressed_view_paths": {key: str(path) for key, path in compressed_paths.items()},
+        "history_ablation_paths": {key: str(path) for key, path in history_ablation_downsampled_paths.items()},
         "modeling_paths": {key: str(path) for key, path in modeling_paths.items()},
         "standards_paths": {key: str(path) for key, path in standards_paths.items()},
         "figure_paths": {key: str(path) for key, path in figure_paths.items()},

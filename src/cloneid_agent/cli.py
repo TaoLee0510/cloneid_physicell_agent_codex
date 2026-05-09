@@ -6,6 +6,7 @@ import argparse
 import sys
 
 from .applications.rk_benchmark import audit_nwaa124_comparator, run_rk_benchmark
+from .application_runner import run_application
 from .cloneid_lte_standard import write_cloneid_lte_standard
 from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
@@ -755,8 +756,11 @@ def build_parser() -> argparse.ArgumentParser:
     )
     rk_parser.add_argument(
         "--external-zip",
-        required=True,
         help="Path to the NSR supplement zip, or an unpacked supplement directory.",
+    )
+    rk_parser.add_argument(
+        "--config",
+        help="Optional JSON-compatible application config. Values are defaults; explicit CLI flags win.",
     )
     rk_parser.add_argument(
         "--cloneid-root-id",
@@ -776,6 +780,25 @@ def build_parser() -> argparse.ArgumentParser:
     )
     rk_parser.add_argument("--fit", action="store_true", help="Fit or summarize supported model families.")
     rk_parser.add_argument("--make-figures", action="store_true", help="Generate benchmark PNG figures.")
+
+    run_parser = subparsers.add_parser(
+        "run",
+        help="Compatibility wrapper for config-driven application runs; delegates to run-rk-benchmark.",
+    )
+    run_parser.add_argument("--config", required=True, help="Path to JSON-compatible application config.")
+    run_parser.add_argument(
+        "--external-zip",
+        help="Optional NSR supplement zip/directory override.",
+    )
+    run_parser.add_argument(
+        "--mode",
+        choices=("auto", "live", "mock", "dry-run"),
+        default="mock",
+        help="Compatibility mode. dry-run is treated as mock.",
+    )
+    run_parser.add_argument("--output", required=True, help="Output directory for benchmark artifacts.")
+    run_parser.add_argument("--fit", action="store_true", help="Fit or summarize model families.")
+    run_parser.add_argument("--make-figures", action="store_true", help="Generate benchmark figures.")
 
     audit_nsr_parser = subparsers.add_parser(
         "audit-nwaa124-comparator",
@@ -1043,6 +1066,17 @@ def main(argv: list[str] | None = None) -> int:
             cloneid_root_id=args.cloneid_root_id,
             mode=args.mode,
             output=args.output,
+            fit=args.fit,
+            make_figures=args.make_figures,
+            config_path=args.config,
+        )
+        return 0
+    if args.command == "run":
+        run_application(
+            config_path=args.config,
+            output=args.output,
+            mode="mock" if args.mode == "dry-run" else args.mode,
+            external_zip=args.external_zip,
             fit=args.fit,
             make_figures=args.make_figures,
         )

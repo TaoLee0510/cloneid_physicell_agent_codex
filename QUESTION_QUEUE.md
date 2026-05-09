@@ -136,6 +136,77 @@ Questions should not block all work unless they are high-risk. When possible, th
 
 ---
 
+## Open r/K benchmark questions
+
+## Q006 — Live or frozen SNU-668 source for manuscript numerical results
+
+**Priority:** Blocking  
+**Risk level:** 2  
+**Question:** Should the manuscript-facing r/K benchmark use live read-only CLONEID extraction or an approved frozen SNU-668 snapshot for numerical model-selection results?
+
+**Why it matters:** The current `--mode mock` SNU-668 values are deterministic schema fixtures. They validate artifact generation and identifiability logic but cannot support biological numerical claims.
+
+**Options:**
+1. Live read-only CLONEID extraction through the approved CLONEID access path.
+2. Approved frozen SNU-668 snapshot committed or mounted as an immutable input.
+3. Keep mock mode only for methods/software demonstration and omit numerical SNU-668 claims.
+
+**Current default assumption:** Use mock mode for workflow validation only.
+
+**Blocked work:** Manuscript numerical interpretation, train/test model fitting, and any quantitative claim about SNU-668 r/K density adaptation.
+
+**Work continuing meanwhile:** NSR extraction logic, CLONEID-LTE standard, modelability/observability audit, and report wording.
+
+**Agent recommendation:** Option 2 for manuscript reproducibility if a frozen snapshot can be approved; otherwise Option 1 with cached exported artifacts.
+
+**Status:** Open
+
+## Q007 — Exact SNU-668 root ID / subtree target
+
+**Priority:** Blocking  
+**Risk level:** 2  
+**Question:** What exact SNU-668 `root_id` or subtree should live extraction target for the r/K density-history benchmark?
+
+**Why it matters:** The event graph, seed-harvest episodes, transfer/bottleneck schedule, endpoint Perspective linkage, and history covariates depend on the selected root/subtree.
+
+**Options:**
+1. Provide a single approved root ID.
+2. Provide a root ID plus branch/replicate filters.
+3. Generate candidate SNU-668 subtrees and select the best scoring one after review.
+
+**Current default assumption:** `cloneid_root_id=auto` remains a mock fixture selector until live/snapshot target is approved.
+
+**Blocked work:** Live `cloneid_full/` replacement and manuscript numerical model fitting.
+
+**Work continuing meanwhile:** Benchmark logic and artifact schema validation.
+
+**Agent recommendation:** Option 1 if the intended SNU-668 LTE subtree is already known; Option 3 if multiple SNU-668 lineages exist.
+
+**Status:** Open
+
+## Q008 — Curated NSR CSV validation/fallback policy
+
+**Priority:** Important  
+**Risk level:** 1  
+**Question:** Should the curated NSR CSV fallback from `update_5.4` be retained as a validation artifact, or removed after automatic docx extraction is stable?
+
+**Why it matters:** Automatic docx extraction is the primary 5.5 path. Curated CSV can be useful as regression/validation material, but it risks becoming a second source of truth if not clearly labeled.
+
+**Options:**
+1. Keep curated CSV only as validation/fallback and mark automatic docx extraction as authoritative.
+2. Remove curated CSV entirely once extraction tests cover the real supplement.
+3. Keep both, but require a comparison report showing any discrepancies.
+
+**Current default assumption:** Keep only compatibility adapter logic; do not make curated CSV a competing primary comparator.
+
+**Blocked work:** None for current mock benchmark.
+
+**Work continuing meanwhile:** Real supplement extraction tests and publication-level reconstruction reports.
+
+**Agent recommendation:** Option 1 until real supplement extraction is stable across environments, then revisit Option 2.
+
+**Status:** Open
+
 ## Resolved questions
 
 ## Q002 — PhysiCell runtime source for the first smoke test

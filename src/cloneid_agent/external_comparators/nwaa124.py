@@ -8,6 +8,7 @@ import shutil
 import zipfile
 from typing import Any
 from xml.etree import ElementTree as ET
+from xml.sax.saxutils import escape
 
 
 RECORD_STATUS_LABELS = (
@@ -292,3 +293,91 @@ def extract_all_docx_payloads(external_zip_or_dir: str | Path | None, output_dir
     docx_paths = sorted(root.rglob("*.docx"))
     media_output_dir = Path(output_dir) / "nwaa124_docx_media"
     return [extract_docx_payload(path, media_output_dir) for path in docx_paths]
+
+
+def create_minimal_mock_supplement_fixture(output_dir: str | Path) -> Path:
+    """Create a tiny labeled supplement-shaped fixture for missing-archive mock runs.
+
+    This is not used when a real zip or directory is available. It exists so
+    mock-mode integration tests can exercise the extraction path in dependency-
+    constrained environments where `/mnt/data` is not mounted.
+    """
+
+    root = Path(output_dir) / "_mock_nwaa124_supplement_file"
+    root.mkdir(parents=True, exist_ok=True)
+    figure_paragraphs = [
+        "Supplementary Figure 1 | Fitness of r and K cells compared with IN cells.",
+        "Mixed populations were measured over passages.",
+        "Supplementary Figure 4 | Observed dynamics of mixed populations initiated with 90% r cells and 10% K cells.",
+        "The bars represent the proportion change of cell population by time.",
+        "Supplementary Figure 5 | Predicted dynamics of r and K cells mixed populations.",
+        "Black boxes and lines represent simulation results. Gray boxes and lines represent observations.",
+        "Supplementary Figure 6 | Detachment curves of r and K cells under trypsinization.",
+        "Cells detached under trypsinization were counted every minute.",
+        "Supplementary Figure 9 | Growth model fitting.",
+        "Exponential (R- Squared number 0.739; p=3.02e-05), Gompertz (R- Squared number 0.828; p=7.7e-05) and Logistic (R- Squared number 0.856; p=4.95e-05).",
+        "Supplementary Figure 10 | Carrying capacity estimation.",
+        "The functions of density curve of r and K cells were estimated as 228280/(1+83.485 exp(-0.80585 x)) and 239120/(1+728.8 exp(-1.0549 x)), respectively.",
+        "Supplementary Figure 11 | Predicted dynamics of r and K cells mixed populations.",
+        "The populations were cultured under high density based on the density dependent population growth model.",
+        "Supplementary Figure 12 | The dynamics of r and K cell mixture populations.",
+        "Each panel shows 100 simulation predictions of a mixture population.",
+        "Supplementary Figure 13 | The spatial computational model of population growth.",
+        "The cell growth space was assumed to be a two-dimensional planar grid with migration, division, and density dependent regions.",
+        "Supplementary Figure 14 | Density-dependent cell size.",
+        "Fluorescence imaging of cells at two densities.",
+        "Supplementary Figure 15 | Ratio of migrated cells.",
+        "The data were collected using a trans-well migration assay.",
+        "Supplementary Table 1 | The number of DEGs across comparisons.",
+        "Supplementary Table 2 | Enrichment of DEGs in r and K cells under low-density.",
+        "Supplementary Table 3 | Top 25 pathways enriched in r and K cells under crowed culture.",
+        "Supplementary Table 5 |",
+        "Supplementary Table 6 | The abbravations of KEGG patways in Figure 2d",
+    ]
+    tables = [
+        [["Comparisons", "High-expressed genes number", "Low-expressed genes number", "Total DEGs number"], ["KL vs. rL", "1748", "1413", "3161"]],
+        [["KEGG Pathway", "Count", "%", "P-Value"], ["Spliceosome", "54", "1.7", "1.00E-10"]],
+        [["Term", "Count", "%", "PValue", "Fold Enrichment"], ["Proteasome", "19", "1.073", "9.32E-09", "4.892"]],
+        [
+            ["Samples", "IN_G", "IN_R", "G3K", "R1K", "G3r", "R1r"],
+            ["1", "1.18205451", "0.9099664", "1.05785739", "0.4169925", "1.1529676", "1.36096405"],
+            ["2", "0.78450625", "1.09276245", "0.96578718", "0.3", "0.63894989", "1.20447356"],
+        ],
+        [["Abbravation", "Pathway"], ["AJ", "Adherens junction"]],
+    ]
+    _write_minimal_docx(root / "Supplementary Figures and Tables revision_2nd.docx", figure_paragraphs, tables)
+    _write_minimal_docx(
+        root / "Supplementary data- Materials and Methods.docx",
+        [
+            "Materials and Methods",
+            "The correlations are maximized when (, ) = (2.5,0).",
+            "The spatial model uses a two-dimensional grid, migration, division, and density-dependent space.",
+        ],
+        [],
+    )
+    for name in ("Supplementary_Data_1.txt", "Supplementary_Data_2.txt", "Supplementary_Data_3.txt"):
+        (root / name).write_text("Gene\tPPEE\tPPDE\tPostFC\tRealFC\nMOCK\t0\t1\t1.0\t1.0\n")
+    (root / "Supplementary_Data_4.vcf").write_text("##fileformat=VCFv4.2\n")
+    return root
+
+
+def _write_minimal_docx(path: Path, paragraphs: list[str], tables: list[list[list[str]]]) -> None:
+    w_ns = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+    parts = [f"<w:p><w:r><w:t>{escape(text)}</w:t></w:r></w:p>" for text in paragraphs]
+    for table in tables:
+        row_xml = []
+        for row in table:
+            cells = "".join(
+                f"<w:tc><w:p><w:r><w:t>{escape(cell)}</w:t></w:r></w:p></w:tc>"
+                for cell in row
+            )
+            row_xml.append(f"<w:tr>{cells}</w:tr>")
+        parts.append(f"<w:tbl>{''.join(row_xml)}</w:tbl>")
+    document = (
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+        f'<w:document xmlns:w="{w_ns}"><w:body>{"".join(parts)}</w:body></w:document>'
+    )
+    with zipfile.ZipFile(path, "w") as archive:
+        archive.writestr("[Content_Types].xml", "<Types/>")
+        archive.writestr("word/document.xml", document)
+        archive.writestr("word/media/image1.png", b"mock embedded media placeholder")

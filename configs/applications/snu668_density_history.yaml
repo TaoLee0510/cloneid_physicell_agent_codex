@@ -1,0 +1,58 @@
+{
+  "application_id": "snu668_density_history",
+  "display_name": "SNU-668 density-history r/K benchmark",
+  "cloneid_root_id": "auto",
+  "external_zip": "/mnt/data/nwaa124_supplement_file.zip",
+  "scientific_question": "During long-term r/K density selection, can r/K density adaptation be explained by proliferation-rate differences alone, or are density/confluence/spatial interaction terms required? When the data are compressed to a publication-level sparse view, which model families become weaker or unresolved?",
+  "comparison_regimes": [
+    "NSR_publication_level_reconstructed_record",
+    "CLONEID_full_native_record",
+    "CLONEID_publication_level_downsampled_record"
+  ],
+  "model_families": [
+    "context_blind_null",
+    "proliferation_only",
+    "branch_specific_fitness",
+    "density_dependent_growth",
+    "density_plus_branch_optional"
+  ],
+  "observable_priorities": [
+    "Passaging.cellCount",
+    "Passaging.correctedCount",
+    "Passaging.areaOccupied_um2",
+    "Passaging.cellSize_um2",
+    "event/episode duration",
+    "transfer and bottleneck timing",
+    "confluence_proxy",
+    "terminal Perspective support summary"
+  ],
+  "external_comparator": {
+    "comparator_id": "nwaa124_publication_level_reconstructed_record",
+    "source_root_preferred": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
+    "comparison_role": "strong_publication_level_rk_biological_comparator"
+  },
+  "history_ablation_settings": {
+    "paired_conditions": [
+      "CLONEID_full_native_record",
+      "CLONEID_publication_level_downsampled_record"
+    ],
+    "remove_or_collapse": [
+      "event IDs",
+      "parent-child event graph",
+      "seed/harvest/transfer structure",
+      "per-event confluence",
+      "image provenance",
+      "Perspective-to-event linkage"
+    ]
+  },
+  "guardrails": [
+    "read-only CLONEID access only",
+    "mock mode uses deterministic schema fixtures only",
+    "Perspective is endpoint validation/support only",
+    "Identity is inferred secondary support only",
+    "do not equate HeLa biology with SNU-668 biology",
+    "do not criticize the NSR paper",
+    "do not treat plot-only evidence as raw numeric data",
+    "use restrained interpretation language"
+  ]
+}

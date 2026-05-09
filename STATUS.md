@@ -793,3 +793,48 @@ Validation:
   - `python3 -m pytest` failed because pytest is not installed in `/opt/homebrew/opt/python@3.13/bin/python3.13`.
 - Dependency note:
   - `python-docx` and `matplotlib` are not installed in the active interpreter. The benchmark uses OpenXML docx extraction and fallback PNG generation in this environment, while keeping optional paths for those libraries when available.
+
+---
+
+## update_5.5: integrated useful update_5.4 density-history logic
+
+Current branch:
+- `update_5.5`
+
+Preserved from `update_5.5`:
+- NSR nwaa124 zip/directory/docx extraction, figure-caption indexing, Supplementary Table 5 extraction, Fig. 9 R-squared parsing, Fig. 10 logistic formula parsing, plot-only evidence guardrails, `run-rk-benchmark`, CLONEID full/downsampled mock records, CLONEID-LTE standard generation, modelability audit, figures, and manuscript/report drafts.
+
+Imported/adapted from `update_5.4`:
+- Config-driven application defaults via `configs/applications/snu668_density_history.yaml`.
+- Compatibility `cloneid-agent run --config ...` wrapper that delegates to `run-rk-benchmark`.
+- History covariates with event order, transfer reset semantics, cumulative confluence/density exposure, count/area proxies, and provenance notes.
+- Publication-like compressed view and full-to-coarse history ablation.
+- Observability profile across NSR publication-level reconstructed record, CLONEID full native record, and CLONEID publication-level downsampled record.
+- Family comparison with required inputs available/missing, auditability grade, identifiability grade, selected/rejected/unresolved flags, and overclaim guardrails.
+- Rejection report and comparative identifiability report with low-cost fields that rescue identifiability.
+- Minimum longitudinal evolution record documentation cross-checked against the CLONEID-LTE Bronze/Silver/Gold/Platinum standard.
+
+Generated output directory:
+- `runs/rk_benchmark_mock`
+
+Commands run:
+- `PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --external-zip /mnt/data/nwaa124_supplement_file.zip --mode mock --output /tmp/rk_benchmark_integrated --fit --make-figures`
+- `PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --config configs/applications/snu668_density_history.yaml --external-zip /mnt/data/nwaa124_supplement_file.zip --mode mock --output /tmp/rk_benchmark_config_integrated --fit --make-figures`
+- `PYTHONPATH=src python3 -m cloneid_agent.cli run --config configs/applications/snu668_density_history.yaml --output /tmp/rk_benchmark_run_wrapper --mode dry-run --fit`
+- `PYTHONPATH=src python3 -m py_compile src/cloneid_agent/application_runner.py src/cloneid_agent/history_covariates.py src/cloneid_agent/compressed_view.py src/cloneid_agent/history_ablation.py src/cloneid_agent/observability_profile.py src/cloneid_agent/family_comparison.py src/cloneid_agent/rejection_logging.py src/cloneid_agent/comparative_identifiability.py src/cloneid_agent/external_curated_adapter.py src/cloneid_agent/applications/rk_benchmark.py src/cloneid_agent/rk_benchmark_report.py src/cloneid_agent/rk_density_models.py src/cloneid_agent/external_comparators/nwaa124.py src/cloneid_agent/cli.py`
+- `PYTHONPATH=src:tests python3 -m unittest tests/test_history_covariates.py tests/test_history_ablation.py tests/test_observability_profile.py tests/test_comparative_identifiability.py tests/test_pipeline_run.py tests/test_rk_benchmark_cli.py`
+- `PYTHONPATH=src:tests python3 -m unittest discover -s tests`
+- `PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --external-zip /mnt/data/nwaa124_supplement_file.zip --mode mock --output runs/rk_benchmark_mock --fit --make-figures`
+
+Test results:
+- Passed: `PYTHONPATH=src:tests python3 -m unittest discover -s tests`
+  - Result: 97 tests passed.
+
+Environment-specific blockers:
+- `python -m pytest` remains unavailable in this shell because `python` is not configured in pyenv.
+- `python3 -m pytest` remains unavailable because pytest is not installed in the active Homebrew Python.
+- `python-docx` and `matplotlib` are optional; the workflow uses OpenXML docx extraction and fallback PNG generation when they are absent.
+- `/mnt/data/nwaa124_supplement_file.zip` and the previously available sibling supplement directory were not mounted during this integration pass. In mock mode, the command used a clearly labeled minimal extraction fixture so the pipeline can still validate artifact generation. Manuscript comparator interpretation requires the real NSR supplement archive or directory.
+
+Live/snapshot CLONEID data blocker:
+- Manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot. The current SNU-668 values are deterministic mock/schema fixtures and must not be used for biological numerical claims.

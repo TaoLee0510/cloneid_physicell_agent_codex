@@ -1,0 +1,31 @@
+{
+  "comparator_id": "nwaa124_publication_level_reconstructed_record",
+  "display_name": "Li et al. NSR 2021 nwaa124 r/K-selection publication-level comparator",
+  "dataset_role": "strong_publication_level_biological_comparator",
+  "source_root_preferred": "/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file",
+  "source_root_fallbacks": [
+    "data/nwaa124_supplement_file",
+    "/mnt/data/nwaa124_supplement_file.zip"
+  ],
+  "curation_policy": {
+    "no_ocr": true,
+    "no_image_digitization": true,
+    "use_docx_text_and_tables": true,
+    "store_summary_level_evidence_when_exact_points_absent": true,
+    "compare_modelability_not_cross_cell_line_truth": true
+  },
+  "expected_publication_level_records": [
+    "Supplementary Table 5 growth-rate samples",
+    "Supplementary Figure 9 growth-model R-squared values",
+    "Supplementary Figure 10 logistic carrying-capacity formulas",
+    "Supplementary Figures 4, 5, 11, and 12 mixed-population plot evidence",
+    "Supplementary Figure 13 spatial model schematic and methods text",
+    "Supplementary Figure 15 migration/adhesion phenotype",
+    "Supplementary Data 1-4 molecular summaries"
+  ],
+  "known_limitations": [
+    "The supplement is not a native CLONEID-style event ledger.",
+    "Mixed-population plot curves require deterministic digitization before numeric trajectory fitting.",
+    "Continuous event-linked density history cannot be inferred silently from captions or plots."
+  ]
+}

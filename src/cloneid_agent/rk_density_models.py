@@ -359,11 +359,27 @@ def build_model_comparison_rows(
         row: dict[str, Any] = {"family_id": family}
         for source, models in by_source.items():
             model = next((item for item in models if item["family_id"] == family), {})
-            row[f"{source}_fit_status"] = model.get("fit_status", "not_available_in_archive")
+            fit_status = model.get("fit_status", "not_available_in_archive")
+            row[f"{source}_fit_status"] = fit_status
             row[f"{source}_rmse"] = model.get("rmse", "")
             row[f"{source}_aic"] = model.get("aic", "")
+            row[f"{source}_identifiability_interpretation"] = _interpret_fit_status(source, family, fit_status)
         rows.append(row)
     return rows
+
+
+def _interpret_fit_status(source: str, family: str, fit_status: str) -> str:
+    if fit_status == "identifiable":
+        return "identifiable under available event-linked records"
+    if fit_status == "summary_only_identifiable":
+        return "summary-identifiable but not fully event-auditable"
+    if fit_status == "publication_level_reconstruction_only":
+        return "supports coarse reconstruction; unresolved under available publication-level records"
+    if fit_status == NOT_IDENTIFIABLE_DENSITY:
+        return "not identifiable from coarse records because event-level density or event graph is missing"
+    if source == "NSR_publication_level_reconstructed_record":
+        return "not available in publication-level archive"
+    return "unresolved under available records"
 
 
 def write_model_comparison_csv(path: str | Path, rows: list[dict[str, Any]]) -> Path:

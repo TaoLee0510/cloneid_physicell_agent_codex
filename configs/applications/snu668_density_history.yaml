@@ -1,7 +1,7 @@
 {
   "application_id": "snu668_density_history",
   "display_name": "SNU-668 density-history model discrimination proof of principle",
-  "cloneid_root_id": "auto",
+  "cloneid_root_id": "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed",
   "external_zip": "/mnt/data/nwaa124_supplement_file.zip",
   "scientific_question": "In long-term r/K density selection, can late growth advantage be explained by fixed fitness alone, or is continuous event-linked crowding/confluence history required? When the same experiment is compressed to a publication-like sparse view, does mechanistic discrimination weaken or remain partially unresolved?",
   "comparison_regimes": [

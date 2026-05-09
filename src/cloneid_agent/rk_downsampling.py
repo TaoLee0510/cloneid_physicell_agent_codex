@@ -250,8 +250,10 @@ def build_growth_episode_table(passaging_records: list[dict[str, Any]]) -> list[
             start = _parse_datetime(seed["date_time"])
             end = _parse_datetime(harvest["date_time"])
             duration_hours = (end - start).total_seconds() / 3600.0
-            start_count = float(seed["correctedCount"])
-            end_count = float(harvest["correctedCount"])
+            start_count = float(seed.get("correctedCount") or 0.0)
+            end_count = float(harvest.get("correctedCount") or 0.0)
+            if duration_hours <= 0 or start_count <= 0 or end_count <= 0:
+                continue
             growth_rate = math.log(end_count / start_count) / duration_hours if start_count > 0 and end_count > 0 else 0.0
             episodes.append(
                 {

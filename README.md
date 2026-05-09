@@ -32,6 +32,23 @@ PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
 
 In dry-run/mock mode, SNU-668 values are deterministic schema fixtures. They validate retrieval, audit, downsampling, and report generation. They are not biological numerical results. Manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
 
+## Live SNU-668 Run
+
+When the approved `cloneid::connect2DB()` credentials are available, run the same application against the two approved SNU-668 roots:
+
+```bash
+PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
+  --config configs/applications/snu668_density_history.yaml \
+  --external-zip /Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file \
+  --cloneid-root-id "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed" \
+  --mode live \
+  --output runs/snu668_r2_K3_A9_live \
+  --fit \
+  --make-figures
+```
+
+`--mode live` performs a read-only extraction through the installed `cloneid` R package. It traverses descendants from the requested roots through `Passaging.passaged_from_id1`, attaches `Perspective` through `Perspective.origin`, retains `Identity` as inferred secondary support, and writes the raw extraction to `cloneid_full/live_cloneid_rk_extraction_raw.json`. If live extraction fails, `--mode live` raises an error instead of silently falling back to mock. Use `--mode auto` only when fallback to deterministic mock is acceptable for workflow validation.
+
 ## Regimes Compared
 
 - `snu668_full_history`: the primary CLONEID application regime. It preserves Event -> Phenotype -> Perspective linkage, seed/harvest growth episodes, transfer/bottleneck semantics, image-derived phenotype, confluence proxies, and terminal Perspective support.

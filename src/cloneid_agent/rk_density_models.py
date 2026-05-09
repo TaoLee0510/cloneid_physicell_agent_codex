@@ -147,28 +147,50 @@ def fit_cloneid_full_models(growth_episodes: list[dict[str, Any]]) -> dict[str, 
             design_builder=lambda row: [1.0, 1.0 if row["branch_label"] == "K" else 0.0],
             parameter_names=["r_baseline_rate_per_hour", "K_branch_rate_delta_per_hour"],
         ),
-        _fit_rate_model(
-            family_id="density_dependent_growth",
-            episodes=episodes,
-            design_builder=lambda row: [1.0, float(row["seed_confluence_proxy"])],
-            parameter_names=["baseline_rate_per_hour", "seed_confluence_slope_per_hour"],
-        ),
-        _fit_rate_model(
-            family_id="density_plus_branch_optional",
-            episodes=episodes,
-            design_builder=lambda row: [
-                1.0,
-                float(row["seed_confluence_proxy"]),
-                1.0 if row["branch_label"] == "K" else 0.0,
-            ],
-            parameter_names=["baseline_rate_per_hour", "seed_confluence_slope_per_hour", "K_branch_delta_per_hour"],
-        ),
     ]
-    best = min(models, key=lambda item: item["aic"])
+    density_ready = all(row.get("seed_confluence_proxy") not in (None, "") for row in episodes)
+    if density_ready:
+        models.extend(
+            [
+                _fit_rate_model(
+                    family_id="density_dependent_growth",
+                    episodes=episodes,
+                    design_builder=lambda row: [1.0, float(row["seed_confluence_proxy"])],
+                    parameter_names=["baseline_rate_per_hour", "seed_confluence_slope_per_hour"],
+                ),
+                _fit_rate_model(
+                    family_id="density_plus_branch_optional",
+                    episodes=episodes,
+                    design_builder=lambda row: [
+                        1.0,
+                        float(row["seed_confluence_proxy"]),
+                        1.0 if row["branch_label"] == "K" else 0.0,
+                    ],
+                    parameter_names=["baseline_rate_per_hour", "seed_confluence_slope_per_hour", "K_branch_delta_per_hour"],
+                ),
+            ]
+        )
+    else:
+        models.extend(
+            [
+                {
+                    "family_id": "density_dependent_growth",
+                    "fit_status": NOT_IDENTIFIABLE_DENSITY,
+                    "reason": "one or more live growth episodes lacked an event-linked confluence proxy",
+                },
+                {
+                    "family_id": "density_plus_branch_optional",
+                    "fit_status": NOT_IDENTIFIABLE_DENSITY,
+                    "reason": "one or more live growth episodes lacked an event-linked confluence proxy",
+                },
+            ]
+        )
+    identifiable_models = [model for model in models if model.get("fit_status") == "identifiable"]
+    best = min(identifiable_models, key=lambda item: item["aic"]) if identifiable_models else None
     return {
         "models": models,
-        "best_supported_family": best["family_id"],
-        "selection_rule": "lowest AIC among identifiable event-linked mock fits",
+        "best_supported_family": None if best is None else best["family_id"],
+        "selection_rule": "lowest AIC among identifiable event-linked fits",
         "usage_guardrails": [
             "Transfer/passaging events are excluded from growth-rate fitting.",
             "Endpoint Perspective is validation/support only.",

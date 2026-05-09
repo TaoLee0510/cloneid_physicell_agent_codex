@@ -34,3 +34,18 @@ PYTHONPATH=src python3 -m cloneid_agent run \
 ```
 
 Mock SNU-668 values are deterministic schema fixtures. Manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
+
+Live command for the approved A9 r/K roots:
+
+```bash
+PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
+  --config configs/applications/snu668_density_history.yaml \
+  --external-zip /Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file \
+  --cloneid-root-id "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed" \
+  --mode live \
+  --output runs/snu668_r2_K3_A9_live \
+  --fit \
+  --make-figures
+```
+
+`--mode live` uses `cloneid::connect2DB()` read-only access and fails loudly if credentials or network access are unavailable. It does not silently substitute mock data.

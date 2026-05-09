@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from ..cloneid_lte_standard import write_cloneid_lte_standard
+from ..cloneid_live_rk_extraction import load_live_cloneid_rk_record, parse_cloneid_root_ids
 from ..comparative_identifiability import (
     build_comparative_identifiability,
     write_comparative_identifiability,
@@ -242,14 +243,34 @@ def run_rk_benchmark(
     write_modelability_audit_csv(subdirs["external_comparator"] / "nwaa124_modelability_audit.csv", audit_rows)
 
     live_status = "mock_mode_requested"
-    if mode in {"auto", "live"}:
-        live_status = "live_access_not_configured_fell_back_to_deterministic_mock"
-    full_record = build_mock_cloneid_full_record(cloneid_root_id)
+    live_extraction_error = None
+    requested_root_ids = parse_cloneid_root_ids(cloneid_root_id)
+    if mode in {"auto", "live"} and requested_root_ids:
+        try:
+            full_record = load_live_cloneid_rk_record(
+                root_ids=requested_root_ids,
+                output_dir=subdirs["cloneid_full"],
+            )
+            live_status = "live_read_only_cloneid_extraction_succeeded"
+        except Exception as exc:
+            live_extraction_error = str(exc)
+            if mode == "live":
+                raise
+            live_status = "live_access_failed_auto_fell_back_to_deterministic_mock"
+            full_record = build_mock_cloneid_full_record(cloneid_root_id)
+    elif mode == "live":
+        raise ValueError("--mode live requires --cloneid-root-id with one or more event IDs")
+    else:
+        full_record = build_mock_cloneid_full_record(cloneid_root_id)
+
     full_record["dataset_regime"] = "snu668_full_history"
-    full_record["dataset_id"] = "snu668_rk_density_history_mock_fixture"
-    full_record["data_status"] = "deterministic_mock_schema_fixture_not_observed_cloneid_data"
+    full_record.setdefault("dataset_id", "snu668_rk_density_history_mock_fixture")
+    full_record.setdefault("data_status", "deterministic_mock_schema_fixture_not_observed_cloneid_data")
     full_record["requested_mode"] = mode
+    full_record["requested_root_ids"] = requested_root_ids
     full_record["live_access_status"] = live_status
+    if live_extraction_error:
+        full_record["live_extraction_error"] = live_extraction_error
     full_artifacts = _write_cloneid_full_artifacts(full_record, subdirs["cloneid_full"])
 
     coarse_record = downsample_cloneid_record(full_record)
@@ -384,6 +405,8 @@ def run_rk_benchmark(
         ],
         "mode": mode,
         "live_access_status": live_status,
+        "live_extraction_error": live_extraction_error,
+        "cloneid_requested_root_ids": requested_root_ids,
         "fit": fit,
         "make_figures": make_figures,
         "config_path": config.get("_config_path"),

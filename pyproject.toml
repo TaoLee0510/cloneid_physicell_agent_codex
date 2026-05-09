@@ -11,6 +11,12 @@ requires-python = ">=3.10"
 [project.scripts]
 cloneid-agent = "cloneid_agent.cli:main"
 
+[project.optional-dependencies]
+rk-benchmark = [
+  "matplotlib>=3.8",
+  "python-docx>=1.1",
+]
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

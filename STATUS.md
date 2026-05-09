@@ -773,3 +773,23 @@ Adapt observable extraction and downstream mapping to consume `selected_lineage_
   - untracked: `ALL_CITATIONS.txt`
   - untracked: `GIT_WORKFLOW.md`
   - untracked: `docs/CLONEID_paper.pdf`
+
+---
+
+## 2026-05-07 update_5.5: CLONEID-LTE r/K benchmark
+
+Completed:
+- Added the `cloneid-agent run-rk-benchmark` application for the Li et al. NSR 2021 nwaa124 comparator and CLONEID SNU-668 native/downsampled mock records.
+- Added `audit-nwaa124-comparator` and `write-cloneid-lte-standard` CLI commands.
+- Implemented zip/directory inventory, docx paragraph/table/media extraction, figure-caption indexing, Supplementary Table 5 growth-rate extraction, Fig. 9 R-squared parsing, Fig. 10 logistic formula parsing, publication-level model records, modelability audit labels, CLONEID downsampling, density-model summaries, figures, standards artifacts, and manuscript/report drafts.
+- Ran the requested mock benchmark command successfully:
+  - `PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --external-zip /mnt/data/nwaa124_supplement_file.zip --mode mock --output runs/rk_benchmark_mock --fit --make-figures`
+
+Validation:
+- Passed: `PYTHONPATH=src:tests python3 -m unittest discover -s tests`
+  - Result: 87 tests passed.
+- Environment-specific pytest blocker:
+  - `python -m pytest` failed because `python` is not configured in pyenv for this shell.
+  - `python3 -m pytest` failed because pytest is not installed in `/opt/homebrew/opt/python@3.13/bin/python3.13`.
+- Dependency note:
+  - `python-docx` and `matplotlib` are not installed in the active interpreter. The benchmark uses OpenXML docx extraction and fallback PNG generation in this environment, while keeping optional paths for those libraries when available.

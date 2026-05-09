@@ -5,6 +5,8 @@ from __future__ import annotations
 import argparse
 import sys
 
+from .applications.rk_benchmark import audit_nwaa124_comparator, run_rk_benchmark
+from .cloneid_lte_standard import write_cloneid_lte_standard
 from .dataset_inventory import run_candidate_inventory
 from .dataset_ranking import rank_candidates_from_file, write_ranked_candidates
 from .dataset_selection import select_top_candidate_from_file, write_selected_candidate
@@ -747,6 +749,59 @@ def build_parser() -> argparse.ArgumentParser:
         help="OpenMP thread count for the smoke execution.",
     )
 
+    rk_parser = subparsers.add_parser(
+        "run-rk-benchmark",
+        help="Run the CLONEID-LTE r/K benchmark against the NSR nwaa124 comparator.",
+    )
+    rk_parser.add_argument(
+        "--external-zip",
+        required=True,
+        help="Path to the NSR supplement zip, or an unpacked supplement directory.",
+    )
+    rk_parser.add_argument(
+        "--cloneid-root-id",
+        default="auto",
+        help="CLONEID root id to use, or auto. Mock mode uses a deterministic SNU-668 fixture.",
+    )
+    rk_parser.add_argument(
+        "--mode",
+        choices=("auto", "live", "mock"),
+        default="auto",
+        help="Use live CLONEID access when available, otherwise deterministic mock records.",
+    )
+    rk_parser.add_argument(
+        "--output",
+        default="runs/rk_benchmark_v1",
+        help="Output directory for benchmark artifacts.",
+    )
+    rk_parser.add_argument("--fit", action="store_true", help="Fit or summarize supported model families.")
+    rk_parser.add_argument("--make-figures", action="store_true", help="Generate benchmark PNG figures.")
+
+    audit_nsr_parser = subparsers.add_parser(
+        "audit-nwaa124-comparator",
+        help="Extract and audit the NSR nwaa124 external comparator records.",
+    )
+    audit_nsr_parser.add_argument(
+        "--external-zip",
+        required=True,
+        help="Path to the NSR supplement zip, or an unpacked supplement directory.",
+    )
+    audit_nsr_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Output directory for NSR comparator audit artifacts.",
+    )
+
+    lte_parser = subparsers.add_parser(
+        "write-cloneid-lte-standard",
+        help="Write the CLONEID-LTE minimum standard schema, template, and checklist.",
+    )
+    lte_parser.add_argument(
+        "--output-dir",
+        required=True,
+        help="Output directory for CLONEID-LTE standard artifacts.",
+    )
+
     return parser
 
 
@@ -981,6 +1036,22 @@ def main(argv: list[str] | None = None) -> int:
             physicell_root=args.physicell_root if args.physicell_root else None,
             omp_threads=args.omp_threads,
         )
+        return 0
+    if args.command == "run-rk-benchmark":
+        run_rk_benchmark(
+            external_zip=args.external_zip,
+            cloneid_root_id=args.cloneid_root_id,
+            mode=args.mode,
+            output=args.output,
+            fit=args.fit,
+            make_figures=args.make_figures,
+        )
+        return 0
+    if args.command == "audit-nwaa124-comparator":
+        audit_nwaa124_comparator(external_zip=args.external_zip, output_dir=args.output_dir)
+        return 0
+    if args.command == "write-cloneid-lte-standard":
+        write_cloneid_lte_standard(args.output_dir)
         return 0
 
     parser.error(f"Unknown command: {args.command}")

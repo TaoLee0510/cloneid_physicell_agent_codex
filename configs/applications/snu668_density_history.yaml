@@ -54,6 +54,15 @@
       "cumulative confluence / crowding history"
     ]
   },
+  "physicell": {
+    "enabled_by_default": false,
+    "root": "/Users/4482173/Documents/PhysiCell",
+    "executable": "/Users/4482173/Documents/PhysiCell/heterogeneity",
+    "source_config": "/Users/4482173/Documents/PhysiCell/sample_projects/heterogeneity/config/PhysiCell_settings.xml",
+    "execute": false,
+    "runtime_max_time": 60,
+    "role": "optional executable modeling layer comparing what each record regime can provide to PhysiCell"
+  },
   "guardrails": [
     "read-only CLONEID access only",
     "mock mode uses deterministic schema fixtures only",

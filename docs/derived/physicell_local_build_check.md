@@ -81,5 +81,5 @@ is set before running `make`.
 Choose one of these:
 
 1. repeat the local source build in a persistent user-chosen location and record the stable `--physicell-bin` path
-2. start the first minimal PhysiCell smoke run from the successful local build tree
+2. start the first minimal PhysiCell runtime execution from the successful local build tree
 3. add a repository wrapper that prepares sample/template model folders against the local PhysiCell source tree

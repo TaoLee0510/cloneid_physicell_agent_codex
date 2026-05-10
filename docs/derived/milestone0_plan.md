@@ -118,7 +118,7 @@ Before Milestone 1 real database inventory:
 - actual read-only connection details or a sanctioned local snapshot
 - confirmation of the target schema instance if multiple CLONEID deployments exist
 
-Before Milestone 2 PhysiCell smoke test:
+Before Milestone 2 PhysiCell runtime execution:
 
 - a PhysiCell binary path or explicit build/install instructions
 - at least one minimal runnable PhysiCell config or approved stub format
@@ -127,5 +127,5 @@ Before Milestone 2 PhysiCell smoke test:
 
 1. Implement deterministic dry-run scaffolding using toy data.
 2. Implement read-only database adapter and provenance capture once credentials are available.
-3. Perform a PhysiCell smoke test once runtime assets are available.
+3. Perform a PhysiCell runtime execution once runtime assets are available.
 4. Only then attempt the first real CLONEID round trip.

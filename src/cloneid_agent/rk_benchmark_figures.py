@@ -14,6 +14,7 @@ FIGURE_FILENAMES = (
     "cloneid_event_graph.png",
     "full_vs_coarse_growth_evidence.png",
     "model_comparison_publication_vs_cloneid.png",
+    "physicell_model_input_comparison.png",
     "cloneid_lte_standard_summary.png",
 )
 
@@ -246,6 +247,40 @@ def plot_lte_standard_summary(path: str | Path) -> Path:
     return _save_or_fallback(target, draw, ["#8d6e63", "#78909c", "#c0a000", "#455a64"])
 
 
+def plot_physicell_model_input_comparison(physicell_analysis: dict[str, Any], path: str | Path) -> Path:
+    target = Path(path)
+
+    def draw(plt):
+        regimes = [row["dataset_regime"] for row in physicell_analysis.get("regimes", [])]
+        families = ["neutral_growth", "fixed_state_fitness", "density_dependent_growth"]
+        status_score = {
+            "physicell_event_schedule_configurable": 3,
+            "physicell_summary_or_prior_only": 2,
+            "underconstrained_for_physicell_calibration": 1,
+            "not_identifiable_for_physicell_density_history": 0,
+        }
+        matrix = []
+        for family in families:
+            row_values = []
+            for regime in physicell_analysis.get("regimes", []):
+                status = next(
+                    (item["encoding_status"] for item in regime.get("families", []) if item["family_id"] == family),
+                    "underconstrained_for_physicell_calibration",
+                )
+                row_values.append(status_score.get(status, 0))
+            matrix.append(row_values)
+        fig, ax = plt.subplots(figsize=(8.5, 4.8))
+        ax.imshow(matrix, cmap="magma", vmin=0, vmax=3, aspect="auto")
+        ax.set_yticks(range(len(families)))
+        ax.set_yticklabels(families)
+        ax.set_xticks(range(len(regimes)))
+        ax.set_xticklabels(regimes, rotation=25, ha="right")
+        ax.set_title("PhysiCell input resolution by record regime")
+        ax.set_xlabel("0=not identifiable, 3=event schedule configurable")
+
+    return _save_or_fallback(target, draw, ["#000004", "#b73779", "#fcfdbf"])
+
+
 def generate_rk_benchmark_figures(
     *,
     output_dir: str | Path,
@@ -256,10 +291,11 @@ def generate_rk_benchmark_figures(
     growth_episodes: list[dict[str, Any]],
     coarse_record: dict[str, Any],
     comparison_rows: list[dict[str, Any]],
+    physicell_analysis: dict[str, Any] | None = None,
 ) -> dict[str, Path]:
     output = Path(output_dir)
     output.mkdir(parents=True, exist_ok=True)
-    return {
+    paths = {
         "external_vs_cloneid_record_granularity": plot_record_granularity(
             audit_rows,
             output / "external_vs_cloneid_record_granularity.png",
@@ -281,3 +317,9 @@ def generate_rk_benchmark_figures(
         ),
         "cloneid_lte_standard_summary": plot_lte_standard_summary(output / "cloneid_lte_standard_summary.png"),
     }
+    if physicell_analysis is not None:
+        paths["physicell_model_input_comparison"] = plot_physicell_model_input_comparison(
+            physicell_analysis,
+            output / "physicell_model_input_comparison.png",
+        )
+    return paths

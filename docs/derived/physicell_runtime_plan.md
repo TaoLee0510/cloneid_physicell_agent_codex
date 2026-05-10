@@ -156,5 +156,5 @@ On this machine, the easiest likely path is still the local source build because
 So the planning conclusion is:
 
 - keep all three surfaces pinned and defined
-- prefer local source build first for the first actual smoke test
+- prefer local source build first for the first actual runtime execution
 - use Docker and Apptainer mainly for reproducibility and HPC portability

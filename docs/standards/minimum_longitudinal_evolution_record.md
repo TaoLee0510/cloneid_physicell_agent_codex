@@ -12,6 +12,7 @@ The standard is question-specific. For density-history model discrimination, a l
 | Are passaging events growth intervals or schedule resets? | event type; parent event id; seed/harvest/transfer classification; split or bottleneck ratio |
 | Which density exposure preceded endpoint assay? | ordered event graph; cumulative confluence exposure; Perspective origin or upstream event id |
 | Can an agent create an auditable model schedule? | event ledger; vessel context; phenotype provenance; transfer semantics; endpoint assay anchor |
+| Can PhysiCell distinguish fixed fitness from density-history mechanisms? | event-linked seed/harvest targets; elapsed time; transfer reset semantics; confluence or areaOccupied per event; vessel area; optional endpoint Perspective validation |
 
 ## Required Event Ledger
 

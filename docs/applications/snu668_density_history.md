@@ -18,6 +18,18 @@ This is the primary manuscript-facing application on `update_5.5`.
 
 Extended internal families may remain in benchmark JSON for compatibility, but paper-facing summaries should foreground the three families above.
 
+## PhysiCell-Facing Layer
+
+Add `--run-physicell` when the full executable-modeling package is needed. The workflow writes PhysiCell-ready input packages for all three regimes and all three manuscript-facing families.
+
+This layer answers a practical modeling question: which record structure is most useful for PhysiCell?
+
+- `snu668_full_history` can provide event-level seed/harvest schedules, transfer/reset semantics, elapsed time, confluence/area targets, and endpoint Perspective support.
+- `snu668_published_like_compressed` can provide branch-level summary targets, but loses the event schedule needed for density-history simulation.
+- `nwaa124_curated_external` can provide r/K growth-rate and carrying-capacity priors from the publication-level supplement, but not a native event-linked density schedule.
+
+Runtime execution can be requested with `--execute-physicell` when a local PhysiCell executable is available. This runs the generated candidate configs directly; calibrated biological simulation requires custom PhysiCell rules and live or frozen SNU-668 data.
+
 ## Interpretation Boundary
 
 This application compares inferential resolution, not biological truth across datasets. Terminal Perspective is endpoint validation/support only. Identity is inferred secondary support only. The compressed and external arms show observability/identifiability loss when event-linked structure is absent.
@@ -45,7 +57,9 @@ PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
   --mode live \
   --output runs/snu668_r2_K3_A9_live \
   --fit \
-  --make-figures
+  --make-figures \
+  --run-physicell \
+  --physicell-root /Users/4482173/Documents/PhysiCell
 ```
 
 `--mode live` uses `cloneid::connect2DB()` read-only access and fails loudly if credentials or network access are unavailable. It does not silently substitute mock data.

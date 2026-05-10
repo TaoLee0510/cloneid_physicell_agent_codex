@@ -32,6 +32,23 @@ PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
   --make-figures
 ```
 
+To include the PhysiCell-facing layer, add `--run-physicell`. This writes candidate schedules/configuration manifests for `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth` under each record regime, and compares which inputs are missing for PhysiCell analysis:
+
+```bash
+PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
+  --config configs/applications/snu668_density_history.yaml \
+  --external-zip /Users/4482173/Downloads/nwaa124_supplement_file.zip \
+  --cloneid-root-id "SNU-668_r2_A9_seed,SNU-668_K3_A9_seed" \
+  --mode mock \
+  --output runs/snu668_rk_physicell_mock \
+  --fit \
+  --make-figures \
+  --run-physicell \
+  --physicell-root /Users/4482173/Documents/PhysiCell
+```
+
+If you also want to execute the generated full-history PhysiCell candidate configs with the local binary, add `--execute-physicell`. Runtime execution is still interpreted separately from calibrated biological evidence unless custom PhysiCell rules and live or frozen SNU-668 data are used.
+
 In dry-run/mock mode, SNU-668 values are deterministic schema fixtures. They validate retrieval, audit, downsampling, and report generation. They are not biological numerical results. Manuscript numerical interpretation requires live read-only CLONEID extraction or an approved frozen SNU-668 snapshot.
 
 ## Live SNU-668 Run
@@ -46,7 +63,9 @@ PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark \
   --mode live \
   --output runs/snu668_r2_K3_A9_live \
   --fit \
-  --make-figures
+  --make-figures \
+  --run-physicell \
+  --physicell-root /Users/4482173/Documents/PhysiCell
 ```
 
 `--mode live` performs a read-only extraction through the installed `cloneid` R package. It traverses descendants from the requested roots through `Passaging.passaged_from_id1`, attaches `Perspective` through `Perspective.origin`, retains `Identity` as inferred secondary support, and writes the raw extraction to `cloneid_full/live_cloneid_rk_extraction_raw.json`. If live extraction fails, `--mode live` raises an error instead of silently falling back to mock. Use `--mode auto` only when fallback to deterministic mock is acceptable for workflow validation.
@@ -66,6 +85,16 @@ The manuscript-facing summaries foreground three families:
 - `density_dependent_growth`: growth depends on event-linked crowding/confluence/areaOccupied proxies, with transfer/reset semantics and cumulative density-history exposure available.
 
 Extended internal benchmark families may still be emitted for compatibility, but the paper-facing reports answer whether `fixed_state_fitness` can be separated from `density_dependent_growth` only when full event-linked history is present.
+
+## PhysiCell Layer
+
+The PhysiCell layer is now part of the complete optional workflow. It asks what each data regime can actually provide to an agent-based/spatial model:
+
+- `snu668_full_history`: event-level schedules with seed/harvest episodes, transfer resets, elapsed time, confluence/area targets, and endpoint Perspective support.
+- `snu668_published_like_compressed`: branch-level growth summaries that can inform priors or coarse targets, but not event-level density-history simulation.
+- `nwaa124_curated_external`: publication-level r/K growth and carrying-capacity evidence that can inform priors, but lacks a native event ledger and confluence-history schedule.
+
+The output distinguishes three things: PhysiCell-ready input resolution, optional runtime execution status, and biological model interpretation. The first two are produced automatically here; calibrated biological simulation requires live/frozen SNU-668 data plus custom PhysiCell rules that implement the selected family surfaces.
 
 ## Key Outputs
 
@@ -87,6 +116,10 @@ cloneid_full/history_covariates.json
 cloneid_full/history_covariates.md
 cloneid_downsampled/history_ablation.json
 cloneid_downsampled/history_ablation.md
+physicell/physicell_input_manifest.json
+physicell/model_family_physicell_comparison.csv
+physicell/physicell_summary.md
+physicell/required_data_for_physicell.md
 minimum_longitudinal_evolution_record.md
 figure_data/
 ```

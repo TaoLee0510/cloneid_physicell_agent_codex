@@ -29,6 +29,10 @@ def run_application(
     external_zip: str | None = None,
     fit: bool = True,
     make_figures: bool = True,
+    run_physicell: bool = False,
+    physicell_root: str | Path | None = None,
+    execute_physicell: bool = False,
+    physicell_runtime_max_time: int = 60,
 ) -> dict[str, Any]:
     """Run the flagship SNU-668 density-history application from a config file."""
 
@@ -44,6 +48,10 @@ def run_application(
         fit=fit,
         make_figures=make_figures,
         config_path=str(config_path),
+        run_physicell=run_physicell,
+        physicell_root=physicell_root,
+        execute_physicell=execute_physicell,
+        physicell_runtime_max_time=physicell_runtime_max_time,
     )
     return {
         "output_dir": str(output_dir),

@@ -11,7 +11,7 @@ from .physicell_mapping import DEFAULT_MAX_PROOF_OF_PRINCIPLE_MIN
 from .run_io import write_json, write_markdown
 
 
-DEFAULT_PHYSICELL_ROOT = Path("/Users/4470246/Downloads/PhysiCell-1.14.2")
+DEFAULT_PHYSICELL_ROOT = Path("/Users/4482173/Documents/PhysiCell")
 
 
 def _load_base_config(physicell_root: str | Path) -> ET.ElementTree:
@@ -57,7 +57,7 @@ def _candidate_readme_lines(candidate: dict[str, Any]) -> list[str]:
         "",
         "- This is a deterministic first-pass generated model candidate.",
         "- It preserves CLONEID lineage-object provenance and mapping metadata.",
-        "- It does not yet encode family-specific calibrated biology beyond the shared smoke-test-ready runtime scaffold.",
+        "- It does not yet encode family-specific calibrated biology beyond the shared runtime-ready scaffold.",
     ]
 
 
@@ -102,10 +102,10 @@ def generate_model_candidates(
         "selected_lineage_object_type",
         selected_lineage_object_payload.get("selected_lineage_object_type"),
     )
-    smoke_eligible = bool(selected_lineage_object_payload.get("smoke_eligible", False))
-    if not smoke_eligible:
+    runtime_eligible = bool(selected_lineage_object_payload.get("runtime_eligible", False))
+    if not runtime_eligible:
         raise ValueError(
-            "Default candidate generation requires a smoke-eligible selected lineage object; use selected_smoke_lineage_object.json or add an explicit runtime override."
+            "Default candidate generation requires a runtime-eligible selected lineage object; use selected_runtime_lineage_object.json or add an explicit runtime override."
         )
 
     candidates: list[dict[str, Any]] = []

@@ -56,7 +56,7 @@ def build_run_report(
             "",
             "## Caveat",
             "",
-            "- This report confirms lineage-object discovery, deterministic mapping, candidate generation, and runtime smoke readiness. It does not claim biological calibration or fit yet.",
+            "- This report confirms lineage-object discovery, deterministic mapping, candidate generation, and runtime readiness. It does not claim biological calibration or fit yet.",
         ]
     )
     return "\n".join(lines) + "\n"

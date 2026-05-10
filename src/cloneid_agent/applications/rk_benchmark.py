@@ -30,6 +30,7 @@ from ..rk_density_models import (
     model_family_specification_markdown,
     write_model_comparison_csv,
 )
+from ..rk_physicell_integration import build_physicell_analysis, write_physicell_analysis
 from ..rk_downsampling import (
     build_event_graph,
     build_event_schedule,
@@ -53,6 +54,7 @@ RK_BENCHMARK_SUBDIRS = (
     "standards",
     "figures",
     "figure_data",
+    "physicell",
 )
 
 
@@ -215,6 +217,10 @@ def run_rk_benchmark(
     fit: bool = False,
     make_figures: bool = False,
     config_path: str | Path | None = None,
+    run_physicell: bool = False,
+    physicell_root: str | Path | None = None,
+    execute_physicell: bool = False,
+    physicell_runtime_max_time: int = 60,
 ) -> Path:
     """Run the benchmark and write all required artifacts."""
 
@@ -223,6 +229,22 @@ def run_rk_benchmark(
         external_zip = config.get("external_zip") or config.get("external_comparator", {}).get("source_root_preferred")
     if cloneid_root_id in (None, "auto"):
         cloneid_root_id = config.get("cloneid_root_id", cloneid_root_id)
+    run_physicell = run_physicell or bool(config.get("run_physicell", False))
+    physicell_config = config.get("physicell", {})
+    if physicell_root is None:
+        physicell_root = config.get("physicell_root") or physicell_config.get("root")
+    physicell_executable = config.get("physicell_executable") or physicell_config.get("executable")
+    physicell_source_config = config.get("physicell_source_config") or physicell_config.get("source_config")
+    execute_physicell = execute_physicell or bool(
+        config.get("execute_physicell", False) or physicell_config.get("execute", False)
+    )
+    if physicell_runtime_max_time == 60:
+        physicell_runtime_max_time = int(
+            config.get(
+                "physicell_runtime_max_time",
+                physicell_config.get("runtime_max_time", physicell_runtime_max_time),
+            )
+        )
 
     output_dir = Path(output)
     subdirs = _ensure_subdirs(output_dir)
@@ -351,6 +373,23 @@ def run_rk_benchmark(
         }
     )
 
+    physicell_analysis = None
+    physicell_paths: dict[str, Path] = {}
+    if run_physicell:
+        physicell_analysis = build_physicell_analysis(
+            growth_episodes=full_artifacts["growth_episodes"],
+            event_schedule=full_artifacts["event_schedule"],
+            perspective_table=full_artifacts["perspective_endpoint_table"],
+            coarse_record=coarse_record,
+            external_record=external_record,
+            physicell_root=physicell_root,
+            physicell_executable=physicell_executable,
+            physicell_source_config=physicell_source_config,
+            execute_physicell=execute_physicell,
+            runtime_max_time=physicell_runtime_max_time,
+        )
+        physicell_paths = write_physicell_analysis(subdirs["physicell"], physicell_analysis)
+
     standards_paths = write_cloneid_lte_standard(subdirs["standards"])
     figure_paths = {}
     if make_figures:
@@ -363,6 +402,7 @@ def run_rk_benchmark(
             growth_episodes=full_artifacts["growth_episodes"],
             coarse_record=coarse_record,
             comparison_rows=comparison_rows,
+            physicell_analysis=physicell_analysis,
         )
 
     reports = write_rk_benchmark_reports(
@@ -375,6 +415,7 @@ def run_rk_benchmark(
         history_ablation=history_ablation,
         family_comparison=family_comparison,
         comparative_identifiability=comparative_identifiability,
+        physicell_analysis=physicell_analysis,
         config=config,
     )
 
@@ -410,6 +451,11 @@ def run_rk_benchmark(
         "cloneid_requested_root_ids": requested_root_ids,
         "fit": fit,
         "make_figures": make_figures,
+        "run_physicell": run_physicell,
+        "physicell_root_requested": None if physicell_root is None else str(physicell_root),
+        "physicell_executable_requested": None if physicell_executable is None else str(physicell_executable),
+        "physicell_source_config_requested": None if physicell_source_config is None else str(physicell_source_config),
+        "execute_physicell": execute_physicell,
         "config_path": config.get("_config_path"),
         "artifact_roots": {name: str(path) for name, path in subdirs.items()},
         "external_file_count": external_record["inventory"]["file_count"],
@@ -419,6 +465,7 @@ def run_rk_benchmark(
         "history_ablation_paths": {key: str(path) for key, path in history_ablation_downsampled_paths.items()},
         "modeling_paths": {key: str(path) for key, path in modeling_paths.items()},
         "standards_paths": {key: str(path) for key, path in standards_paths.items()},
+        "physicell_paths": {key: str(path) for key, path in physicell_paths.items()},
         "figure_paths": {key: str(path) for key, path in figure_paths.items()},
         "report_paths": {key: str(path) for key, path in reports.items()},
         "paper_facing_alias_paths": {key: str(path) for key, path in paper_alias_paths.items()},

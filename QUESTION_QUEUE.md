@@ -26,7 +26,7 @@ Access denied for user 'agent'@'47-200-2-146.fdr01.unvr.fl.ip.frontiernet.net'
 
 **Priority:** Important
 **Risk level:** 1
-**Question:** Should I remount/provide the real NSR supplement directory/archive for the next run, or continue using the deterministic fixture until the manuscript numerical branch is ready?
+**Question:** Should final manuscript runs use the accessible zip at `/Users/4482173/Downloads/nwaa124_supplement_file.zip`, or should the original requested data directory be remounted into this checkout?
 
 **Preferred path:**
 - `/Users/4482173/Documents/GitHub/cloneid_physicell_agent_codex/data/nwaa124_supplement_file`
@@ -34,7 +34,10 @@ Access denied for user 'agent'@'47-200-2-146.fdr01.unvr.fl.ip.frontiernet.net'
 **Fallback path:**
 - `/mnt/data/nwaa124_supplement_file.zip`
 
-**Why it matters:** The workflow can generate artifacts with a minimal fixture, but manuscript comparator interpretation should use the real NSR supplement archive or directory.
+**Accessible in this runtime:**
+- `/Users/4482173/Downloads/nwaa124_supplement_file.zip`
+
+**Why it matters:** The workflow can generate artifacts with the real zip from Downloads, but the repo-local directory named in the task was not present in this checkout. Final manuscript runs should use one stable approved source path.
 
 **Status:** Open
 
@@ -52,6 +55,18 @@ Access denied for user 'agent'@'47-200-2-146.fdr01.unvr.fl.ip.frontiernet.net'
 3. Keep both, with a comparison report showing discrepancies.
 
 **Current default assumption:** Keep compatibility adapter logic only; do not make curated CSV a competing primary comparator.
+
+**Status:** Open
+
+## Q005 — PhysiCell biological calibration scope
+
+**Priority:** Important
+**Risk level:** 2
+**Question:** For manuscript numerical results, should the next PhysiCell step implement custom family-specific rules inside the local PhysiCell model now, or wait until live/frozen SNU-668 data are finalized?
+
+**Why it matters:** The current workflow now writes PhysiCell-ready schedules, candidate config manifests, a record-regime comparison, and directly executes generated full-history PhysiCell configs against `/Users/4482173/Documents/PhysiCell/heterogeneity`. Biological simulation interpretation still requires calibrated custom rules for `neutral_growth`, `fixed_state_fitness`, and `density_dependent_growth`.
+
+**Current default assumption:** Do not treat direct runtime output as biological evidence. Use the current PhysiCell layer to show which data regimes are useful for executable modeling, then add calibrated custom-rule simulation after live or approved frozen SNU-668 data are available.
 
 **Status:** Open
 

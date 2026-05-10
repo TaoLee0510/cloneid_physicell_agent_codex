@@ -3,14 +3,14 @@
 set -euo pipefail
 
 CANDIDATE_DIR="${1:?candidate dir required}"
-PHYSICELL_ROOT="${2:-/Users/4470246/Downloads/PhysiCell-1.14.2}"
+PHYSICELL_ROOT="${2:-/Users/4482173/Documents/PhysiCell}"
 MAX_TIME_MIN="${3:-60}"
 OMP_THREADS="${4:-1}"
 
 CONFIG_PATH="${CANDIDATE_DIR}/config/PhysiCell_settings.xml"
 EXECUTABLE_PATH="${PHYSICELL_ROOT}/heterogeneity"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-OUTPUT_FOLDER="${CANDIDATE_DIR}/simulation_output_smoke_${STAMP}"
+OUTPUT_FOLDER="${CANDIDATE_DIR}/simulation_output_runtime_${STAMP}"
 TEMP_CONFIG="$(mktemp)"
 
 if [ ! -d "${CANDIDATE_DIR}" ]; then
@@ -51,5 +51,5 @@ PY
 
 "${EXECUTABLE_PATH}" "${TEMP_CONFIG}"
 
-echo "Generated-model smoke test finished."
+echo "Generated-model PhysiCell runtime execution finished."
 echo "Output folder: ${OUTPUT_FOLDER}"

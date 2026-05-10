@@ -44,7 +44,7 @@ class ModelCandidateTests(unittest.TestCase):
                 selected_lineage_object_payload={
                     "selected_lineage_object_id": "rooted_trajectory_bundle::mock_root",
                     "selected_lineage_object_type": "RootedTrajectoryBundle",
-                    "smoke_eligible": True,
+                    "runtime_eligible": True,
                 },
                 selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
                 mapping_payload={
@@ -84,7 +84,7 @@ class ModelCandidateTests(unittest.TestCase):
                     {
                         "selected_lineage_object_id": "lineage_path::mock_endpoint",
                         "selected_lineage_object_type": "LineagePath",
-                        "smoke_eligible": True,
+                        "runtime_eligible": True,
                     }
                 )
             )
@@ -143,7 +143,7 @@ class ModelCandidateTests(unittest.TestCase):
                     selected_lineage_object_payload={
                         "selected_lineage_object_id": "rooted_trajectory_bundle::too_big",
                         "selected_lineage_object_type": "RootedTrajectoryBundle",
-                        "smoke_eligible": True,
+                        "runtime_eligible": True,
                     },
                     selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
                     mapping_payload={
@@ -161,21 +161,21 @@ class ModelCandidateTests(unittest.TestCase):
                     physicell_root=physicell_root,
                 )
 
-    def test_generate_model_candidates_rejects_non_smoke_eligible_object_by_default(self) -> None:
+    def test_generate_model_candidates_rejects_non_runtime_eligible_object_by_default(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             physicell_root = self._fake_physicell_root(root)
             with self.assertRaises(ValueError):
                 generate_model_candidates(
                     selected_lineage_object_payload={
-                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_smoke",
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_runtime",
                         "selected_lineage_object_type": "RootedTrajectoryBundle",
-                        "smoke_eligible": False,
+                        "runtime_eligible": False,
                     },
                     selected_observables_payload={"selected": [{"source": "Passaging.correctedCount"}]},
                     mapping_payload={
                         "mapping_version": "physicell_mapping_v1",
-                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_smoke",
+                        "selected_lineage_object_id": "rooted_trajectory_bundle::not_runtime",
                         "selected_lineage_object_type": "RootedTrajectoryBundle",
                         "timeline": {
                             "planned_max_time_min": 1440,

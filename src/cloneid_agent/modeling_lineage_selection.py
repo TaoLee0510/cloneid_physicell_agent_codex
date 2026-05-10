@@ -20,7 +20,7 @@ DEFAULT_MODELING_FILTERS = {
     "min_bundle_terminal_perspective_endpoints": 2,
     "min_path_terminal_perspective_endpoints": 1,
 }
-DEFAULT_SMOKE_FILTERS = {
+DEFAULT_RUNTIME_FILTERS = {
     "max_planned_max_time_min": 86400,
     "max_event_count": 200,
     "max_graph_depth": 40,
@@ -300,7 +300,7 @@ def _biological_candidate_score(item: dict[str, Any]) -> float:
     phenotype_bonus = min(phenotype_count / 12.0, 1.0) * 6.0
     terminal_bonus = min(terminal_support, 2.0) * 2.0
     size_penalty = max(event_count - 40.0, 0.0) / 6.0 + max(depth - 30.0, 0.0) / 5.0
-    if item.get("technical_smoke_only_candidate"):
+    if item.get("technical_runtime_only_candidate"):
         size_penalty += 30.0
     return round(base + raw_time_bonus + phase_bonus + pair_bonus + phenotype_bonus + terminal_bonus - size_penalty, 3)
 
@@ -422,14 +422,14 @@ def classify_lineage_objects_for_modeling(
     }
 
 
-def classify_modeling_candidates_for_smoke(
+def classify_modeling_candidates_for_runtime(
     modeling_payload: dict[str, Any],
     *,
-    smoke_filters: dict[str, Any] | None = None,
+    runtime_filters: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    smoke_filters = dict(DEFAULT_SMOKE_FILTERS if smoke_filters is None else {**DEFAULT_SMOKE_FILTERS, **smoke_filters})
-    smoke_candidates: list[dict[str, Any]] = []
-    excluded_smoke: list[dict[str, Any]] = []
+    runtime_filters = dict(DEFAULT_RUNTIME_FILTERS if runtime_filters is None else {**DEFAULT_RUNTIME_FILTERS, **runtime_filters})
+    runtime_candidates: list[dict[str, Any]] = []
+    excluded_runtime: list[dict[str, Any]] = []
 
     for item in modeling_payload.get("modeling_candidate_lineage_objects", []):
         features = item.get("lineage_object_features", {})
@@ -441,11 +441,11 @@ def classify_modeling_candidates_for_smoke(
         graph_depth = int(features.get("event_graph_depth", 0))
         top_calibration = item.get("top_calibration_observable")
 
-        if planned_max_time_min > int(smoke_filters["max_planned_max_time_min"]):
-            reasons.append("exceeds_smoke_runtime_guardrail")
-        if event_count > int(smoke_filters["max_event_count"]):
+        if planned_max_time_min > int(runtime_filters["max_planned_max_time_min"]):
+            reasons.append("exceeds_runtime_guardrail")
+        if event_count > int(runtime_filters["max_event_count"]):
             reasons.append("too_many_events")
-        if graph_depth > int(smoke_filters["max_graph_depth"]):
+        if graph_depth > int(runtime_filters["max_graph_depth"]):
             reasons.append("excessive_depth")
         if phenotype_count < int(modeling_payload.get("filters", {}).get("min_repeated_phenotype_observations", 4)):
             reasons.append("insufficient_repeated_phenotype")
@@ -465,47 +465,47 @@ def classify_modeling_candidates_for_smoke(
 
         annotated = {
             **item,
-            "smoke_eligibility_filters": smoke_filters,
-            "smoke_eligibility_exclusion_reasons": reasons,
-            "smoke_eligible": not reasons,
+            "runtime_eligibility_filters": runtime_filters,
+            "runtime_eligibility_exclusion_reasons": reasons,
+            "runtime_eligible": not reasons,
             "raw_time_simulation_eligible": not reasons,
         }
         if reasons:
-            excluded_smoke.append(annotated)
+            excluded_runtime.append(annotated)
         else:
-            annotated["smoke_candidate_score"] = round(
+            annotated["runtime_candidate_score"] = round(
                 float(item.get("modeling_candidate_score", 0.0))
                 + max(0.0, 10.0 - planned_max_time_min / 8640.0),
                 3,
             )
-            smoke_candidates.append(annotated)
+            runtime_candidates.append(annotated)
 
-    smoke_candidates.sort(
+    runtime_candidates.sort(
         key=lambda item: (
             item.get("lineage_object_type") != "LineagePath",
-            -float(item.get("smoke_candidate_score", 0.0)),
+            -float(item.get("runtime_candidate_score", 0.0)),
             item["lineage_object_id"],
         )
     )
-    excluded_smoke.sort(
+    excluded_runtime.sort(
         key=lambda item: (
-            len(item.get("smoke_eligibility_exclusion_reasons", [])),
+            len(item.get("runtime_eligibility_exclusion_reasons", [])),
             -float(item.get("modeling_candidate_score", 0.0)),
             item["lineage_object_id"],
         )
     )
-    near_misses = excluded_smoke[:10]
+    near_misses = excluded_runtime[:10]
     return {
-        "selection_model": "smoke_eligible_modeling_lineage_object_v1",
-        "filters": smoke_filters,
+        "selection_model": "runtime_eligible_modeling_lineage_object_v1",
+        "filters": runtime_filters,
         "bounded_modeling_candidate_count": modeling_payload.get("modeling_candidate_count", 0),
-        "smoke_eligible_modeling_candidate_count": len(smoke_candidates),
-        "smoke_eligible_modeling_lineage_objects": smoke_candidates,
-        "smoke_ineligible_modeling_lineage_objects": excluded_smoke,
-        "top_smoke_near_misses": near_misses,
+        "runtime_eligible_modeling_candidate_count": len(runtime_candidates),
+        "runtime_eligible_modeling_lineage_objects": runtime_candidates,
+        "runtime_ineligible_modeling_lineage_objects": excluded_runtime,
+        "top_runtime_near_misses": near_misses,
         "warnings": [
-            "Smoke eligibility is a second selection tier on top of bounded modeling-candidate selection.",
-            "Candidate generation should use selected_smoke_lineage_object by default.",
+            "Runtime eligibility is a second selection tier on top of bounded modeling-candidate selection.",
+            "Candidate generation should use selected_runtime_lineage_object by default.",
         ],
     }
 
@@ -541,7 +541,7 @@ def classify_biological_proof_of_principle_candidates(
             normalized_phase_duration_min=int(filters["normalized_phase_duration_min"]),
         )
         context_regimes = _context_regimes(item)
-        technical_smoke_only = event_count <= 5 and float(features.get("phenotype_time_span_days", 0.0) or 0.0) < 1.0
+        technical_runtime_only = event_count <= 5 and float(features.get("phenotype_time_span_days", 0.0) or 0.0) < 1.0
         biologically_interpretable = (
             bool(item.get("selection_eligible", False))
             and root_count == 1
@@ -553,7 +553,7 @@ def classify_biological_proof_of_principle_candidates(
         )
         phase_abstracted_modeling_eligible = (
             biologically_interpretable
-            and not technical_smoke_only
+            and not technical_runtime_only
             and top_calibration is not None
             and top_calibration["source"] != "Passaging.cellSize_um2"
             and (
@@ -570,8 +570,8 @@ def classify_biological_proof_of_principle_candidates(
             )
         )
         eligibility_reasons: list[str] = []
-        if technical_smoke_only:
-            eligibility_reasons.append("technical_smoke_only_candidate")
+        if technical_runtime_only:
+            eligibility_reasons.append("technical_runtime_only_candidate")
         if not bool(item.get("selection_eligible", False)) or root_count != 1 or endpoint_count < 1:
             eligibility_reasons.append("unclear_root_endpoint_structure")
         if event_count < int(filters["min_event_count"]):
@@ -597,13 +597,13 @@ def classify_biological_proof_of_principle_candidates(
             **item,
             "global_lineage_object_category": "global_lineage_object",
             "raw_time_simulation_eligible": (
-                planned_max_time_min <= int(DEFAULT_SMOKE_FILTERS["max_planned_max_time_min"])
-                and event_count <= int(DEFAULT_SMOKE_FILTERS["max_event_count"])
-                and graph_depth <= int(DEFAULT_SMOKE_FILTERS["max_graph_depth"])
+                planned_max_time_min <= int(DEFAULT_RUNTIME_FILTERS["max_planned_max_time_min"])
+                and event_count <= int(DEFAULT_RUNTIME_FILTERS["max_event_count"])
+                and graph_depth <= int(DEFAULT_RUNTIME_FILTERS["max_graph_depth"])
             ),
             "biologically_interpretable": biologically_interpretable,
             "phase_abstracted_modeling_eligible": phase_abstracted_modeling_eligible,
-            "technical_smoke_only_candidate": technical_smoke_only,
+            "technical_runtime_only_candidate": technical_runtime_only,
             "planned_max_time_min": planned_max_time_min,
             "calibration_candidates": calibration_candidates,
             "top_calibration_observable": top_calibration,
@@ -658,17 +658,17 @@ def classify_biological_proof_of_principle_candidates(
         "warnings": [
             "Raw elapsed clock time is not used as a sole rejection criterion for biological proof-of-principle candidates.",
             "Phase abstraction preserves event order and provenance while avoiding literal simulation of idle calendar time.",
-            "Technical smoke-test objects remain separate from biological proof-of-principle candidates.",
+            "Technical runtime-test objects remain separate from biological proof-of-principle candidates.",
         ],
     }
 
 
-def classify_modeling_candidates_for_smoke_from_file(
+def classify_modeling_candidates_for_runtime_from_file(
     path: str | Path,
     *,
-    smoke_filters: dict[str, Any] | None = None,
+    runtime_filters: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return classify_modeling_candidates_for_smoke(json.loads(Path(path).read_text()), smoke_filters=smoke_filters)
+    return classify_modeling_candidates_for_runtime(json.loads(Path(path).read_text()), runtime_filters=runtime_filters)
 
 
 def classify_lineage_objects_for_modeling_from_file(
@@ -733,18 +733,18 @@ def select_modeling_lineage_object(payload: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def select_smoke_lineage_object(payload: dict[str, Any]) -> dict[str, Any]:
-    candidates = payload.get("smoke_eligible_modeling_lineage_objects", [])
+def select_runtime_lineage_object(payload: dict[str, Any]) -> dict[str, Any]:
+    candidates = payload.get("runtime_eligible_modeling_lineage_objects", [])
     if not candidates:
-        raise ValueError("No smoke-eligible lineage objects found")
+        raise ValueError("No runtime-eligible lineage objects found")
     top = candidates[0]
-    top_score = top["smoke_candidate_score"]
-    ties = [item["lineage_object_id"] for item in candidates if item.get("smoke_candidate_score") == top_score]
+    top_score = top["runtime_candidate_score"]
+    ties = [item["lineage_object_id"] for item in candidates if item.get("runtime_candidate_score") == top_score]
     return {
         "selected_lineage_object_id": top["lineage_object_id"],
         "selected_lineage_object_type": top["lineage_object_type"],
-        "smoke_candidate_score": top_score,
-        "selection_policy": "Highest-ranked smoke-eligible lineage object wins; no runtime override is applied by default.",
+        "runtime_candidate_score": top_score,
+        "selection_policy": "Highest-ranked runtime-eligible lineage object wins; no runtime override is applied by default.",
         "ties_at_top_score": ties,
         "selected_record": top,
     }
@@ -774,8 +774,8 @@ def select_modeling_lineage_object_from_file(path: str | Path) -> dict[str, Any]
     return select_modeling_lineage_object(json.loads(Path(path).read_text()))
 
 
-def select_smoke_lineage_object_from_file(path: str | Path) -> dict[str, Any]:
-    return select_smoke_lineage_object(json.loads(Path(path).read_text()))
+def select_runtime_lineage_object_from_file(path: str | Path) -> dict[str, Any]:
+    return select_runtime_lineage_object(json.loads(Path(path).read_text()))
 
 
 def select_biological_proof_of_principle_candidate_from_file(path: str | Path) -> dict[str, Any]:
@@ -826,31 +826,31 @@ def write_modeling_candidate_artifacts(output_dir: str | Path, payload: dict[str
     write_markdown(output_dir / "excluded_lineage_objects.md", "\n".join(excluded_lines) + "\n")
 
 
-def write_smoke_candidate_artifacts(output_dir: str | Path, payload: dict[str, Any]) -> None:
+def write_runtime_candidate_artifacts(output_dir: str | Path, payload: dict[str, Any]) -> None:
     output_dir = Path(output_dir)
-    write_json(output_dir / "smoke_eligible_modeling_lineage_objects.json", payload)
+    write_json(output_dir / "runtime_eligible_modeling_lineage_objects.json", payload)
     lines = [
-        "# Smoke-Eligible Modeling Lineage Objects",
+        "# Runtime-Eligible Modeling Lineage Objects",
         "",
-        f"- Smoke-eligible count: `{payload['smoke_eligible_modeling_candidate_count']}`",
+        f"- Runtime-eligible count: `{payload['runtime_eligible_modeling_candidate_count']}`",
         f"- Bounded modeling candidate count: `{payload['bounded_modeling_candidate_count']}`",
         "",
-        "## Top Smoke-Eligible Candidates",
+        "## Top Runtime-Eligible Candidates",
         "",
     ]
-    for item in payload.get("smoke_eligible_modeling_lineage_objects", [])[:10]:
+    for item in payload.get("runtime_eligible_modeling_lineage_objects", [])[:10]:
         features = item.get("lineage_object_features", {})
         calib = item.get("top_calibration_observable") or {}
         lines.append(
-            f"- `{item['lineage_object_id']}` type `{item['lineage_object_type']}` smoke_score `{item['smoke_candidate_score']}` events `{features.get('event_count')}` depth `{features.get('event_graph_depth')}` planned_max `{item.get('planned_max_time_min')}` calibration `{calib.get('source')}`"
+            f"- `{item['lineage_object_id']}` type `{item['lineage_object_type']}` runtime_score `{item['runtime_candidate_score']}` events `{features.get('event_count')}` depth `{features.get('event_graph_depth')}` planned_max `{item.get('planned_max_time_min')}` calibration `{calib.get('source')}`"
         )
-    if payload.get("top_smoke_near_misses"):
+    if payload.get("top_runtime_near_misses"):
         lines.extend(["", "## Top Near Misses", ""])
-        for item in payload["top_smoke_near_misses"]:
+        for item in payload["top_runtime_near_misses"]:
             lines.append(
-                f"- `{item['lineage_object_id']}`: {', '.join(item.get('smoke_eligibility_exclusion_reasons', []))}"
+                f"- `{item['lineage_object_id']}`: {', '.join(item.get('runtime_eligibility_exclusion_reasons', []))}"
             )
-    write_markdown(output_dir / "smoke_eligible_modeling_lineage_objects.md", "\n".join(lines) + "\n")
+    write_markdown(output_dir / "runtime_eligible_modeling_lineage_objects.md", "\n".join(lines) + "\n")
 
 
 def write_biological_proof_of_principle_candidate_artifacts(output_dir: str | Path, payload: dict[str, Any]) -> None:
@@ -925,23 +925,23 @@ def write_selected_modeling_lineage_object(output_dir: str | Path, selection_pay
     write_markdown(output_dir / "selected_modeling_lineage_object.md", "\n".join(lines) + "\n")
 
 
-def write_selected_smoke_lineage_object(output_dir: str | Path, selection_payload: dict[str, Any]) -> None:
+def write_selected_runtime_lineage_object(output_dir: str | Path, selection_payload: dict[str, Any]) -> None:
     output_dir = Path(output_dir)
     record = {
         "selected_lineage_object_id": selection_payload["selected_lineage_object_id"],
         "selected_lineage_object_type": selection_payload["selected_lineage_object_type"],
         "selection_summary": {
-            "smoke_candidate_score": selection_payload["smoke_candidate_score"],
+            "runtime_candidate_score": selection_payload["runtime_candidate_score"],
             "ties_at_top_score": selection_payload["ties_at_top_score"],
             "selection_policy": selection_payload["selection_policy"],
         },
         **selection_payload["selected_record"],
     }
-    write_json(output_dir / "selected_smoke_lineage_object.json", record)
+    write_json(output_dir / "selected_runtime_lineage_object.json", record)
     features = record.get("lineage_object_features", {})
     calib = record.get("top_calibration_observable") or {}
     lines = [
-        "# Selected Smoke Lineage Object",
+        "# Selected Runtime Lineage Object",
         "",
         f"- Selected lineage object: `{record['selected_lineage_object_id']}`",
         f"- Type: `{record['selected_lineage_object_type']}`",
@@ -955,7 +955,7 @@ def write_selected_smoke_lineage_object(output_dir: str | Path, selection_payloa
         f"- Terminal Perspective support: `{features.get('terminal_perspective_support')}`",
         f"- Selected calibration observable: `{calib.get('source')}`",
     ]
-    write_markdown(output_dir / "selected_smoke_lineage_object.md", "\n".join(lines) + "\n")
+    write_markdown(output_dir / "selected_runtime_lineage_object.md", "\n".join(lines) + "\n")
 
 
 def write_selected_biological_proof_of_principle_candidate(

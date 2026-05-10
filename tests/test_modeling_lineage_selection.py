@@ -11,10 +11,10 @@ from pathlib import Path
 from cloneid_agent.modeling_lineage_selection import (
     classify_biological_proof_of_principle_candidates,
     classify_lineage_objects_for_modeling,
-    classify_modeling_candidates_for_smoke,
+    classify_modeling_candidates_for_runtime,
     select_biological_proof_of_principle_candidate,
     select_modeling_lineage_object,
-    select_smoke_lineage_object,
+    select_runtime_lineage_object,
 )
 
 
@@ -76,13 +76,13 @@ def ranked_fixture() -> dict[str, object]:
     return {"ranked_lineage_objects": [big_bundle, bounded_path]}
 
 
-def smoke_ranked_fixture() -> dict[str, object]:
-    smoke_ok = {
-        "lineage_object_id": "rooted_trajectory_bundle::smoke_ok",
+def runtime_ranked_fixture() -> dict[str, object]:
+    runtime_ok = {
+        "lineage_object_id": "rooted_trajectory_bundle::runtime_ok",
         "lineage_object_type": "RootedTrajectoryBundle",
         "selection_eligible": True,
         "lineage_object_score": 75.0,
-        "lineage_object_score_reasons": ["smoke ready"],
+        "lineage_object_score_reasons": ["runtime ready"],
         "root_event_id": "r0",
         "endpoint_event_ids": ["e1", "e2"],
         "rooted_subtree_event_ids": ["r0", "r1", "r2", "e1", "e2"],
@@ -163,16 +163,16 @@ def smoke_ranked_fixture() -> dict[str, object]:
             "terminal_perspective_support": 2,
         },
     }
-    return {"ranked_lineage_objects": [too_long, cell_size_only, smoke_ok]}
+    return {"ranked_lineage_objects": [too_long, cell_size_only, runtime_ok]}
 
 
 def biological_ranked_fixture() -> dict[str, object]:
-    smoke_only = {
+    runtime_only = {
         "lineage_object_id": "rooted_trajectory_bundle::2586-4",
         "lineage_object_type": "RootedTrajectoryBundle",
         "selection_eligible": True,
         "lineage_object_score": 33.8,
-        "lineage_object_score_reasons": ["technical smoke"],
+        "lineage_object_score_reasons": ["technical runtime"],
         "root_event_id": "2586-4",
         "endpoint_event_ids": ["pre", "early"],
         "rooted_subtree_event_ids": ["2586-4", "2586-4_", "pre", "early"],
@@ -322,7 +322,7 @@ def biological_ranked_fixture() -> dict[str, object]:
             "phenotype_time_span_days": 2217.902,
         },
     }
-    return {"ranked_lineage_objects": [smoke_only, sum159_4n_o2, sum159_2n_o2, hgc_g2, hgc_revg]}
+    return {"ranked_lineage_objects": [runtime_only, sum159_4n_o2, sum159_2n_o2, hgc_g2, hgc_revg]}
 
 
 class ModelingLineageSelectionTests(unittest.TestCase):
@@ -368,25 +368,25 @@ class ModelingLineageSelectionTests(unittest.TestCase):
             self.assertTrue((out_dir / "modeling_candidate_lineage_objects.json").exists())
             self.assertTrue((out_dir / "excluded_lineage_objects.json").exists())
 
-    def test_smoke_selection_requires_runtime_guardrail_and_usable_calibration(self) -> None:
-        modeling = classify_lineage_objects_for_modeling(smoke_ranked_fixture())
-        smoke = classify_modeling_candidates_for_smoke(modeling)
-        self.assertEqual(smoke["smoke_eligible_modeling_candidate_count"], 1)
-        self.assertEqual(smoke["smoke_eligible_modeling_lineage_objects"][0]["lineage_object_id"], "rooted_trajectory_bundle::smoke_ok")
+    def test_runtime_selection_requires_runtime_guardrail_and_usable_calibration(self) -> None:
+        modeling = classify_lineage_objects_for_modeling(runtime_ranked_fixture())
+        runtime = classify_modeling_candidates_for_runtime(modeling)
+        self.assertEqual(runtime["runtime_eligible_modeling_candidate_count"], 1)
+        self.assertEqual(runtime["runtime_eligible_modeling_lineage_objects"][0]["lineage_object_id"], "rooted_trajectory_bundle::runtime_ok")
         excluded = {
-            item["lineage_object_id"]: item["smoke_eligibility_exclusion_reasons"]
-            for item in smoke["smoke_ineligible_modeling_lineage_objects"]
+            item["lineage_object_id"]: item["runtime_eligibility_exclusion_reasons"]
+            for item in runtime["runtime_ineligible_modeling_lineage_objects"]
         }
-        self.assertIn("exceeds_smoke_runtime_guardrail", excluded["rooted_trajectory_bundle::too_long"])
+        self.assertIn("exceeds_runtime_guardrail", excluded["rooted_trajectory_bundle::too_long"])
         self.assertIn("cell_size_only_calibration", excluded["rooted_trajectory_bundle::cell_size_only"])
 
-    def test_selected_modeling_and_selected_smoke_are_distinct_tiers(self) -> None:
-        modeling = classify_lineage_objects_for_modeling(smoke_ranked_fixture())
+    def test_selected_modeling_and_selected_runtime_are_distinct_tiers(self) -> None:
+        modeling = classify_lineage_objects_for_modeling(runtime_ranked_fixture())
         broader = select_modeling_lineage_object(modeling)
-        smoke = classify_modeling_candidates_for_smoke(modeling)
-        smoke_selected = select_smoke_lineage_object(smoke)
-        self.assertNotEqual(broader["selection_policy"], smoke_selected["selection_policy"])
-        self.assertTrue(smoke_selected["selected_record"]["smoke_eligible"])
+        runtime = classify_modeling_candidates_for_runtime(modeling)
+        runtime_selected = select_runtime_lineage_object(runtime)
+        self.assertNotEqual(broader["selection_policy"], runtime_selected["selection_policy"])
+        self.assertTrue(runtime_selected["selected_record"]["runtime_eligible"])
 
     def test_long_lineages_can_be_phase_abstracted_biological_candidates(self) -> None:
         payload = classify_biological_proof_of_principle_candidates(biological_ranked_fixture())
@@ -402,7 +402,7 @@ class ModelingLineageSelectionTests(unittest.TestCase):
         self.assertIn("lineage_path::SUM159_NLS_2N_O2_A7K_harvest", sum159["matched_lineage_candidates"])
         self.assertGreater(sum159["phase_abstraction_summary"]["phase_count"], 10)
 
-    def test_technical_smoke_object_is_not_selected_as_biological_proof(self) -> None:
+    def test_technical_runtime_object_is_not_selected_as_biological_proof(self) -> None:
         payload = classify_biological_proof_of_principle_candidates(biological_ranked_fixture())
         selected = select_biological_proof_of_principle_candidate(payload)
         self.assertNotEqual(selected["selected_lineage_object_id"], "rooted_trajectory_bundle::2586-4")
@@ -410,15 +410,15 @@ class ModelingLineageSelectionTests(unittest.TestCase):
             item["lineage_object_id"]: item["biological_proof_exclusion_reasons"]
             for item in payload["top_biological_proof_near_misses"]
         }
-        self.assertIn("technical_smoke_only_candidate", near_misses["rooted_trajectory_bundle::2586-4"])
+        self.assertIn("technical_runtime_only_candidate", near_misses["rooted_trajectory_bundle::2586-4"])
 
-    def test_selected_biological_candidate_is_distinct_from_smoke_candidate(self) -> None:
-        smoke_modeling = classify_lineage_objects_for_modeling(smoke_ranked_fixture())
-        smoke_payload = classify_modeling_candidates_for_smoke(smoke_modeling)
-        smoke_selected = select_smoke_lineage_object(smoke_payload)
+    def test_selected_biological_candidate_is_distinct_from_runtime_candidate(self) -> None:
+        runtime_modeling = classify_lineage_objects_for_modeling(runtime_ranked_fixture())
+        runtime_payload = classify_modeling_candidates_for_runtime(runtime_modeling)
+        runtime_selected = select_runtime_lineage_object(runtime_payload)
         biological_payload = classify_biological_proof_of_principle_candidates(biological_ranked_fixture())
         biological_selected = select_biological_proof_of_principle_candidate(biological_payload)
-        self.assertNotEqual(smoke_selected["selected_lineage_object_id"], biological_selected["selected_lineage_object_id"])
+        self.assertNotEqual(runtime_selected["selected_lineage_object_id"], biological_selected["selected_lineage_object_id"])
         self.assertIn(
             biological_selected["selected_record"]["recommended_modeling_form"],
             {"matched LineagePath pair", "single LineagePath", "small RootedTrajectoryBundle"},

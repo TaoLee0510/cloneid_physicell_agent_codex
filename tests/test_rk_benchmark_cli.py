@@ -70,6 +70,40 @@ class RkBenchmarkCliTests(unittest.TestCase):
             manifest = json.loads((output / "application_manifest.json").read_text())
             self.assertEqual(manifest["external_file_count"], 6)
 
+    def test_run_rk_benchmark_cli_can_write_physicell_stage(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            output = tmp / "run"
+            status = main(
+                [
+                    "run-rk-benchmark",
+                    "--external-zip",
+                    str(make_nwaa124_fixture_zip(tmp)),
+                    "--mode",
+                    "mock",
+                    "--output",
+                    str(output),
+                    "--fit",
+                    "--run-physicell",
+                    "--make-figures",
+                ]
+            )
+            self.assertEqual(status, 0)
+            required = [
+                "physicell/physicell_input_manifest.json",
+                "physicell/model_family_physicell_comparison.csv",
+                "physicell/required_data_for_physicell.md",
+                "physicell/candidate_configs/snu668_full_history/density_dependent_growth/candidate_manifest.json",
+                "figures/physicell_model_input_comparison.png",
+            ]
+            for rel in required:
+                self.assertTrue((output / rel).exists(), rel)
+            manifest = json.loads((output / "application_manifest.json").read_text())
+            self.assertTrue(manifest["run_physicell"])
+            report = (output / "model_selection_report.md").read_text()
+            self.assertIn("PhysiCell Integration", report)
+            self.assertIn("density-dependent PhysiCell status", report)
+
     def test_reports_contain_overclaim_guardrails(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             tmp = Path(tmpdir)

@@ -15,17 +15,17 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 class EvaluationTests(unittest.TestCase):
-    def test_evaluate_generated_model_candidates_detects_smoke_outputs(self) -> None:
+    def test_evaluate_generated_model_candidates_detects_runtime_outputs(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
             candidate_dir = root / "model_candidates" / "neutral_growth"
             config_dir = candidate_dir / "config"
-            smoke_dir = candidate_dir / "simulation_output_smoke_20260428T000000Z"
+            runtime_dir = candidate_dir / "simulation_output_runtime_20260428T000000Z"
             config_dir.mkdir(parents=True)
-            smoke_dir.mkdir(parents=True)
+            runtime_dir.mkdir(parents=True)
             (config_dir / "PhysiCell_settings.xml").write_text("<xml />")
             for name in ("initial.xml", "final.xml", "initial.svg", "final.svg"):
-                (smoke_dir / name).write_text("")
+                (runtime_dir / name).write_text("")
             payload = evaluate_generated_model_candidates(
                 {
                     "selected_lineage_object_id": "rooted_trajectory_bundle::mock",
@@ -40,7 +40,7 @@ class EvaluationTests(unittest.TestCase):
                     ],
                 }
             )
-            self.assertEqual(payload["candidate_evaluations"][0]["runtime_status"], "smoke_verified")
+            self.assertEqual(payload["candidate_evaluations"][0]["runtime_status"], "runtime_executed")
 
     def test_evaluation_and_report_cli_write_artifacts(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:

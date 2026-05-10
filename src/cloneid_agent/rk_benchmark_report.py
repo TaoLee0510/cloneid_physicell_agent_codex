@@ -35,6 +35,7 @@ def build_model_selection_report(
     history_ablation: dict[str, Any] | None = None,
     family_comparison: dict[str, Any] | None = None,
     comparative_identifiability: dict[str, Any] | None = None,
+    physicell_analysis: dict[str, Any] | None = None,
     config: dict[str, Any] | None = None,
 ) -> str:
     family_order = {"neutral_growth": 0, "fixed_state_fitness": 1, "density_dependent_growth": 2}
@@ -76,6 +77,7 @@ def build_model_selection_report(
     low_cost_fields = (comparative_identifiability or {}).get("low_cost_fields_that_rescue_identifiability", [])
     low_cost_lines = [f"- {item}" for item in low_cost_fields] or ["- event-linked minimum metadata fields"]
     required_data_lines = _required_data_by_question_lines()
+    physicell_lines = _physicell_report_lines(physicell_analysis)
     return "\n".join(
         [
             "# SNU-668 Density-History Model Selection Report",
@@ -110,9 +112,13 @@ def build_model_selection_report(
             "",
             *family_lines,
             "",
+            "## PhysiCell Integration",
+            "",
+            *physicell_lines,
+            "",
             "## Question-Specific Required Data",
             "",
-            "The benchmark also asks which low-cost records are necessary for specific mechanistic questions. NSR directly compares r and K populations at publication level; CLONEID adds the native event ledger needed to answer event-history questions automatically and audibly.",
+            "The benchmark also asks which low-cost records are necessary for specific mechanistic questions. NSR directly compares r and K populations at publication level; CLONEID adds the native event ledger needed to answer event-history questions automatically and auditably.",
             "",
             *required_data_lines,
             "",
@@ -154,7 +160,8 @@ def build_manuscript_facing_summary(
     history_ablation: dict[str, Any] | None,
     family_comparison: dict[str, Any] | None,
     comparative_identifiability: dict[str, Any] | None,
-    config: dict[str, Any] | None,
+    physicell_analysis: dict[str, Any] | None = None,
+    config: dict[str, Any] | None = None,
 ) -> str:
     observation_lines = [
         f"- `{row['dataset_regime']}`: auditability `{row['auditability_grade']}`, identifiability `{row['identifiability_grade']}`"
@@ -170,6 +177,10 @@ def build_manuscript_facing_summary(
     if not family_lines:
         family_lines = ["- Density-history loss was not computed."]
     low_cost = (comparative_identifiability or {}).get("low_cost_fields_that_rescue_identifiability", [])
+    physicell_score_lines = [
+        f"- `{row['dataset_regime']}`: PhysiCell input score `{row['physicell_input_score']}`"
+        for row in (physicell_analysis or {}).get("regimes", [])
+    ] or ["- PhysiCell integration was not requested for this run."]
     return "\n".join(
         [
             "# Manuscript-Facing Summary",
@@ -213,6 +224,12 @@ def build_manuscript_facing_summary(
             "CLONEID-LTEE can therefore be framed as a low-cost gold-standard-style record for long-term evolutionary experiments: not more data for its own sake, but the minimum event-linked structure needed to answer mechanistic questions reproducibly.",
             "",
             *[f"- {item}" for item in (low_cost or ["event ledger", "event-linked confluence proxy", "terminal Perspective anchor"])],
+            "",
+            "## PhysiCell-Ready Modeling Layer",
+            "",
+            "When requested, the workflow writes PhysiCell-ready candidate inputs for the same three regimes. Full CLONEID history supplies event-linked schedules and confluence history; compressed and NSR publication-level records mainly supply summary targets or priors.",
+            "",
+            *physicell_score_lines,
             "",
             "## Non-Claims / Limitations",
             "",
@@ -266,6 +283,33 @@ def build_family_discrimination_summary(family_comparison: dict[str, Any] | None
     return "\n".join(lines)
 
 
+def _physicell_report_lines(physicell_analysis: dict[str, Any] | None) -> list[str]:
+    if not physicell_analysis:
+        return [
+            "PhysiCell integration was not requested for this run. Use `--run-physicell` to write candidate schedules, config manifests, and a data-regime comparison for PhysiCell.",
+        ]
+    lines = [
+        f"- PhysiCell root resolved: `{physicell_analysis.get('physicell_root_resolved')}`",
+        f"- Runtime execution requested: `{physicell_analysis.get('execute_physicell_requested')}`",
+    ]
+    for regime in physicell_analysis.get("regimes", []):
+        density_row = next(
+            (row for row in regime.get("families", []) if row.get("family_id") == "density_dependent_growth"),
+            {},
+        )
+        lines.append(
+            f"- `{regime['dataset_regime']}`: input score `{regime['physicell_input_score']}`; "
+            f"density-dependent PhysiCell status `{density_row.get('encoding_status', 'not evaluated')}`."
+        )
+    lines.extend(
+        [
+            "- Most useful fields for PhysiCell are event-linked seed/harvest episodes, transfer reset semantics, elapsed time, and confluence/area history.",
+            "- NSR supports r/K growth and carrying-capacity priors at publication level, but not a native event-linked density schedule.",
+        ]
+    )
+    return lines
+
+
 def _required_data_by_question_lines() -> list[str]:
     rows = [
         (
@@ -298,6 +342,12 @@ def _required_data_by_question_lines() -> list[str]:
             "requires manual reconstruction from publication-level records",
             "agent-ready schedule can be generated from native records",
         ),
+        (
+            "Can PhysiCell distinguish fixed fitness from density-history mechanisms?",
+            "episode-level count targets; elapsed time; transfer reset semantics; per-event confluence/area; optional endpoint validation",
+            "supports growth/carrying-capacity priors, but lacks native event-linked density schedules",
+            "full history can generate auditable PhysiCell candidate inputs; compressed history loses the density schedule",
+        ),
     ]
     lines = [
         "| Mechanistic question | Necessary data | NSR publication-level record | CLONEID event-linked record |",
@@ -320,6 +370,8 @@ def build_required_data_by_question_report() -> str:
             "",
             "The distinction is not that NSR lacks r/K biology. The distinction is that CLONEID records the experiment as an event-linked object. That structure makes specific questions easier to answer: which observations are growth episodes, which records are transfer resets, which confluence exposure preceded each harvest, and which endpoint Perspective anchors to which upstream event.",
             "",
+            "For PhysiCell, this difference becomes concrete: NSR can inform summary priors such as r/K growth-rate distributions and carrying-capacity evidence, while CLONEID full history can be converted into episode-level simulation schedules with reset semantics and confluence-aware targets.",
+            "",
             "This is the basis for describing CLONEID-LTEE as a low-cost gold-standard-style data standard for long-term evolutionary experiments.",
             "",
         ]
@@ -337,6 +389,8 @@ def build_manuscript_insert() -> str:
             "",
             "In the CLONEID native SNU-668 record, seed, harvest, transfer, image-derived phenotype, confluence proxy, and endpoint Perspective records were preserved as linked events. This event graph allowed neutral growth, fixed-state fitness, and density-dependent growth families to be evaluated with explicit separation of biological growth episodes from passaging resets. Downsampling the native record to publication-level summaries removed the parent-child graph, per-event density, image provenance, and Perspective-event linkage, making density/confluence model families not identifiable from the coarse record.",
             "",
+            "A PhysiCell-facing layer converted the same regimes into candidate input packages. Full CLONEID history supported event-level schedules with transfer resets and confluence-aware targets, whereas the compressed CLONEID and NSR publication-level records primarily supported summary priors or coarse targets. Thus, the executable modeling difference followed from record structure: density-history candidates require event-linked crowding records, not only branch-level growth summaries.",
+            "",
             "## Methods",
             "",
             "Docx/txt/vcf extraction was performed by listing the archive, classifying document types, extracting docx paragraphs and tables, and exporting embedded media into an audit folder. Supplementary figure captions were indexed, Supplementary Tables 1, 2, 3, 5, and 6 were exported as CSV when present, and model formulas or reported fit statistics were parsed from captions and methods text.",
@@ -347,9 +401,11 @@ def build_manuscript_insert() -> str:
             "",
             "The modelability audit assigned controlled record-status labels across `snu668_full_history`, `snu668_published_like_compressed`, and `nwaa124_curated_external`. Model families were evaluated as identifiable, summary-only identifiable, publication-level reconstruction only, or not identifiable due to missing event-level density or event graph.",
             "",
+            "PhysiCell integration generated candidate schedules and configuration manifests for neutral growth, fixed-state fitness, and density-dependent growth under each regime. Runtime execution, when requested and when a local PhysiCell executable is available, runs the generated candidate configs directly. Biological simulation interpretation requires calibrated custom PhysiCell rules and live or frozen SNU-668 data.",
+            "",
             "## Figure Caption",
             "",
-            "Figure X. SNU-668 density-history proof-of-principle. The full CLONEID regime preserves seed-harvest-transfer event linkage, image-derived phenotype, confluence proxy, and endpoint Perspective provenance. The compressed SNU-668 regime removes those links to mimic a publication-like sparse view. The external NSR supplement supports coarse reconstruction through structured tables, captions, model formulas, and methods text, and acts as a supporting observability comparator.",
+            "Figure X. SNU-668 density-history proof-of-principle. The full CLONEID regime preserves seed-harvest-transfer event linkage, image-derived phenotype, confluence proxy, and endpoint Perspective provenance. The compressed SNU-668 regime removes those links to mimic a publication-like sparse view. The external NSR supplement supports coarse reconstruction through structured tables, captions, model formulas, and methods text, and acts as a supporting observability comparator. The PhysiCell-facing panel shows that density-history candidates require event-linked confluence and reset semantics, whereas summary-only records mainly support priors or coarse targets.",
             "",
             "## Nature Methods Significance",
             "",
@@ -374,6 +430,7 @@ def write_rk_benchmark_reports(
     history_ablation: dict[str, Any] | None = None,
     family_comparison: dict[str, Any] | None = None,
     comparative_identifiability: dict[str, Any] | None = None,
+    physicell_analysis: dict[str, Any] | None = None,
     config: dict[str, Any] | None = None,
 ) -> dict[str, Path]:
     output = Path(output_dir)
@@ -386,6 +443,7 @@ def write_rk_benchmark_reports(
         history_ablation=history_ablation,
         family_comparison=family_comparison,
         comparative_identifiability=comparative_identifiability,
+        physicell_analysis=physicell_analysis,
         config=config,
     )
     for term in FORBIDDEN_OVERCLAIM_TERMS:
@@ -411,6 +469,7 @@ def write_rk_benchmark_reports(
                 history_ablation=history_ablation,
                 family_comparison=family_comparison,
                 comparative_identifiability=comparative_identifiability,
+                physicell_analysis=physicell_analysis,
                 config=config,
             ),
         ),

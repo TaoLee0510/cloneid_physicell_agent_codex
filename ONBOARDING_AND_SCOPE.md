@@ -161,7 +161,7 @@ Understand both systems enough to define a safe first bridge.
 
 Read the CLONEID database in read-only mode and summarize available datasets.
 
-### Milestone 2 — PhysiCell smoke test
+### Milestone 2 — PhysiCell runtime execution
 
 Run one minimal PhysiCell model or validate one generated configuration.
 

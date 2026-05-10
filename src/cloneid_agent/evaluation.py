@@ -9,7 +9,7 @@ from typing import Any
 from .run_io import write_json, write_markdown
 
 
-EXPECTED_SMOKE_FILES = (
+EXPECTED_RUNTIME_FILES = (
     "initial.xml",
     "final.xml",
     "initial.svg",
@@ -17,10 +17,10 @@ EXPECTED_SMOKE_FILES = (
 )
 
 
-def _latest_smoke_output(candidate_dir: Path) -> Path | None:
+def _latest_runtime_output(candidate_dir: Path) -> Path | None:
     candidates = sorted(
         path for path in candidate_dir.iterdir()
-        if path.is_dir() and path.name.startswith("simulation_output_smoke_")
+        if path.is_dir() and path.name.startswith("simulation_output_runtime_")
     )
     return candidates[-1] if candidates else None
 
@@ -30,12 +30,12 @@ def evaluate_generated_model_candidates(payload: dict[str, Any]) -> dict[str, An
     for candidate in payload.get("model_candidates", []):
         candidate_dir = Path(candidate["candidate_dir"])
         config_path = Path(candidate["config_path"])
-        latest_smoke = _latest_smoke_output(candidate_dir) if candidate_dir.exists() else None
+        latest_runtime = _latest_runtime_output(candidate_dir) if candidate_dir.exists() else None
         present_files = []
         missing_files = []
-        if latest_smoke is not None:
-            for name in EXPECTED_SMOKE_FILES:
-                if (latest_smoke / name).exists():
+        if latest_runtime is not None:
+            for name in EXPECTED_RUNTIME_FILES:
+                if (latest_runtime / name).exists():
                     present_files.append(name)
                 else:
                     missing_files.append(name)
@@ -44,13 +44,13 @@ def evaluate_generated_model_candidates(payload: dict[str, Any]) -> dict[str, An
                 "candidate_id": candidate["candidate_id"],
                 "family": candidate["family"],
                 "config_exists": config_path.exists(),
-                "latest_smoke_output": None if latest_smoke is None else str(latest_smoke),
-                "smoke_run_detected": latest_smoke is not None,
-                "expected_smoke_files_present": present_files,
-                "expected_smoke_files_missing": missing_files,
+                "latest_runtime_output": None if latest_runtime is None else str(latest_runtime),
+                "runtime_run_detected": latest_runtime is not None,
+                "expected_runtime_files_present": present_files,
+                "expected_runtime_files_missing": missing_files,
                 "runtime_status": (
-                    "smoke_verified"
-                    if latest_smoke is not None and not missing_files and config_path.exists()
+                    "runtime_executed"
+                    if latest_runtime is not None and not missing_files and config_path.exists()
                     else "generated_only"
                 ),
             }
@@ -58,7 +58,7 @@ def evaluate_generated_model_candidates(payload: dict[str, Any]) -> dict[str, An
     return {
         "selected_lineage_object_id": payload.get("selected_lineage_object_id"),
         "selected_lineage_object_type": payload.get("selected_lineage_object_type"),
-        "evaluation_policy": "Runtime-readiness and smoke-output presence only; no scientific fit claim is made here.",
+        "evaluation_policy": "Runtime-readiness and runtime-output presence only; no scientific fit claim is made here.",
         "candidate_evaluations": evaluations,
     }
 
@@ -84,6 +84,6 @@ def write_evaluation(output_dir: str | Path, payload: dict[str, Any]) -> None:
         lines.append(
             f"- `{item['family']}`: `{item['runtime_status']}`"
         )
-        if item["latest_smoke_output"]:
-            lines.append(f"  Latest smoke output: `{item['latest_smoke_output']}`")
+        if item["latest_runtime_output"]:
+            lines.append(f"  Latest runtime output: `{item['latest_runtime_output']}`")
     write_markdown(output_dir / "evaluation.md", "\n".join(lines) + "\n")

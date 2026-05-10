@@ -44,8 +44,8 @@ def build_physicell_mapping(
         planned_max_time_min = max(60, int(round(float(span_days) * 1440.0)))
     within_guardrail = planned_max_time_min <= int(max_proof_of_principle_minutes)
     simulation_duration_source = (
-        "selected_smoke_lineage_object"
-        if bool(selected_lineage_object_payload.get("smoke_eligible", False))
+        "selected_runtime_lineage_object"
+        if bool(selected_lineage_object_payload.get("runtime_eligible", False))
         else "selected_bounded_modeling_lineage_object"
     )
 

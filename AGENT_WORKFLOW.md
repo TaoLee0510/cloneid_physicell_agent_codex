@@ -78,7 +78,7 @@ CLONEID database
 → CandidateSegment discovery / ranking
 → lineage-object ranking / review
 → bounded modeling-candidate lineage-object selection
-→ smoke-eligible modeling-lineage-object selection
+→ runtime-eligible modeling-lineage-object selection
 → biological proof-of-principle candidate selection
 → selected lineage-object record bundle
 → observable selection
@@ -106,7 +106,7 @@ The workflow must distinguish:
 2. `phase_abstracted_modeling_eligible`
 3. `biologically_interpretable`
 
-Long-term lineage paths should not be rejected as biologically unsuitable solely because raw elapsed clock time is large. The raw-time guardrail controls the technical smoke-test branch, not the separate biological proof-of-principle branch.
+Long-term lineage paths should not be rejected as biologically unsuitable solely because raw elapsed clock time is large. The raw-time guardrail controls the technical runtime branch, not the separate biological proof-of-principle branch.
 
 A modeling unit is modelable if it contains:
 
@@ -204,7 +204,7 @@ For biological proof-of-principle selection, add a second interpretation layer:
 - treat each primary lineage interval as a candidate model phase,
 - record the mapping from real elapsed time to normalized simulated phase time,
 - avoid simulating idle calendar time literally,
-- preserve raw-time runtime guardrails only for the technical smoke-test branch.
+- preserve raw-time runtime guardrails only for the technical runtime branch.
 
 The selected lineage object should be the highest-priority reviewed `LineagePath` or `RootedTrajectoryBundle` unless the user provides an override.
 

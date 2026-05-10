@@ -25,16 +25,12 @@ from .lineage_objects import discover_global_lineage_objects_from_file, write_gl
 from .modeling_lineage_selection import (
     classify_biological_proof_of_principle_candidates_from_file,
     classify_lineage_objects_for_modeling_from_file,
-    classify_modeling_candidates_for_smoke_from_file,
     select_biological_proof_of_principle_candidate_from_file,
     select_modeling_lineage_object_from_file,
-    select_smoke_lineage_object_from_file,
     write_biological_proof_of_principle_candidate_artifacts,
     write_selected_biological_proof_of_principle_candidate,
     write_modeling_candidate_artifacts,
-    write_selected_smoke_lineage_object,
     write_selected_modeling_lineage_object,
-    write_smoke_candidate_artifacts,
 )
 from .model_candidate import generate_model_candidates_from_files, write_model_candidates
 from .model_family_specification import (
@@ -59,7 +55,6 @@ from .phase_planning import (
 from .physicell_mapping import build_physicell_mapping_from_files, write_physicell_mapping
 from .report import write_run_report
 from .schedule_aware_candidates import generate_schedule_aware_model_candidates_from_files
-from .schedule_aware_smoke import run_smoke_tests_for_families
 from .simulation_schedule import (
     build_branch_simulation_schedule,
     build_matched_simulation_schedule,
@@ -332,7 +327,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     evaluate_parser = subparsers.add_parser(
         "evaluate-model-candidates",
-        help="Evaluate generated PhysiCell model candidates for runtime readiness and smoke-output presence.",
+        help="Evaluate generated PhysiCell model candidates for runtime readiness and runtime-output presence.",
     )
     evaluate_parser.add_argument(
         "--input",
@@ -433,36 +428,6 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-dir",
         required=True,
         help="Directory for selected_modeling_lineage_object artifacts",
-    )
-
-    smoke_candidates_parser = subparsers.add_parser(
-        "select-smoke-lineage-candidates",
-        help="Filter bounded modeling candidates into smoke-eligible modeling candidates.",
-    )
-    smoke_candidates_parser.add_argument(
-        "--input",
-        required=True,
-        help="Path to modeling_candidate_lineage_objects.json",
-    )
-    smoke_candidates_parser.add_argument(
-        "--output-dir",
-        required=True,
-        help="Directory for smoke_eligible_modeling_lineage_objects artifacts",
-    )
-
-    smoke_select_parser = subparsers.add_parser(
-        "select-smoke-lineage-object",
-        help="Select the top smoke-eligible proof-of-principle lineage object.",
-    )
-    smoke_select_parser.add_argument(
-        "--input",
-        required=True,
-        help="Path to smoke_eligible_modeling_lineage_objects.json",
-    )
-    smoke_select_parser.add_argument(
-        "--output-dir",
-        required=True,
-        help="Directory for selected_smoke_lineage_object artifacts",
     )
 
     biological_candidates_parser = subparsers.add_parser(
@@ -709,47 +674,6 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run directory where harness artifacts should be written",
     )
 
-    smoke_parser = subparsers.add_parser(
-        "run-schedule-aware-smoke",
-        help="Run one-episode schedule-aware PhysiCell smoke tests with isolated staging, logs, and parsed output summaries.",
-    )
-    smoke_parser.add_argument(
-        "--candidate-root",
-        required=True,
-        help="Path to model_candidates_schedule_aware",
-    )
-    smoke_parser.add_argument(
-        "--branch-schedule",
-        required=True,
-        help="Path to branch simulation schedule json",
-    )
-    smoke_parser.add_argument(
-        "--families",
-        nargs="+",
-        required=True,
-        help="One or more candidate families to smoke test.",
-    )
-    smoke_parser.add_argument(
-        "--episode-milestone",
-        required=True,
-        help="Growth-episode child milestone label, for example O2_A1_seedT1.",
-    )
-    smoke_parser.add_argument(
-        "--output-dir",
-        required=True,
-        help="Directory under which per-family smoke artifacts should be written.",
-    )
-    smoke_parser.add_argument(
-        "--physicell-root",
-        help="Optional override path to the PhysiCell install root.",
-    )
-    smoke_parser.add_argument(
-        "--omp-threads",
-        type=int,
-        default=1,
-        help="OpenMP thread count for the smoke execution.",
-    )
-
     rk_parser = subparsers.add_parser(
         "run-rk-benchmark",
         help="Run the CLONEID-LTE r/K benchmark against the NSR nwaa124 comparator.",
@@ -780,6 +704,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     rk_parser.add_argument("--fit", action="store_true", help="Fit or summarize supported model families.")
     rk_parser.add_argument("--make-figures", action="store_true", help="Generate benchmark PNG figures.")
+    rk_parser.add_argument(
+        "--run-physicell",
+        action="store_true",
+        help="Generate PhysiCell-ready candidate inputs and compare model encoding across record regimes.",
+    )
+    rk_parser.add_argument(
+        "--physicell-root",
+        help="Optional local PhysiCell root containing heterogeneity and config/PhysiCell_settings.xml.",
+    )
+    rk_parser.add_argument(
+        "--execute-physicell",
+        action="store_true",
+        help="Execute generated full-history PhysiCell candidate configs with the configured local PhysiCell binary.",
+    )
+    rk_parser.add_argument(
+        "--physicell-runtime-max-time",
+        type=int,
+        default=60,
+        help="Max simulated minutes for generated PhysiCell runtime configs.",
+    )
 
     run_parser = subparsers.add_parser(
         "run",
@@ -799,6 +743,23 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--output", required=True, help="Output directory for benchmark artifacts.")
     run_parser.add_argument("--fit", action="store_true", help="Fit or summarize model families.")
     run_parser.add_argument("--make-figures", action="store_true", help="Generate benchmark figures.")
+    run_parser.add_argument(
+        "--run-physicell",
+        action="store_true",
+        help="Generate PhysiCell-ready candidate inputs and comparison artifacts.",
+    )
+    run_parser.add_argument("--physicell-root", help="Optional local PhysiCell root.")
+    run_parser.add_argument(
+        "--execute-physicell",
+        action="store_true",
+        help="Execute generated full-history PhysiCell candidate configs.",
+    )
+    run_parser.add_argument(
+        "--physicell-runtime-max-time",
+        type=int,
+        default=60,
+        help="Max simulated minutes for generated PhysiCell runtime configs.",
+    )
 
     audit_nsr_parser = subparsers.add_parser(
         "audit-nwaa124-comparator",
@@ -926,14 +887,6 @@ def main(argv: list[str] | None = None) -> int:
         selection = select_modeling_lineage_object_from_file(args.input)
         write_selected_modeling_lineage_object(args.output_dir, selection)
         return 0
-    if args.command == "select-smoke-lineage-candidates":
-        payload = classify_modeling_candidates_for_smoke_from_file(args.input)
-        write_smoke_candidate_artifacts(args.output_dir, payload)
-        return 0
-    if args.command == "select-smoke-lineage-object":
-        selection = select_smoke_lineage_object_from_file(args.input)
-        write_selected_smoke_lineage_object(args.output_dir, selection)
-        return 0
     if args.command == "select-biological-proof-candidates":
         payload = classify_biological_proof_of_principle_candidates_from_file(args.input)
         write_biological_proof_of_principle_candidate_artifacts(args.output_dir, payload)
@@ -1049,17 +1002,6 @@ def main(argv: list[str] | None = None) -> int:
             output_dir=args.output_dir,
         )
         return 0
-    if args.command == "run-schedule-aware-smoke":
-        run_smoke_tests_for_families(
-            candidate_root=args.candidate_root,
-            branch_schedule_path=args.branch_schedule,
-            families=args.families,
-            episode_milestone_label=args.episode_milestone,
-            output_root=args.output_dir,
-            physicell_root=args.physicell_root if args.physicell_root else None,
-            omp_threads=args.omp_threads,
-        )
-        return 0
     if args.command == "run-rk-benchmark":
         run_rk_benchmark(
             external_zip=args.external_zip,
@@ -1069,6 +1011,10 @@ def main(argv: list[str] | None = None) -> int:
             fit=args.fit,
             make_figures=args.make_figures,
             config_path=args.config,
+            run_physicell=args.run_physicell,
+            physicell_root=args.physicell_root,
+            execute_physicell=args.execute_physicell,
+            physicell_runtime_max_time=args.physicell_runtime_max_time,
         )
         return 0
     if args.command == "run":
@@ -1079,6 +1025,10 @@ def main(argv: list[str] | None = None) -> int:
             external_zip=args.external_zip,
             fit=args.fit,
             make_figures=args.make_figures,
+            run_physicell=args.run_physicell,
+            physicell_root=args.physicell_root,
+            execute_physicell=args.execute_physicell,
+            physicell_runtime_max_time=args.physicell_runtime_max_time,
         )
         return 0
     if args.command == "audit-nwaa124-comparator":

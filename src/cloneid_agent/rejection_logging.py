@@ -24,11 +24,14 @@ def render_rejection_report(family_comparison: dict[str, Any]) -> str:
         elif row.get("unresolved_under_available_records"):
             lines.append("- Status: unresolved under available records.")
         else:
-            lines.append(f"- Status: `{row.get('fit_status')}`.")
+            lines.append(f"- Status: `{row.get('decision_status') or row.get('fit_status')}`.")
         if row.get("reason_if_not_identifiable"):
             lines.append(f"- Reason: {row['reason_if_not_identifiable']}")
         lines.append(f"- Required inputs available: {row.get('required_inputs_available') or 'none'}")
         lines.append(f"- Required inputs missing: {row.get('required_inputs_missing') or 'none'}")
+        lines.append(f"- Decision status: `{row.get('decision_status')}`")
+        lines.append(f"- Decision basis: {row.get('status_decision_basis') or 'not recorded'}")
+        lines.append(f"- Dominant limitation: {row.get('dominant_limitation') or 'none'}")
         lines.append(f"- Auditability grade: `{row.get('auditability_grade')}`")
         lines.append(f"- Identifiability grade: `{row.get('identifiability_grade')}`")
         lines.append(f"- Guardrail: {row.get('overclaim_guardrail')}")

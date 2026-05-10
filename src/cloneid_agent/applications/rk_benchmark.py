@@ -336,6 +336,7 @@ def run_rk_benchmark(
         nsr_fits=nsr_fits,
         cloneid_full_fits=cloneid_full_fits,
         cloneid_coarse_fits=cloneid_coarse_fits,
+        history_ablation=history_ablation,
     )
     family_comparison_paths = write_family_comparison(subdirs["modeling"], family_comparison)
     rejection_report_path = write_rejection_report(subdirs["modeling"], family_comparison)

@@ -49,17 +49,19 @@ def build_model_selection_report(
         (family_comparison or {}).get("comparison_rows", []),
         key=lambda item: (regime_order.get(item["dataset_regime"], 99), family_order.get(item["family_id"], 99)),
     ):
-        if row["selected_under_tested_assumptions"]:
-            status = "selected under tested assumptions"
-        elif row["rejected_under_tested_assumptions"]:
-            status = "rejected under tested assumptions"
-        elif row["unresolved_under_available_records"]:
-            status = "unresolved under available records"
-        else:
-            status = row["fit_status"]
+        status = row.get("decision_status") or (
+            "selected under tested assumptions"
+            if row["selected_under_tested_assumptions"]
+            else "rejected under tested assumptions"
+            if row["rejected_under_tested_assumptions"]
+            else "unresolved under available records"
+            if row["unresolved_under_available_records"]
+            else row["fit_status"]
+        )
         family_lines.append(
             f"- `{row['dataset_regime']}` / `{row['family_id']}`: {status}; "
-            f"missing inputs `{row['required_inputs_missing'] or 'none'}`"
+            f"missing inputs `{row['required_inputs_missing'] or 'none'}`; "
+            f"basis: {row.get('status_decision_basis', 'not recorded')}"
         )
     if not family_lines:
         family_lines = ["- Family comparison was not generated."]
@@ -169,10 +171,12 @@ def build_manuscript_facing_summary(
     ] or ["- Observability matrix was not generated."]
     family_lines = []
     for row in (family_comparison or {}).get("comparison_rows", []):
-        if row["dataset_regime"] != "snu668_full_history" and row["family_id"] == "density_dependent_growth":
+        if row["family_id"] == "density_dependent_growth":
             family_lines.append(
-                f"- `{row['dataset_regime']}` / `density_dependent_growth`: {row['fit_status']}; "
-                f"missing `{row['required_inputs_missing'] or 'none'}`"
+                f"- `{row['dataset_regime']}` / `density_dependent_growth`: "
+                f"{row.get('decision_status', row['fit_status'])}; "
+                f"missing `{row['required_inputs_missing'] or 'none'}`; "
+                f"basis: {row.get('status_decision_basis', 'not recorded')}"
             )
     if not family_lines:
         family_lines = ["- Density-history loss was not computed."]
@@ -268,16 +272,18 @@ def build_family_discrimination_summary(family_comparison: dict[str, Any] | None
             if not row:
                 lines.append(f"- `{family_id}`: not evaluated.")
                 continue
-            if row.get("selected_under_tested_assumptions"):
-                status = "selected under tested assumptions"
-            elif row.get("rejected_under_tested_assumptions"):
-                status = "rejected under tested assumptions"
-            elif row.get("unresolved_under_available_records"):
-                status = "unresolved under available records"
-            else:
-                status = row.get("fit_status", "not evaluated")
+            status = row.get("decision_status") or (
+                "selected under tested assumptions"
+                if row.get("selected_under_tested_assumptions")
+                else "rejected under tested assumptions"
+                if row.get("rejected_under_tested_assumptions")
+                else "unresolved under available records"
+                if row.get("unresolved_under_available_records")
+                else row.get("fit_status", "not evaluated")
+            )
             lines.append(
-                f"- `{family_id}`: {status}; missing inputs `{row.get('required_inputs_missing') or 'none'}`."
+                f"- `{family_id}`: {status}; missing inputs `{row.get('required_inputs_missing') or 'none'}`; "
+                f"basis: {row.get('status_decision_basis', 'not recorded')}."
             )
         lines.append("")
     return "\n".join(lines)

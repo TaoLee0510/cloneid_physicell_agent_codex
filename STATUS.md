@@ -5,14 +5,45 @@ This file is maintained by the agent. It records the current reviewable state of
 ## Current state
 
 - Current branch: `update_5.5`
-- Last committed baseline before this pass: `3c539dd`
-- Current work unit: replace the previous quick-check PhysiCell validation path with direct runtime execution against the configured local PhysiCell install.
+- Last committed baseline before this pass: `dbab368`
+- Current work unit: remove regime-name-based unresolved logic from the manuscript-facing family comparison.
 - Current work state: completed and tested.
 - Approved roots:
   - `SNU-668_r2_A9_seed` for r cells
   - `SNU-668_K3_A9_seed` for K cells
 
 ## What changed in this pass
+
+- Removed the hard-coded family-comparison shortcut that made `density_dependent_growth` unresolved when `dataset_regime != "snu668_full_history"`.
+- Replaced it with evidence-driven row classification using:
+  - required inputs available/missing,
+  - `fit_status`,
+  - numeric fit evidence when present (`rmse`, `aic`),
+  - auditability and identifiability grades,
+  - `history_ablation_delta` and model-family-specific downsampling effects,
+  - fit limitations, missing-data warnings, and unsupported-assumption notes.
+- Added row-level decision fields to `family_comparison.json` / `family_comparison.csv`:
+  - `decision_status`
+  - `identifiability_class`
+  - `missing_required_input_count`
+  - `fit_evidence_available`
+  - `fit_evidence_strength`
+  - `observability_support_score`
+  - `ablation_support_score`
+  - `overall_identifiability_support`
+  - `dominant_limitation`
+  - `status_decision_basis`
+  - `history_ablation_delta`
+  - `family_downsampling_effect`
+- Updated family-comparison markdown, rejection report, model-selection report, manuscript-facing summary, family-discrimination summary, and comparative-identifiability report to show decision basis rather than only status labels.
+- Added `tests/test_family_comparison.py` with explicit guard coverage:
+  - non-full-history `density_dependent_growth` is not unresolved when synthetic evidence is sufficient,
+  - realistic sparse/compressed evidence remains unresolved for missing-input and ablation reasons,
+  - full-history rows are not automatically selected when fit/observability support is poor,
+  - markdown/report outputs include human-readable decision basis.
+- Preserved the SNU-668 density-history manuscript framing and biological claim boundary. No mechanism proof or sparse-data overclaim was added.
+
+## Previous PhysiCell work retained
 
 - Added a PhysiCell integration stage:
   - `src/cloneid_agent/rk_physicell_integration.py`
@@ -103,14 +134,22 @@ PYTHONPATH=src python3 -m compileall src/cloneid_agent
 rg -n "<obsolete quick-check validation term>" .
 PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --config configs/applications/snu668_density_history.yaml --external-zip /Users/4482173/Downloads/nwaa124_supplement_file.zip --cloneid-root-id SNU-668_r2_A9_seed,SNU-668_K3_A9_seed --mode mock --output runs/snu668_rk_physicell_runtime_mock --fit --make-figures --run-physicell --physicell-root /Users/4482173/Documents/PhysiCell --execute-physicell --physicell-runtime-max-time 1
 PYTHONPATH=src:tests python3 -m unittest discover -s tests
+PYTHONPATH=src:tests python3 -m unittest tests.test_family_comparison
+PYTHONPATH=src:tests python3 -m unittest tests.test_comparative_identifiability tests.test_history_ablation tests.test_observability_profile tests.test_pipeline_run
+PYTHONPATH=src python3 -m compileall src/cloneid_agent
+PYTHONPATH=src python3 -m cloneid_agent.cli run-rk-benchmark --config configs/applications/snu668_density_history.yaml --external-zip /Users/4482173/Downloads/nwaa124_supplement_file.zip --cloneid-root-id SNU-668_r2_A9_seed,SNU-668_K3_A9_seed --mode mock --output runs/family_comparison_evidence_patch_mock --fit --make-figures
+PYTHONPATH=src:tests python3 -m unittest discover -s tests
 ```
 
 ## Test results
 
 - New live extraction tests: passed, `3` tests.
-- Full unittest suite: passed, `102` tests.
+- Full unittest suite: passed, `106` tests after the evidence-driven family-comparison patch.
+- Family-comparison evidence tests: passed, `4` tests.
+- Comparative identifiability/history ablation/observability/pipeline targeted tests: passed, `6` tests.
 - Question-specific report tests: passed.
 - Mock benchmark workflow run after required-data patch: succeeded.
+- Evidence-driven family-comparison mock workflow run: succeeded, output at `runs/family_comparison_evidence_patch_mock`.
 - PhysiCell integration tests: passed, `3` targeted tests for the new module.
 - Obsolete validation-code scan returned no matches.
 - PhysiCell direct runtime workflow run: succeeded, output at `runs/snu668_rk_physicell_runtime_mock`.

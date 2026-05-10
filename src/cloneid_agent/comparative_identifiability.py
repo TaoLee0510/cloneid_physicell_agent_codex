@@ -38,12 +38,7 @@ def build_comparative_identifiability(
         selected = [row["family_id"] for row in rows if row.get("selected_under_tested_assumptions")]
         rejected = [row["family_id"] for row in rows if row.get("rejected_under_tested_assumptions")]
         unresolved = [row["family_id"] for row in rows if row.get("unresolved_under_available_records")]
-        if regime == "snu668_full_history":
-            resolution = "fixed-state fitness and density/confluence alternatives are auditable under event-linked mock records"
-        elif regime == "snu668_published_like_compressed":
-            resolution = "comparison becomes partially unresolved after event graph and density-history removal"
-        else:
-            resolution = "publication-level records support coarse reconstruction but leave event-aware density-history identifiability unresolved"
+        resolution = _resolution_statement_from_rows(rows)
         summaries.append(
             {
                 "dataset_regime": regime,
@@ -71,6 +66,29 @@ def build_comparative_identifiability(
             "Mock SNU-668 values require replacement by live read-only CLONEID extraction or approved frozen snapshot for manuscript numerical interpretation.",
         ],
     }
+
+
+def _resolution_statement_from_rows(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "no family-comparison evidence was generated"
+    selected = [row["family_id"] for row in rows if row.get("selected_under_tested_assumptions")]
+    rejected = [row["family_id"] for row in rows if row.get("rejected_under_tested_assumptions")]
+    unresolved_rows = [row for row in rows if row.get("unresolved_under_available_records")]
+    if selected and rejected and not unresolved_rows:
+        return (
+            "model-family comparison is resolved under tested assumptions: "
+            f"selected {', '.join(selected)} and rejected {', '.join(rejected)}"
+        )
+    if unresolved_rows:
+        basis = "; ".join(
+            f"{row['family_id']}: {row.get('dominant_limitation') or row.get('status_decision_basis')}"
+            for row in unresolved_rows[:2]
+        )
+        return f"partially unresolved under available records because {basis}"
+    identifiable = [row["family_id"] for row in rows if row.get("identifiable")]
+    if identifiable:
+        return f"families are identifiable but not uniquely selected under available evidence: {', '.join(identifiable)}"
+    return "not identifiable under available records because required evidence is missing"
 
 
 def render_comparative_identifiability_report(payload: dict[str, Any]) -> str:
